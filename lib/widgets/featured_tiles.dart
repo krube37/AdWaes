@@ -10,16 +10,21 @@ class FeaturedTiles extends StatelessWidget {
   final Size screenSize;
 
   final List<String> assets = [
-    'assets/images/test1.jpeg',
-    'assets/images/test2.jpeg',
-    'assets/images/test3.jpeg',
+    '../assets/images/bbc.webp',
+    '../assets/images/wsj.jpeg',
+    '../assets/images/NRG.webp',
   ];
 
-  final List<String> title = ['Sci-fi', 'Photography', 'Romance'];
+  final List<String> title = [
+    'BBC NewsPartner',
+    'Wall Street Journal',
+    'NRG Streaming Partner'
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveWidget.isSmallScreen(context)
+    return
+        /*ResponsiveWidget.isSmallScreen(context)
         ? Padding(
             padding: EdgeInsets.only(top: screenSize.height / 50),
             child: SingleChildScrollView(
@@ -45,6 +50,7 @@ class FeaturedTiles extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            
                             Padding(
                               padding: EdgeInsets.only(
                                 top: screenSize.height / 70,
@@ -68,59 +74,60 @@ class FeaturedTiles extends StatelessWidget {
               ),
             ),
           )
-        : Padding(
-            padding: EdgeInsets.only(
-              top: screenSize.height * 0.06,
-              left: screenSize.width / 15,
-              right: screenSize.width / 15,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        :*/
+        Padding(
+      padding: EdgeInsets.only(
+        top: screenSize.height * 0.06,
+        left: screenSize.width / 15,
+        right: screenSize.width / 15,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ...Iterable<int>.generate(assets.length).map(
+            (int pageIndex) => Column(
               children: [
-                ...Iterable<int>.generate(assets.length).map(
-                  (int pageIndex) => Column(
-                    children: [
-                      SizedBox(
-                        height: screenSize.width / 6,
-                        width: screenSize.width / 3.8,
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20.0),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(
-                                  assets[pageIndex],
-                                  // fit: BoxFit.cover,
-                                ),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  offset: Offset(0, 10),
-                                  blurRadius: 20,
-                                  spreadRadius: 5,
-                                  color: Colors.grey.withOpacity(0.3),
-                                )
-                              ]),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: screenSize.height / 70,
-                        ),
-                        child: Text(
-                          title[pageIndex],
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.w500,
+                SizedBox(
+                  height: screenSize.width / 6,
+                  width: screenSize.width / 3.8,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20.0),
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage(
+                            assets[pageIndex],
+                            // fit: BoxFit.cover,
                           ),
                         ),
-                      ),
-                    ],
+                        boxShadow: [
+                          BoxShadow(
+                            offset: const Offset(0, 10),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                            color: Colors.grey.withOpacity(1),
+                          )
+                        ]),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: screenSize.height / 70,
+                  ),
+                  child: Text(
+                    title[pageIndex],
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Montserrat',
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
             ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 }

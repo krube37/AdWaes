@@ -1,3 +1,4 @@
+import 'package:ad/main.dart';
 import 'package:ad/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 
@@ -10,14 +11,21 @@ class FloatingQuickAccessBar extends StatefulWidget {
   final Size screenSize;
 
   @override
+  // ignore: library_private_types_in_public_api
   _FloatingQuickAccessBarState createState() => _FloatingQuickAccessBarState();
 }
 
 class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
-  List _isHovering = [false, false, false, false];
+  final List _isHovering = [false, false, false, false, false];
   List<Widget> rowElements = [];
 
-  List<String> items = ['History', 'Science', 'Philosophy', 'Novels'];
+  List<String> items = [
+    'BillBoard',
+    'Television Partners',
+    'Newspaper Partners',
+    'Streaming Partners',
+    'Social Media Partners'
+  ];
   List<IconData> icons = [
     Icons.location_on,
     Icons.date_range,
@@ -30,7 +38,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
     for (int i = 0; i < items.length; i++) {
       Widget elementTile = InkWell(
         splashColor: Colors.transparent,
-        hoverColor: Colors.blue,
+        hoverColor: Colors.transparent,
         onHover: (value) {
           setState(() {
             value ? _isHovering[i] = true : _isHovering[i] = false;
@@ -75,7 +83,18 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
               ? widget.screenSize.width / 12
               : widget.screenSize.width / 5,
         ),
-        child: Container(),
+        child: Card(
+            elevation: 5,
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: widget.screenSize.height / 50,
+                bottom: widget.screenSize.height / 50,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: generateRowElements(),
+              ),
+            )),
       ),
     );
   }

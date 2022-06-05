@@ -19,21 +19,21 @@ class _MainCarouselState extends State<MainCarousel> {
   int _current = 0;
 
   final List<String> images = [
-    'assets/images/asia.jpg',
-    'assets/images/africa.jpg',
-    'assets/images/europe.jpg',
-    'assets/images/south_america.jpg',
-    'assets/images/australia.jpg',
-    'assets/images/antarctica.jpg',
+    '../assets/images/newspaper.jpg',
+    '../assets/images/images.jpg',
+    '../assets/images/Billboards.jpg',
+    '../assets/images/gaming.jpg',
+    '../assets/images/youtube.jpg',
+    '../assets/images/social.jpg',
   ];
 
   final List<String> places = [
-    'ASIA',
-    'AFRICA',
-    'EUROPE',
-    'SOUTH AMERICA',
-    'AUSTRALIA',
-    'ANTARCTICA',
+    'NewsPaper Partner',
+    'Media Partner',
+    'BillBoard Partner',
+    'Streaming Partner',
+    'Youtube Partner',
+    'SocialMedia Partner',
   ];
 
   List<Widget> generateImageTiles(screenSize) {

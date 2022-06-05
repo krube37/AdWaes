@@ -17,14 +17,14 @@ class MainHeading extends StatelessWidget {
         bottom: screenSize.height / 15,
       ),
       width: screenSize.width,
-      child: Text(
-        'Knowledge diversity',
+      child: const Text(
+        'Adwisor Services',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 40,
-          fontFamily: 'Montserrat',
-          fontWeight: FontWeight.bold,
-        ),
+            fontSize: 40,
+            fontFamily: 'Montserrat',
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 90, 90, 90)),
       ),
     );
   }

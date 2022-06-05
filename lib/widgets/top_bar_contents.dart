@@ -32,6 +32,10 @@ class _TopBarContentsState extends State<TopBarContents> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            SizedBox(
+              //width: screenSize.width / 20,
+              height: screenSize.height / 5,
+            ),
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -40,86 +44,16 @@ class _TopBarContentsState extends State<TopBarContents> {
                     width: screenSize.width / 20,
                   ),
                   const Text(
-                    'AdWise',
+                    'Adwisor',
                     style: TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
-                      fontSize: 26,
+                      color: Color.fromARGB(255, 255, 255, 255),
+                      fontSize: 48,
                       fontFamily: 'Raleway',
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 3,
+                      fontWeight: FontWeight.bold,
+                      //letterSpacing: 3,
                     ),
                   ),
-                  SizedBox(width: screenSize.width / 15),
-                  InkWell(
-                    onHover: (value) {
-                      setState(() {
-                        value ? _isHovering[0] = true : _isHovering[0] = false;
-                      });
-                    },
-                    onTap: () {},
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'Home',
-                          style: TextStyle(
-                              color: _isHovering[0]
-                                  ? const Color(0xFF077bd7)
-                                  : const Color(0xFF077bd7),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                        const SizedBox(height: 5),
-                        Visibility(
-                          maintainAnimation: true,
-                          maintainState: true,
-                          maintainSize: true,
-                          visible: _isHovering[0],
-                          child: Container(
-                            height: 2,
-                            width: 20,
-                            color: const Color(0xFF051441),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: screenSize.width / 15),
-                  InkWell(
-                    onHover: (value) {
-                      setState(() {
-                        value ? _isHovering[1] = true : _isHovering[1] = false;
-                      });
-                    },
-                    onTap: () {},
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          'About',
-                          style: TextStyle(
-                              color: _isHovering[1]
-                                  ? const Color(0xFF077bd7)
-                                  : const Color(0xFF077bd7),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16),
-                        ),
-                        const SizedBox(height: 5),
-                        Visibility(
-                          maintainAnimation: true,
-                          maintainState: true,
-                          maintainSize: true,
-                          visible: _isHovering[1],
-                          child: Container(
-                            height: 2,
-                            width: 20,
-                            color: const Color(0xFF051441),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(width: screenSize.width / 15),
+                  SizedBox(width: screenSize.width / 1.5),
                   InkWell(
                     onHover: (value) {
                       setState(() {
@@ -131,13 +65,13 @@ class _TopBarContentsState extends State<TopBarContents> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Services',
+                          'LogIn',
                           style: TextStyle(
                               color: _isHovering[2]
-                                  ? const Color(0xFF077bd7)
-                                  : const Color(0xFF077bd7),
+                                  ? const Color.fromARGB(255, 255, 255, 255)
+                                  : const Color.fromARGB(255, 255, 255, 255),
                               fontWeight: FontWeight.bold,
-                              fontSize: 16),
+                              fontSize: 18),
                         ),
                         const SizedBox(height: 5),
                         Visibility(
@@ -154,7 +88,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                       ],
                     ),
                   ),
-                  SizedBox(width: screenSize.width / 15),
+                  SizedBox(width: screenSize.width / 55),
                   InkWell(
                     onHover: (value) {
                       setState(() {
@@ -166,13 +100,13 @@ class _TopBarContentsState extends State<TopBarContents> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Contact',
+                          'SignUp',
                           style: TextStyle(
                               color: _isHovering[3]
-                                  ? const Color(0xFF077bd7)
-                                  : const Color(0xFF077bd7),
+                                  ? const Color.fromARGB(255, 255, 255, 255)
+                                  : const Color.fromARGB(255, 255, 255, 255),
                               fontWeight: FontWeight.bold,
-                              fontSize: 16),
+                              fontSize: 18),
                         ),
                         const SizedBox(height: 5),
                         Visibility(

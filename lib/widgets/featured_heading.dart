@@ -20,21 +20,23 @@ class FeaturedHeading extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.start,
+        // ignore: prefer_const_literals_to_create_immutables
         children: [
-          Text(
-            'Featured',
+          const Text(
+            'Featured Partners',
             style: TextStyle(
                 fontSize: 36,
                 fontFamily: 'Raleway',
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF263b5e)),
+                color: Color.fromARGB(255, 90, 90, 90)),
           ),
-          Expanded(
+          /*const Expanded(
             child: Text(
-              'Clue of the wooden cottage',
+              'Place your Ad wisely with Adwisor',
               textAlign: TextAlign.end,
             ),
           ),
+          */
         ],
       ),
     );
