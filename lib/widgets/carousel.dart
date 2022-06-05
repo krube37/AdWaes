@@ -4,7 +4,10 @@ import 'package:ad/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 
 class MainCarousel extends StatefulWidget {
+  const MainCarousel({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _MainCarouselState createState() => _MainCarouselState();
 }
 
@@ -13,8 +16,8 @@ class _MainCarouselState extends State<MainCarousel> {
 
   final CarouselController _controller = CarouselController();
 
-  List _isHovering = [false, false, false, false, false, false, false];
-  List _isSelected = [true, false, false, false, false, false, false];
+  final List _isHovering = [false, false, false, false, false, false, false];
+  final List _isSelected = [true, false, false, false, false, false, false];
 
   int _current = 0;
 
@@ -149,11 +152,11 @@ class _MainCarouselState extends State<MainCarousel> {
                                 maintainState: true,
                                 visible: _isSelected[i],
                                 child: AnimatedOpacity(
-                                  duration: Duration(milliseconds: 400),
+                                  duration: const Duration(milliseconds: 400),
                                   opacity: _isSelected[i] ? 1 : 0,
                                   child: Container(
                                     height: 5,
-                                    decoration: BoxDecoration(
+                                    decoration: const BoxDecoration(
                                       color: Colors.blueGrey,
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(10),
