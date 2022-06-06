@@ -7,33 +7,21 @@ class BottomBar extends StatelessWidget {
   const BottomBar({
     Key? key,
   }) : super(key: key);
-  static const Color gradientStartColor = Color(0xff11998e);
-  static const Color gradientEndColor = Color(0xff0575E6);
+  static const Color gradientStartColor = Color.fromARGB(255, 0, 0, 0);
+  static const Color gradientEndColor = Color.fromARGB(255, 0, 0, 0);
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(0.0)),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: gradientStartColor,
-            offset: Offset(1.0, 6.0),
-            blurRadius: 1.0,
-          ),
-          BoxShadow(
-            color: gradientEndColor,
-            offset: Offset(1.0, 6.0),
-            blurRadius: 1.0,
-          ),
-        ],
-        gradient: LinearGradient(
+      decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(0.0)),
+          /*gradient: LinearGradient(
             colors: [gradientStartColor, gradientEndColor],
-            begin: const FractionalOffset(0.2, 0.2),
-            end: const FractionalOffset(1.0, 1.0),
+            begin: FractionalOffset(0.2, 0.2),
+            end: FractionalOffset(1.0, 1.0),
             stops: [0.0, 1.0],
-            tileMode: TileMode.clamp),
-      ),
-      padding: EdgeInsets.all(30),
+            tileMode: TileMode.clamp),*/
+          color: Colors.black),
+      padding: const EdgeInsets.all(30),
       //color: Colors.blueGrey[900],
       child: Column(
         children: [
@@ -41,11 +29,23 @@ class BottomBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              BottomBarColumn(
+              const BottomBarColumn(
                 heading: 'ABOUT',
                 s1: 'Contact Us',
                 s2: 'About Us',
                 s3: 'Careers',
+              ),
+              const BottomBarColumn(
+                heading: 'Help',
+                s1: 'Payment',
+                s2: 'Cancellation',
+                s3: 'FAQ',
+              ),
+              const BottomBarColumn(
+                heading: 'SOCIAL',
+                s1: 'Twitter',
+                s2: 'Facebook',
+                s3: 'Youtube',
               ),
               Container(
                 color: Colors.white,
@@ -57,22 +57,22 @@ class BottomBar extends StatelessWidget {
                 children: [
                   InfoText(
                     type: 'Email',
-                    text: 'dylan@gmail.com',
+                    text: 'customercare@adwisor.com',
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   InfoText(
                     type: 'Address',
-                    text: '128, Trymore Road, Delft, MN - 56124',
+                    text: 'Kent Mahal 😂',
                   )
                 ],
               ),
             ],
           ),
-          Divider(
+          const Divider(
             color: Colors.white,
           ),
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Copyright © 2021 | DBestech',
             style: TextStyle(
               color: Colors.white,
