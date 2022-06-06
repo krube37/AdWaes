@@ -8,8 +8,10 @@ import 'package:ad/widgets/menu_drawer.dart';
 import 'package:ad/widgets/top_bar_contents.dart';
 import 'package:flutter/material.dart';
 
+// ignore: use_key_in_widget_constructors
 class HomePage extends StatefulWidget {
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -39,10 +41,28 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
         extendBodyBehindAppBar: true,
-        appBar: PreferredSize(
-          preferredSize: Size(screenSize.width, 150),
-          child: TopBarContents(_opacity),
-        ),
+        appBar: screenSize.width < 800
+            ? AppBar(
+                iconTheme: const IconThemeData(color: Colors.white),
+                elevation: 0,
+                backgroundColor:
+                    const Color.fromARGB(255, 0, 0, 0).withOpacity(_opacity),
+                title: const Text(
+                  'Adwisor',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 255, 255, 255),
+                    fontSize: 24,
+                    fontFamily: 'Raleway',
+                    fontWeight: FontWeight.bold,
+                    //letterSpacing: 3,
+                  ),
+                ),
+              )
+            : PreferredSize(
+                preferredSize: Size(screenSize.width, 150),
+                child: TopBarContents(_opacity),
+              ),
+        drawer: const MenuDrawer(),
         body: SingleChildScrollView(
           controller: _scrollController,
           child: Column(
@@ -65,9 +85,9 @@ class _HomePageState extends State<HomePage> {
                       FeaturedHeading(screenSize: screenSize),
                       FeaturedTiles(screenSize: screenSize),
                       MainHeading(screenSize: screenSize),
-                      MainCarousel(),
+                      const MainCarousel(),
                       SizedBox(height: screenSize.height / 10),
-                      BottomBar()
+                      const BottomBar()
                     ],
                   )
                 ],

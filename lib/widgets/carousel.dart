@@ -31,12 +31,12 @@ class _MainCarouselState extends State<MainCarousel> {
   ];
 
   final List<String> places = [
-    'NewsPaper Partner',
-    'Media Partner',
-    'BillBoard Partner',
-    'Streaming Partner',
-    'Youtube Partner',
-    'SocialMedia Partner',
+    'NewsPaper',
+    'Media',
+    'BillBoard',
+    'Streaming',
+    'Youtube',
+    'SocialMedia',
   ];
 
   List<Widget> generateImageTiles(screenSize) {

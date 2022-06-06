@@ -73,7 +73,7 @@ class BottomBar extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           const Text(
-            'Copyright © 2021 | DBestech',
+            'Copyright © 2021 | Adwisor',
             style: TextStyle(
               color: Colors.white,
               fontSize: 14,

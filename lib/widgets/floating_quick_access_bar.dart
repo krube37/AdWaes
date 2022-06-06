@@ -21,10 +21,10 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
 
   List<String> items = [
     'BillBoard',
-    'Television Partners',
-    'Newspaper Partners',
-    'Streaming Partners',
-    'Social Media Partners'
+    'Media',
+    'Newspaper',
+    'Streaming',
+    'SocialMedia'
   ];
   List<IconData> icons = [
     Icons.location_on,
@@ -83,18 +83,62 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
               ? widget.screenSize.width / 12
               : widget.screenSize.width / 5,
         ),
-        child: Card(
-            elevation: 5,
-            child: Padding(
-              padding: EdgeInsets.only(
-                top: widget.screenSize.height / 50,
-                bottom: widget.screenSize.height / 50,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: generateRowElements(),
-              ),
-            )),
+        child: widget.screenSize.width < 800
+            ? Column(
+                children: [
+                  for (int i = 0; i < items.length; i++)
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: widget.screenSize.height / 55,
+                      ),
+                      child: Card(
+                          elevation: 4,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              top: widget.screenSize.height / 45,
+                              bottom: widget.screenSize.height / 45,
+                            ),
+                            child: Row(children: [
+                              SizedBox(
+                                width: widget.screenSize.width / 50,
+                              ),
+                              InkWell(
+                                splashColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                onHover: (value) {
+                                  setState(() {
+                                    value
+                                        ? _isHovering[i] = true
+                                        : _isHovering[i] = false;
+                                  });
+                                },
+                                onTap: () {},
+                                child: Text(
+                                  items[i],
+                                  style: TextStyle(
+                                    color: _isHovering[i]
+                                        ? Colors.blueGrey[900]
+                                        : Colors.blueGrey,
+                                  ),
+                                ),
+                              ),
+                            ]),
+                          )),
+                    )
+                ],
+              )
+            : Card(
+                elevation: 5,
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: widget.screenSize.height / 50,
+                    bottom: widget.screenSize.height / 50,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: generateRowElements(),
+                  ),
+                )),
       ),
     );
   }
