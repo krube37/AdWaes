@@ -53,7 +53,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                       //letterSpacing: 3,
                     ),
                   ),
-                  SizedBox(width: screenSize.width / 1.5),
+                  SizedBox(width: screenSize.width / 30),
                   InkWell(
                     onHover: (value) {
                       setState(() {
@@ -73,7 +73,10 @@ class _TopBarContentsState extends State<TopBarContents> {
                               fontWeight: FontWeight.bold,
                               fontSize: 18),
                         ),
-                        const SizedBox(height: 5),
+                        //const SizedBox(height: 5),
+                        SizedBox(
+                          width: screenSize.width / 50,
+                        ),
                         Visibility(
                           maintainAnimation: true,
                           maintainState: true,
@@ -88,7 +91,10 @@ class _TopBarContentsState extends State<TopBarContents> {
                       ],
                     ),
                   ),
-                  SizedBox(width: screenSize.width / 55),
+                  SizedBox(
+                    width: screenSize.width / 50,
+                  ),
+                  //SizedBox(width: screenSize.width / 55),
                   InkWell(
                     onHover: (value) {
                       setState(() {
@@ -108,7 +114,8 @@ class _TopBarContentsState extends State<TopBarContents> {
                               fontWeight: FontWeight.bold,
                               fontSize: 18),
                         ),
-                        const SizedBox(height: 5),
+                        //const SizedBox(height: 5),
+                        SizedBox(width: screenSize.width / 20),
                         Visibility(
                           maintainAnimation: true,
                           maintainState: true,
