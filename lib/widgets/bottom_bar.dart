@@ -23,64 +23,127 @@ class BottomBar extends StatelessWidget {
           color: Colors.black),
       padding: const EdgeInsets.all(30),
       //color: Colors.blueGrey[900],
-      child: Column(
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              const BottomBarColumn(
-                heading: 'ABOUT',
-                s1: 'Contact Us',
-                s2: 'About Us',
-                s3: 'Careers',
-              ),
-              const BottomBarColumn(
-                heading: 'Help',
-                s1: 'Payment',
-                s2: 'Cancellation',
-                s3: 'FAQ',
-              ),
-              const BottomBarColumn(
-                heading: 'SOCIAL',
-                s1: 'Twitter',
-                s2: 'Facebook',
-                s3: 'Youtube',
-              ),
-              Container(
-                color: Colors.white,
-                width: 2,
-                height: 150,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InfoText(
-                    type: 'Email',
-                    text: 'customercare@adwisor.com',
+      child: MediaQuery.of(context).size.width < 800
+          ? Column(
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: const [
+                    BottomBarColumn(
+                      heading: 'ABOUT',
+                      s1: 'Contact Us',
+                      s2: 'About Us',
+                      s3: 'Careers',
+                    ),
+                    BottomBarColumn(
+                      heading: 'Help',
+                      s1: 'Payment',
+                      s2: 'Cancellation',
+                      s3: 'FAQ',
+                    ),
+                    BottomBarColumn(
+                      heading: 'SOCIAL',
+                      s1: 'Twitter',
+                      s2: 'Facebook',
+                      s3: 'Youtube',
+                    ),
+                  ],
+                ),
+                const Divider(
+                  color: Colors.white,
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    InfoText(
+                      type: 'Email',
+                      text: 'customercare@adwisor.com',
+                    ),
+                    const SizedBox(height: 5),
+                    InfoText(
+                      type: 'Address',
+                      text: 'Kent Mahal 😂',
+                    )
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Copyright © 2021 | Adwisor',
+                  style: TextStyle(
+                    color: Colors.white60,
+                    fontSize: 14,
                   ),
-                  const SizedBox(height: 5),
-                  InfoText(
-                    type: 'Address',
-                    text: 'Kent Mahal 😂',
-                  )
-                ],
-              ),
-            ],
-          ),
-          const Divider(
-            color: Colors.white,
-          ),
-          const SizedBox(height: 20),
-          const Text(
-            'Copyright © 2021 | Adwisor',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
+                ),
+              ],
+            )
+          : Column(
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const BottomBarColumn(
+                      heading: 'ABOUT',
+                      s1: 'Contact Us',
+                      s2: 'About Us',
+                      s3: 'Careers',
+                    ),
+                    const BottomBarColumn(
+                      heading: 'Help',
+                      s1: 'Payment',
+                      s2: 'Cancellation',
+                      s3: 'FAQ',
+                    ),
+                    const BottomBarColumn(
+                      heading: 'SOCIAL',
+                      s1: 'Twitter',
+                      s2: 'Facebook',
+                      s3: 'Youtube',
+                    ),
+                    Container(
+                      color: Colors.white,
+                      width: 2,
+                      height: 150,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InfoText(
+                          type: 'Email',
+                          text: 'customercare@adwisor.com',
+                        ),
+                        const SizedBox(height: 5),
+                        InfoText(
+                          type: 'Address',
+                          text: 'Kent Mahal 😂',
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                const Divider(
+                  color: Colors.white,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Copyright © 2021 | Adwisor',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
