@@ -1,4 +1,6 @@
 import 'package:ad/main.dart';
+import 'package:ad/screens/home_page.dart';
+import 'package:ad/screens/second_page.dart';
 import 'package:ad/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +46,19 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
             value ? _isHovering[i] = true : _isHovering[i] = false;
           });
         },
-        onTap: () {},
+        onTap: () {
+          if (items[i] == "BillBoard") {
+            Navigator.pushNamed(context, '/BillBoard');
+          } else if (items[i] == "Newspaper") {
+            Navigator.pushNamed(context, '/Newspaper');
+          } else if (items[i] == "Media") {
+            Navigator.pushNamed(context, '/Media');
+          } else if (items[i] == "Streaming") {
+            Navigator.pushNamed(context, '/BillBoard');
+          } else if (items[i] == "SocialMedia") {
+            Navigator.pushNamed(context, '/BillBoard');
+          }
+        },
         child: Text(
           items[i],
           style: TextStyle(
@@ -112,7 +126,19 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                         : _isHovering[i] = false;
                                   });
                                 },
-                                onTap: () {},
+                                onTap: () {
+                                  if (items[i] == "BillBoard") {
+                                    Navigator.pushNamed(context, '/BillBoard');
+                                  } else if (items[i] == "Newspaper") {
+                                    Navigator.pushNamed(context, '/Newspaper');
+                                  } else if (items[i] == "Media") {
+                                    Navigator.pushNamed(context, '/Media');
+                                  } else if (items[i] == "Streaming") {
+                                    Navigator.pushNamed(context, '/BillBoard');
+                                  } else if (items[i] == "SocialMedia") {
+                                    Navigator.pushNamed(context, '/BillBoard');
+                                  }
+                                },
                                 child: Text(
                                   items[i],
                                   style: TextStyle(
@@ -136,7 +162,64 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: generateRowElements(),
+                    //children: generateRowElements(),
+                    children: [
+                      for (int i = 0; i < items.length; i++)
+                        Padding(
+                          padding: EdgeInsets.only(
+                            bottom: widget.screenSize.height / 55,
+                          ),
+                          child: Card(
+                              elevation: 4,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: widget.screenSize.height / 45,
+                                  bottom: widget.screenSize.height / 45,
+                                ),
+                                child: Row(children: [
+                                  SizedBox(
+                                    width: widget.screenSize.width / 50,
+                                  ),
+                                  InkWell(
+                                    splashColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    onHover: (value) {
+                                      setState(() {
+                                        value
+                                            ? _isHovering[i] = true
+                                            : _isHovering[i] = false;
+                                      });
+                                    },
+                                    onTap: () {
+                                      if (items[i] == "BillBoard") {
+                                        Navigator.pushNamed(
+                                            context, '/BillBoard');
+                                      } else if (items[i] == "Newspaper") {
+                                        Navigator.pushNamed(
+                                            context, '/Newspaper');
+                                      } else if (items[i] == "Media") {
+                                        Navigator.pushNamed(context, '/Media');
+                                      } else if (items[i] == "Streaming") {
+                                        Navigator.pushNamed(
+                                            context, '/BillBoard');
+                                      } else if (items[i] == "SocialMedia") {
+                                        Navigator.pushNamed(
+                                            context, '/BillBoard');
+                                      }
+                                    },
+                                    child: Text(
+                                      items[i],
+                                      style: TextStyle(
+                                        color: _isHovering[i]
+                                            ? Colors.blueGrey[900]
+                                            : Colors.blueGrey,
+                                      ),
+                                    ),
+                                  ),
+                                ]),
+                              )),
+                        )
+                    ],
                   ),
                 )),
       ),
