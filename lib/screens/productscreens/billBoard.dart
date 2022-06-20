@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/bottom_bar.dart';
 import '../../widgets/menu_drawer.dart';
+import '../product_widgets/topbar.dart';
 
 class billBoard extends StatefulWidget {
   @override
@@ -55,7 +56,7 @@ class _billBoardState extends State<billBoard> {
               )
             : PreferredSize(
                 preferredSize: Size(screenSize.width, 150),
-                child: TopBarContents(_opacity),
+                child: TopBar(_opacity),
               ),
         drawer: const MenuDrawer(),
         body: SingleChildScrollView(
@@ -64,20 +65,13 @@ class _billBoardState extends State<billBoard> {
             children: [
               Stack(
                 children: [
-                  Container(
-                    child: SizedBox(
-                      height: screenSize.height * 0.65,
-                      width: screenSize.width,
-                      child: Image.asset(
-                        '../assets/images/sample3.jpg',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
                   Column(
                     children: [
-                      SizedBox(height: screenSize.height / 10),
-                      const BottomBar()
+                      Stack(children: [
+                        TopBar(_opacity),
+                        SizedBox(height: screenSize.height / 5),
+                        const BottomBar()
+                      ])
                     ],
                   )
                 ],
