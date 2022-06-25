@@ -1,27 +1,44 @@
 import 'package:ad/media/media_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import '../calendar/calendar.dart';
 
 class MediaTile extends StatelessWidget {
   final MediaData mediaData;
+  Function()? onClick;
+  bool isTileSelected;
 
-  const MediaTile({Key? key, required this.mediaData}) : super(key: key);
+  MediaTile({Key? key, required this.mediaData, this.onClick, required this.isTileSelected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (){
-        _showCalendarDialog(context);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
-        child: Row(
-          children: [
-            Expanded(child: Text(mediaData.mediaName)),
-            Text(mediaData.availableSlots.toString())
-          ],
+    DeviceScreenType screenType = getDeviceType(MediaQuery.of(context).size);
+    return Padding(
+      padding: EdgeInsets.all(5),
+      child: InkWell(
+        onTap: (){
+          onClick?.call();
+          if(screenType != DeviceScreenType.desktop){
+            _showCalendarDialog(context);
+          }
+        },
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: ( isTileSelected) ? Colors.lightBlue.shade200 : null,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
+            child: Row(
+              children: [
+                Expanded(child: Text(mediaData.mediaName, overflow: TextOverflow.ellipsis,)),
+                Text(mediaData.availableSlots.toString(),)
+              ],
+            ),
+          ),
         ),
       ),
     );

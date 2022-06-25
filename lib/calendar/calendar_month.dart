@@ -20,6 +20,7 @@ class _CalendarMonth extends StatelessWidget {
 
   late final int _firstDayOffset;
   late final int noOfDaysInMonth;
+  final MediaData? mediaData;
 
   _CalendarMonth({
     Key? key,
@@ -30,6 +31,7 @@ class _CalendarMonth extends StatelessWidget {
     this.disableDateBefore,
     this.postBuildCallback,
     this.onDatePicked,
+    this.mediaData,
   }) : super(key: key) {
     switch (weekStart) {
       case DateTime.monday:
@@ -86,85 +88,114 @@ class _CalendarMonth extends StatelessWidget {
                 children: _weekHeaders
                     .map(
                       (e) => SizedBox(
-                    width: cellWidth,
-                    child: Center(
-                      child: Text(
-                        e,
-                        style: const TextStyle(
-                          fontSize: 14.0,
-                          color: Color(0xFF989DB3),
+                        width: cellWidth,
+                        child: Center(
+                          child: Text(
+                            e,
+                            style: const TextStyle(
+                              fontSize: 14.0,
+                              color: Color(0xFF989DB3),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                )
+                    )
                     .toList(),
               ),
             ),
           ),
           for (int i = 0; i < requiredRows; i++)
-            Row(
-              children: [
-                for (int j = 0; j < weekIterator; j++)
-                  Builder(
-                    builder: (context) {
-                      int index = weekIterator * i + j;
-                      int date = index - _firstDayOffset + 1;
-                      bool isValid = date > 0 && date <= noOfDaysInMonth;
+            Container(
+              child: Row(
+                children: [
+                  for (int j = 0; j < weekIterator; j++)
+                    Builder(
+                      builder: (context) {
+                        int index = weekIterator * i + j;
+                        int date = index - _firstDayOffset + 1;
+                        bool isValid = date > 0 && date <= noOfDaysInMonth;
 
-                      DateTime thisDay = DateTime(dateTime.year, dateTime.month, date);
-                      bool isSelected = selectedDateTime != null && (thisDay.compareTo(selectedDateTime!.absolute) == 0);
-                      bool isDisabled = disableDateBefore != null && thisDay.compareTo(disableDateBefore!.absolute) < 0;
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Builder(
-                            builder: (context) {
-                              return SizedBox(
-                                width: cellWidth,
-                                height: cellWidth - (showExtendedDate ? 0 : 18),
-                                child: isValid
-                                    ? Center(
-                                  child: Material(
-                                    color: isSelected ? Colors.grey : Colors.transparent,
-                                    shape: const ContinuousRectangleBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                        DateTime thisDay = DateTime(dateTime.year, dateTime.month, date);
+                        bool isSelected =
+                            selectedDateTime != null && (thisDay.compareTo(selectedDateTime!.absolute) == 0);
+                        bool isDisabled =
+                            disableDateBefore != null && thisDay.compareTo(disableDateBefore!.absolute) < 0;
+                        List<DateTime> eventsTime = [];
+                        mediaData?.slots.forEach((element) {
+                          if (element.dateTime.day == thisDay.day) {
+                            eventsTime.add(element.dateTime);
+                          }
+                        });
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Builder(
+                              builder: (context) {
+                                return SizedBox(
+                                  width: cellWidth,
+                                  height: cellWidth - (showExtendedDate ? 0 : 18),
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey, width: 0.2),
                                     ),
-                                    child: InkWell(
-                                      splashColor: Colors.transparent,
-                                      customBorder: const ContinuousRectangleBorder(
-                                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                                      ),
-                                      onTap: isDisabled ? null : () => onDatePicked?.call(thisDay),
-                                      child: SizedBox(
-                                        height: 22,
-                                        width: 22,
-                                        child: Center(
-                                          child: Text(
-                                            date.toString(),
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: isDisabled ? Colors.grey : Colors.white,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    child: isValid
+                                        ? InkWell(
+                                            // splashColor: Colors.transparent,
+                                            // customBorder: const ContinuousRectangleBorder(
+                                            //   borderRadius: BorderRadius.all(Radius.circular(20)),
+                                            // ),
+                                            onTap: isDisabled ? null : () => onDatePicked?.call(thisDay),
+                                            child: Column(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Text(
+                                                    date.toString(),
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      color: isDisabled ? Colors.black : Colors.black,
+                                                      fontSize: 12,
+                                                    ),
+                                                  ),
+                                                ),
+                                                eventsTime.isNotEmpty
+                                                    ? Expanded(
+                                                        child: ListView.builder(
+                                                            itemCount: 1,
+                                                            itemBuilder: (context, index) => Padding(
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                      vertical: 1, horizontal: 5),
+                                                                  child: Container(
+                                                                    decoration: BoxDecoration(
+                                                                      borderRadius: BorderRadius.circular(2),
+                                                                      color: Colors.lightBlue,
+                                                                    ),
+                                                                    child: const Center(
+                                                                        child: Text(
+                                                                      "events",
+                                                                      style:
+                                                                          TextStyle(color: Colors.white, fontSize: 10),
+                                                                    )),
+                                                                  ),
+                                                                )),
+                                                      )
+                                                    : const SizedBox(),
+                                              ],
+                                            ))
+                                        : null,
                                   ),
-                                )
-                                    : null,
-                              );
-                            },
-                          ),
-                          const SizedBox(
-                            height: 6.0,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-              ],
+                                );
+                              },
+                            ),
+                            const SizedBox(),
+                          ],
+                        );
+                      },
+                    ),
+                ],
+              ),
             ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:ad/event.dart';
 import 'package:ad/extensions.dart';
 import 'package:ad/main.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
+import '../media/media_data.dart';
+
 part 'calendar_month.dart';
 
 part 'calendar_picker_widget.dart';
@@ -15,6 +18,8 @@ part 'calendar_picker_widget.dart';
 part 'datetime_title.dart';
 
 part 'page_controller_buttons.dart';
+
+part 'calendar_day.dart';
 
 const double _widgetControllerHeight = 45.0;
 const Duration _pageTransitionDuration = Duration(milliseconds: 300);
@@ -38,23 +43,26 @@ class Calendar {
     }
   }
 
-  static Future<DateTime?> showDatePickerDialog(BuildContext context, DateTime initialDateTime) async => await showDialog<DateTime?>(
-    context: context,
-    barrierColor: Colors.black45,
-    barrierDismissible: true,
-    builder: (context) => BackdropFilter(
-      filter: ImageFilter.blur(
-        sigmaX: 5.0,
-        sigmaY: 5.0,
-      ),
-      child: _CalendarPickerWidget(
-        initialDateTime: initialDateTime,
-      ),
-    ),
-  );
+  static Future<DateTime?> showDatePickerDialog(BuildContext context, DateTime initialDateTime) async =>
+      await showDialog<DateTime?>(
+        context: context,
+        barrierColor: Colors.black45,
+        barrierDismissible: true,
+        builder: (context) => BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: 5.0,
+            sigmaY: 5.0,
+          ),
+          child: _CalendarPickerWidget(
+            initialDateTime: initialDateTime,
+          ),
+        ),
+      );
 
-  static Widget getCalenderWidget(){
-    return _CalendarPickerWidget(initialDateTime: DateTime.now());
+  static Widget getCalenderWidget(double width, double height,
+      {required Function(bool _, DateTime __) onModeChanged, DateTime? dateTime, MediaData? mediaData}) {
+    dateTime ??= DateTime.now();
+    return _CalendarPickerWidget(initialDateTime: dateTime, width: width, onModeChanged: onModeChanged, mediaData: mediaData);
   }
 }
 
@@ -94,6 +102,7 @@ class _CalendarWrapper extends StatefulWidget {
   final DateTime? disableDateBefore;
 
   final double? width;
+  final MediaData? mediaData;
 
   const _CalendarWrapper({
     Key? key,
@@ -104,6 +113,7 @@ class _CalendarWrapper extends StatefulWidget {
     this.disableDateBefore,
     this.onMonthChanged,
     this.onDatePicked,
+    this.mediaData,
     this.showMonthInHeader = false,
     this.showMonthActionButtons = false,
   }) : super(key: key);
@@ -141,7 +151,7 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 50)).then(
-            (_) => _onPageChanged(_monthPageController.page!.toInt(), false),
+        (_) => _onPageChanged(_monthPageController.page!.toInt(), false),
       );
     });
   }
@@ -176,7 +186,8 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
                 onPageChanged: _onPageChanged,
                 itemBuilder: (context, index) {
                   DateTime dateDelegate = _getDateTimeFromIndex(index);
-                  DateFormat headerMonthFormat = DateFormat(dateDelegate.year == DateTime.now().year ? "MMMM" : "MMMM y");
+                  DateFormat headerMonthFormat =
+                      DateFormat(dateDelegate.year == DateTime.now().year ? "MMMM" : "MMMM y");
 
                   return Column(
                     mainAxisSize: MainAxisSize.min,
@@ -189,7 +200,7 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
                               headerMonthFormat.format(dateDelegate),
                               style: const TextStyle(
                                 fontSize: 14.0,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ),
                           ),
@@ -208,12 +219,13 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
                               width: calendarWidth,
                               weekStart: value,
                               selectedDateTime: _selectedDateTime,
+                              mediaData: widget.mediaData,
                               onDatePicked: widget.onDatePicked != null
                                   ? (date) {
-                                _selectedDateTime = date;
-                                widget.onDatePicked?.call(date);
-                                setState(() {});
-                              }
+                                      _selectedDateTime = date;
+                                      widget.onDatePicked?.call(date);
+                                      setState(() {});
+                                    }
                                   : null,
                               disableDateBefore: widget.disableDateBefore,
                               postBuildCallback: (Size widgetSize) {
@@ -234,7 +246,7 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
                   buttonSize: _widgetControllerHeight,
                   onBackwardButtonTap: () => _onMonthChanged(_prevMonth),
                   onForwardButtonTap: () => _onMonthChanged(_nextMonth),
-                  backgroundColor: Colors.black45,
+                  backgroundColor: Colors.white,
                 ),
             ],
           ),
@@ -255,11 +267,11 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
 
   void _onMonthChanged(int action) => (action == _nextMonth)
       ? _monthPageController.nextPage(
-    duration: const Duration(milliseconds: 300),
-    curve: Curves.ease,
-  )
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.ease,
+        )
       : _monthPageController.previousPage(
-    duration: const Duration(milliseconds: 300),
-    curve: Curves.ease,
-  );
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
 }

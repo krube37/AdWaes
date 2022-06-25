@@ -6,11 +6,17 @@ const double cellHeight = 60.0;
 class _CalendarPickerWidget extends StatefulWidget {
   final DateTime initialDateTime;
   final DateTime? disableDatesBefore;
+  final double? width;
+  final Function(bool shouldShowHorsPage, DateTime dateTime)? onModeChanged;
+  final MediaData? mediaData;
 
   const _CalendarPickerWidget({
     Key? key,
     required this.initialDateTime,
+    this.mediaData,
     this.disableDatesBefore,
+    this.onModeChanged,
+    this.width,
   }) : super(key: key);
 
   @override
@@ -79,9 +85,9 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
       );
     }
 
-    bool isPortrait = newOrientation == Orientation.portrait;
+    bool isPortrait = true;
     Size size = MediaQuery.of(context).size;
-    double width = isPortrait ? size.width : size.height;
+    double width = widget.width??(isPortrait ? size.width/2 : size.height);
 
     return Align(
       alignment: Alignment.topCenter,
@@ -89,7 +95,7 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
         children: [
           Container(
             decoration: const BoxDecoration(
-              color: Color(0xFF26292E),
+              color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(4.0)),
             ),
             child: Flex(
@@ -143,6 +149,7 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
                                     showMonthInHeader: true,
                                     showMonthActionButtons: true,
                                     onDatePicked: _onDatePicked,
+                                    mediaData: widget.mediaData
                                   );
                                   break;
                                 case _PickerMode.month:
@@ -200,7 +207,10 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
     await _inAnimationController.reverse(from: 1.0);
   }
 
-  void _onDatePicked(DateTime pickedDate) => _dateTime.value = pickedDate;
+  void _onDatePicked(DateTime pickedDate) {
+    _dateTime.value = pickedDate;
+    widget.onModeChanged?.call(true, _dateTime.value);
+  }
 }
 
 class _YearPicker extends StatelessWidget {
@@ -247,7 +257,7 @@ class _YearPicker extends StatelessWidget {
                             "$fromYear - $toYear",
                             style: const TextStyle(
                               fontSize: 14.0,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -278,7 +288,7 @@ class _YearPicker extends StatelessWidget {
                                 child: Text(
                                   "$year",
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: Colors.black,
                                     fontSize: 14.0,
                                   ),
                                 ),
@@ -362,7 +372,7 @@ class _MonthPicker extends StatelessWidget {
                               "$year",
                               style: const TextStyle(
                                 fontSize: 14.0,
-                                color: Colors.white,
+                                color: Colors.black,
                               ),
                             ),
                           );
@@ -397,7 +407,7 @@ class _MonthPicker extends StatelessWidget {
                             child: Text(
                               months[index],
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: Colors.black,
                                 fontSize: 14.0,
                               ),
                             ),
@@ -421,7 +431,7 @@ class _MonthPicker extends StatelessWidget {
                   duration: _pageTransitionDuration,
                   curve: Curves.ease,
                 ),
-                backgroundColor: Colors.black45,
+                backgroundColor: Colors.white,
               )
             ],
           ),

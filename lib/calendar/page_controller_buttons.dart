@@ -44,7 +44,7 @@ class _PageControllerButtons extends StatelessWidget {
                       width: buttonSize,
                       child: const Icon(
                         Icons.keyboard_arrow_left,
-                        color: Colors.white,
+                        color: Colors.black,
                       ),
                     ),
                   ),
@@ -67,7 +67,7 @@ class _PageControllerButtons extends StatelessWidget {
                     width: buttonSize,
                     child: const Icon(
                       Icons.keyboard_arrow_right,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                   ),
                 ),

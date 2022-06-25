@@ -1,7 +1,9 @@
+import 'package:ad/media/media_event.dart';
+
 class MediaData {
   String mediaName;
   int availableSlots;
-  List<String> slots;
+  List<MediaEvent> slots;
 
   MediaData(
       {required this.mediaName,

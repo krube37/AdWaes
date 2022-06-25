@@ -15,7 +15,7 @@ class _DateTimeTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    bool isPortrait = true;
     return ValueListenableBuilder<DateTime>(
       valueListenable: dateTime,
       builder: (context, value, child) => isPortrait ? _portraitTitle(value) : _landscapeTitle(value),
@@ -34,7 +34,7 @@ class _DateTimeTitle extends StatelessWidget {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18.0,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
         ),
@@ -44,7 +44,7 @@ class _DateTimeTitle extends StatelessWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18.0,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
         Text(
@@ -52,7 +52,7 @@ class _DateTimeTitle extends StatelessWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18.0,
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
         const SizedBox(width: 5.0),
@@ -63,7 +63,7 @@ class _DateTimeTitle extends StatelessWidget {
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18.0,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
         ),
@@ -91,7 +91,7 @@ class _DateTimeTitle extends StatelessWidget {
         style: const TextStyle(
           fontSize: 22.0,
           fontWeight: FontWeight.w500,
-          color: Colors.white,
+          color: Colors.black,
         ),
       ),
       Row(
@@ -101,7 +101,7 @@ class _DateTimeTitle extends StatelessWidget {
             DateFormat("d ").format(value),
             style: const TextStyle(
               fontSize: 16.0,
-              color: Colors.white,
+              color: Colors.black,
             ),
           ),
           GestureDetector(
@@ -110,7 +110,7 @@ class _DateTimeTitle extends StatelessWidget {
               DateFormat("MMMM").format(value),
               style: const TextStyle(
                 fontSize: 16.0,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
           ),
