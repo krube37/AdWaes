@@ -158,7 +158,7 @@ class _MediaPageMobile extends StatelessWidget {
       ),
       body: ListView(
         children: [
-          MediaTile(mediaData: mediaDataList[0], isTileSelected: false),
+          MediaTile(mediaData: mediaDataList[0], isTileSelected: false, onDialogStateChanged: onDialogStateChanged),
           MediaTile(
             mediaData: mediaDataList[1],
             isTileSelected: false,
