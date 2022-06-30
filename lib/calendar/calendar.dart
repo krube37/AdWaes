@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:ad/event.dart';
 import 'package:ad/extensions.dart';
-import 'package:ad/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 
 import '../media/media_data.dart';
 
@@ -99,7 +99,6 @@ class _CalendarWrapper extends StatefulWidget {
   final void Function(DateTime pickedDate)? onDatePicked;
 
   final DateTime? selectedDateTime;
-  final DateTime? disableDateBefore;
 
   final double? width;
   final MediaData? mediaData;
@@ -110,7 +109,6 @@ class _CalendarWrapper extends StatefulWidget {
     required this.year,
     this.width,
     this.selectedDateTime,
-    this.disableDateBefore,
     this.onMonthChanged,
     this.onDatePicked,
     this.mediaData,
@@ -136,9 +134,6 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
   //  caches height value on changing page
   double _newHeight = 300;
 
-  //  actual height to which the container will adjust.. derived from [_newHeight]
-  double _dynamicCalendarHeight = 301;
-
   void refreshWidget() => (mounted) ? _onPageChanged(_monthPageController.page!.toInt(), false) : null;
   ValueNotifier<int> weekStart = ValueNotifier(DateTime.monday);
 
@@ -149,7 +144,7 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
     _selectedDateTime = widget.selectedDateTime;
     (widget.selectedDateTime != null) ? dateTime = _selectedDateTime! : DateTime(widget.year, widget.month, 1);
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 50)).then(
         (_) => _onPageChanged(_monthPageController.page!.toInt(), false),
       );
@@ -172,12 +167,14 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
   Widget build(BuildContext context) {
     double calendarWidth = widget.width ?? _getDefaultWidth();
 
+    var deviceType = getDeviceType(MediaQuery.of(context).size);
+
     return Material(
       color: Colors.transparent,
       child: ValueListenableBuilder<int>(
         valueListenable: weekStart,
         builder: (context, value, child) => SizedBox(
-          height: _dynamicCalendarHeight + (widget.showMonthInHeader ? _widgetControllerHeight : 0.0) + 10,
+          height: deviceType == DeviceScreenType.desktop ? 550 : (deviceType == DeviceScreenType.tablet) ? 420 : 300,
           child: Stack(
             children: [
               //  Actual calendar
@@ -208,30 +205,30 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
                       Expanded(
                         child: Container(
                           width: calendarWidth,
+                          constraints: const BoxConstraints(
+                            maxWidth: 600,
+                          ),
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(4.0),
+                            // color: Colors.blue
                           ),
-                          child: SingleChildScrollView(
-                            physics: const NeverScrollableScrollPhysics(),
-                            child: _CalendarMonth(
-                              dateTime: dateDelegate,
-                              width: calendarWidth,
-                              weekStart: value,
-                              selectedDateTime: _selectedDateTime,
-                              mediaData: widget.mediaData,
-                              onDatePicked: widget.onDatePicked != null
-                                  ? (date) {
-                                      _selectedDateTime = date;
-                                      widget.onDatePicked?.call(date);
-                                      setState(() {});
-                                    }
-                                  : null,
-                              disableDateBefore: widget.disableDateBefore,
-                              postBuildCallback: (Size widgetSize) {
-                                if (_newHeight != widgetSize.height) _newHeight = widgetSize.height;
-                              },
-                            ),
+                          child: _CalendarMonth(
+                            dateTime: dateDelegate,
+                            width: calendarWidth,
+                            weekStart: value,
+                            selectedDateTime: _selectedDateTime,
+                            mediaData: widget.mediaData,
+                            onDatePicked: widget.onDatePicked != null
+                                ? (date) {
+                                    _selectedDateTime = date;
+                                    widget.onDatePicked?.call(date);
+                                    setState(() {});
+                                  }
+                                : null,
+                            postBuildCallback: (Size widgetSize) {
+                              if (_newHeight != widgetSize.height) _newHeight = widgetSize.height;
+                            },
                           ),
                         ),
                       ),
@@ -255,14 +252,9 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
     );
   }
 
+  /// left for future use
   void _onPageChanged(int index, [bool notify = true]) {
-    DateTime date = _getDateTimeFromIndex(index);
-    if (notify) widget.onMonthChanged?.call(index - infinitePageOffset, date);
 
-    //  to optimise rendering
-    if (_dynamicCalendarHeight != _newHeight) {
-      setState(() => _dynamicCalendarHeight = _newHeight);
-    }
   }
 
   void _onMonthChanged(int action) => (action == _nextMonth)

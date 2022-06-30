@@ -5,19 +5,17 @@ const double cellHeight = 60.0;
 /// Abstract class: should not be imported!
 class _CalendarPickerWidget extends StatefulWidget {
   final DateTime initialDateTime;
-  final DateTime? disableDatesBefore;
   final double? width;
   final Function(bool shouldShowHorsPage, DateTime dateTime)? onModeChanged;
   final MediaData? mediaData;
 
-  const _CalendarPickerWidget({
-    Key? key,
-    required this.initialDateTime,
-    this.mediaData,
-    this.disableDatesBefore,
-    this.onModeChanged,
-    this.width,
-  }) : super(key: key);
+  const _CalendarPickerWidget(
+      {Key? key,
+      required this.initialDateTime,
+      this.mediaData,
+      this.onModeChanged,
+      this.width})
+      : super(key: key);
 
   @override
   State<_CalendarPickerWidget> createState() => _CalendarPickerWidgetState();
@@ -34,8 +32,6 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
   _PickerMode _pickerMode = _PickerMode.date;
 
   late final Animation<double> _opacity, _scale;
-
-  Orientation currentOrientation = Orientation.portrait;
 
   @override
   void initState() {
@@ -71,26 +67,13 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
 
   @override
   Widget build(BuildContext context) {
-    Orientation newOrientation = MediaQuery.of(context).orientation;
-    if (newOrientation != currentOrientation) {
-      SchedulerBinding.instance?.addPostFrameCallback(
-            (_) => Future.delayed(const Duration(milliseconds: 600)).then(
-              (__) => setState(
-                () {
-              currentOrientation = newOrientation;
-              _calendarKey.currentState?.refreshWidget();
-            },
-          ),
-        ),
-      );
-    }
 
-    bool isPortrait = true;
     Size size = MediaQuery.of(context).size;
-    double width = widget.width??(isPortrait ? size.width/2 : size.height);
+    double width = widget.width ?? size.width / 2;
+    bool isDesktopScreen = getDeviceType(size) == DeviceScreenType.desktop;
 
     return Align(
-      alignment: Alignment.topCenter,
+      alignment: isDesktopScreen ? Alignment.topCenter : Alignment.center,
       child: Wrap(
         children: [
           Container(
@@ -99,14 +82,14 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
               borderRadius: BorderRadius.all(Radius.circular(4.0)),
             ),
             child: Flex(
-              direction: isPortrait ? Axis.vertical : Axis.horizontal,
+              direction: Axis.vertical,
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: 20.0,
-                    top: (!isPortrait ? 30.0 : 0.0),
+                    top: 0.0,
                   ),
                   child: _DateTimeTitle(
                     _dateTime,
@@ -140,17 +123,15 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
                               switch (_pickerMode) {
                                 case _PickerMode.date:
                                   child = _CalendarWrapper(
-                                    key: _calendarKey,
-                                    width: width,
-                                    month: _dateTime.value.month,
-                                    disableDateBefore: widget.disableDatesBefore,
-                                    selectedDateTime: _dateTime.value,
-                                    year: _dateTime.value.year,
-                                    showMonthInHeader: true,
-                                    showMonthActionButtons: true,
-                                    onDatePicked: _onDatePicked,
-                                    mediaData: widget.mediaData
-                                  );
+                                      key: _calendarKey,
+                                      width: width,
+                                      month: _dateTime.value.month,
+                                      selectedDateTime: _dateTime.value,
+                                      year: _dateTime.value.year,
+                                      showMonthInHeader: true,
+                                      showMonthActionButtons: true,
+                                      onDatePicked: _onDatePicked,
+                                      mediaData: widget.mediaData);
                                   break;
                                 case _PickerMode.month:
                                   child = _MonthPicker(
@@ -176,18 +157,20 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
                           ),
                         ),
                       ),
-                      if (isPortrait) const SizedBox(height: 10.0),
-                      Container(
-                        padding: EdgeInsets.only(
-                          bottom: 15.0,
-                          right: 15.0,
-                          top: (isPortrait ? 0.0 : 10.0),
-                        ),
-                        child: _FooterButton(
-                          onOKTapped: () => Navigator.pop(context, _dateTime.value),
-                          onCancelTapped: () => Navigator.pop(context, widget.initialDateTime),
-                        ),
-                      )
+                      const SizedBox(height: 10.0),
+                      isDesktopScreen
+                          ? const SizedBox()
+                          : Container(
+                              padding: const EdgeInsets.only(
+                                bottom: 15.0,
+                                right: 15.0,
+                                top: 0.0,
+                              ),
+                              child: _FooterButton(
+                                onOKTapped: () => Navigator.pop(context, _dateTime.value),
+                                onCancelTapped: () => Navigator.pop(context, widget.initialDateTime),
+                              ),
+                            )
                     ],
                   ),
                 ),
@@ -277,12 +260,12 @@ class _YearPicker extends StatelessWidget {
                             child: Container(
                               decoration: (year == selectedYear)
                                   ? const BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(2.0)),
-                                border: Border.symmetric(
-                                  vertical: BorderSide(color: Colors.grey, width: 1.0),
-                                  horizontal: BorderSide(color: Colors.grey, width: 1.0),
-                                ),
-                              )
+                                      borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                                      border: Border.symmetric(
+                                        vertical: BorderSide(color: Colors.grey, width: 1.0),
+                                        horizontal: BorderSide(color: Colors.grey, width: 1.0),
+                                      ),
+                                    )
                                   : null,
                               child: Center(
                                 child: Text(
@@ -325,7 +308,20 @@ class _YearPicker extends StatelessWidget {
 }
 
 class _MonthPicker extends StatelessWidget {
-  final List<String> months = const ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  final List<String> months = const [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
 
   final void Function(int month, int year) onMonthPicked;
   final int selectedMonth;
@@ -380,7 +376,7 @@ class _MonthPicker extends StatelessWidget {
                   ),
                   const SizedBox(height: 25.0),
                   GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 4,
                       mainAxisSpacing: 0.0,
                       crossAxisSpacing: 0.0,
@@ -396,12 +392,12 @@ class _MonthPicker extends StatelessWidget {
                         child: Container(
                           decoration: (month == selectedMonth)
                               ? const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(2.0)),
-                            border: Border.symmetric(
-                              vertical: BorderSide(color: Colors.grey, width: 1.0),
-                              horizontal: BorderSide(color: Colors.grey, width: 1.0),
-                            ),
-                          )
+                                  borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                                  border: Border.symmetric(
+                                    vertical: BorderSide(color: Colors.grey, width: 1.0),
+                                    horizontal: BorderSide(color: Colors.grey, width: 1.0),
+                                  ),
+                                )
                               : null,
                           child: Center(
                             child: Text(

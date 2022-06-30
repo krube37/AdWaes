@@ -3,23 +3,14 @@ import 'package:flutter/material.dart';
 class TopBarContents extends StatefulWidget {
   final double opacity;
 
-  TopBarContents(this.opacity);
+  const TopBarContents({this.opacity = 1});
 
   @override
   _TopBarContentsState createState() => _TopBarContentsState();
 }
 
 class _TopBarContentsState extends State<TopBarContents> {
-  final List _isHovering = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-  ];
+  final List _isHovering = [false, false, false, false, false, false, false, false];
 
   @override
   Widget build(BuildContext context) {

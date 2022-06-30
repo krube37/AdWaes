@@ -30,17 +30,14 @@ class _ProductScreenState extends State<ProductScreen> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    _opacity = _scrollPosition < screenSize.height * 0.40
-        ? _scrollPosition / (screenSize.height * 0.40)
-        : 1;
+    _opacity = _scrollPosition < screenSize.height * 0.40 ? _scrollPosition / (screenSize.height * 0.40) : 1;
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: screenSize.width < 800
             ? AppBar(
                 iconTheme: const IconThemeData(color: Colors.white),
                 elevation: 0,
-                backgroundColor:
-                    const Color.fromARGB(255, 0, 0, 0).withOpacity(_opacity),
+                backgroundColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(_opacity),
                 title: const Text(
                   'Adwisor',
                   style: TextStyle(
@@ -54,7 +51,7 @@ class _ProductScreenState extends State<ProductScreen> {
               )
             : PreferredSize(
                 preferredSize: Size(screenSize.width, 150),
-                child: TopBarContents(_opacity),
+                child: TopBarContents(opacity: _opacity),
               ),
         drawer: const MenuDrawer(),
         body: SingleChildScrollView(

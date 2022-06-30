@@ -7,7 +7,6 @@ class _CalendarMonth extends StatelessWidget {
 
   final DateTime dateTime;
   final DateTime? selectedDateTime;
-  final DateTime? disableDateBefore;
 
   final double width;
   final int weekStart;
@@ -28,7 +27,6 @@ class _CalendarMonth extends StatelessWidget {
     required this.width,
     required this.weekStart,
     this.selectedDateTime,
-    this.disableDateBefore,
     this.postBuildCallback,
     this.onDatePicked,
     this.mediaData,
@@ -55,15 +53,11 @@ class _CalendarMonth extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double cellWidth = width / weekIterator;
     int totalDateTiles = (noOfDaysInMonth + _firstDayOffset);
     int requiredRows = (totalDateTiles / weekIterator).ceil();
 
-    Orientation orientation = MediaQuery.of(context).orientation;
-    bool showExtendedDate = (orientation == Orientation.portrait);
-
     if (postBuildCallback != null) {
-      SchedulerBinding.instance?.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         try {
           RenderBox renderBox = context.findRenderObject() as RenderBox;
           postBuildCallback!.call(renderBox.size);
@@ -73,15 +67,16 @@ class _CalendarMonth extends StatelessWidget {
       });
     }
 
-    return Container(
-      width: width,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const NeverScrollableScrollPhysics(),
-            child: SizedBox(
+    return LayoutBuilder(builder: (context, constraint) {
+      double layoutWidth = constraint.maxWidth;
+      double cellWidth = layoutWidth / weekIterator;
+
+      return SizedBox(
+        width: width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
               height: weekHeaderHeight,
               width: MediaQuery.of(context).size.width,
               child: Row(
@@ -103,102 +98,101 @@ class _CalendarMonth extends StatelessWidget {
                     .toList(),
               ),
             ),
-          ),
-          for (int i = 0; i < requiredRows; i++)
-            Container(
-              child: Row(
+            Expanded(
+              child: ListView(
                 children: [
-                  for (int j = 0; j < weekIterator; j++)
-                    Builder(
-                      builder: (context) {
-                        int index = weekIterator * i + j;
-                        int date = index - _firstDayOffset + 1;
-                        bool isValid = date > 0 && date <= noOfDaysInMonth;
+                  for (int i = 0; i < requiredRows; i++)
+                    Row(
+                      children: [
+                        for (int j = 0; j < weekIterator; j++)
+                          Builder(
+                            builder: (context) {
+                              int index = weekIterator * i + j;
+                              int date = index - _firstDayOffset + 1;
+                              bool isValid = date > 0 && date <= noOfDaysInMonth;
 
-                        DateTime thisDay = DateTime(dateTime.year, dateTime.month, date);
-                        bool isSelected =
-                            selectedDateTime != null && (thisDay.compareTo(selectedDateTime!.absolute) == 0);
-                        bool isDisabled =
-                            disableDateBefore != null && thisDay.compareTo(disableDateBefore!.absolute) < 0;
-                        List<DateTime> eventsTime = [];
-                        mediaData?.slots.forEach((element) {
-                          if (element.dateTime.day == thisDay.day) {
-                            eventsTime.add(element.dateTime);
-                          }
-                        });
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Builder(
-                              builder: (context) {
-                                return SizedBox(
-                                  width: cellWidth,
-                                  height: cellWidth - (showExtendedDate ? 0 : 18),
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey, width: 0.2),
-                                    ),
-                                    child: isValid
-                                        ? InkWell(
-                                            // splashColor: Colors.transparent,
-                                            // customBorder: const ContinuousRectangleBorder(
-                                            //   borderRadius: BorderRadius.all(Radius.circular(20)),
-                                            // ),
-                                            onTap: isDisabled ? null : () => onDatePicked?.call(thisDay),
-                                            child: Column(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Text(
-                                                    date.toString(),
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      color: isDisabled ? Colors.black : Colors.black,
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ),
-                                                eventsTime.isNotEmpty
-                                                    ? Expanded(
-                                                        child: ListView.builder(
-                                                            itemCount: 1,
-                                                            itemBuilder: (context, index) => Padding(
-                                                                  padding: const EdgeInsets.symmetric(
-                                                                      vertical: 1, horizontal: 5),
-                                                                  child: Container(
-                                                                    decoration: BoxDecoration(
-                                                                      borderRadius: BorderRadius.circular(2),
-                                                                      color: Colors.lightBlue,
-                                                                    ),
-                                                                    child: const Center(
-                                                                        child: Text(
-                                                                      "events",
-                                                                      style:
-                                                                          TextStyle(color: Colors.white, fontSize: 10),
-                                                                    )),
-                                                                  ),
-                                                                )),
-                                                      )
-                                                    : const SizedBox(),
-                                              ],
-                                            ))
-                                        : null,
+                              DateTime thisDay = DateTime(dateTime.year, dateTime.month, date);
+                              List<DateTime> eventsTime = [];
+                              mediaData?.slots.forEach((element) {
+                                if (element.dateTime.day == thisDay.day) {
+                                  eventsTime.add(element.dateTime);
+                                }
+                              });
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Builder(
+                                    builder: (context) {
+                                      return SizedBox(
+                                        width: cellWidth,
+                                        height: cellWidth,
+                                        child: Container(
+                                          height: 10,
+                                          width: 10,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.grey, width: 0.2),),
+                                          child: isValid
+                                              ? InkWell(
+                                                  // splashColor: Colors.transparent,
+                                                  // customBorder: const ContinuousRectangleBorder(
+                                                  //   borderRadius: BorderRadius.all(Radius.circular(20)),
+                                                  // ),
+                                                  onTap: () => onDatePicked?.call(thisDay),
+                                                  child: Column(
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(8.0),
+                                                        child: Text(
+                                                          date.toString(),
+                                                          textAlign: TextAlign.center,
+                                                          style: const TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      eventsTime.isNotEmpty
+                                                          ? Expanded(
+                                                              child: ListView.builder(
+                                                                  itemCount: 1,
+                                                                  itemBuilder: (context, index) => Padding(
+                                                                        padding: const EdgeInsets.symmetric(
+                                                                            vertical: 1, horizontal: 5),
+                                                                        child: Container(
+                                                                          decoration: BoxDecoration(
+                                                                            borderRadius: BorderRadius.circular(2),
+                                                                            color: Colors.lightBlue,
+                                                                          ),
+                                                                          child: const Center(
+                                                                              child: Text(
+                                                                            "events",
+                                                                            style: TextStyle(
+                                                                                color: Colors.white, fontSize: 10),
+                                                                          )),
+                                                                        ),
+                                                                      )),
+                                                            )
+                                                          : const SizedBox(),
+                                                    ],
+                                                  ))
+                                              : null,
+                                        ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            ),
-                            const SizedBox(),
-                          ],
-                        );
-                      },
+                                  const SizedBox(),
+                                ],
+                              );
+                            },
+                          ),
+                      ],
                     ),
                 ],
               ),
-            ),
-        ],
-      ),
-    );
+            )
+          ],
+        ),
+      );
+    });
   }
 }
