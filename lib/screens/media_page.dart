@@ -1,7 +1,7 @@
-
 import 'package:ad/media/media_data.dart';
 import 'package:ad/media/media_event.dart';
 import 'package:ad/media/media_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -9,7 +9,9 @@ import '../calendar/calendar.dart';
 import '../widgets/top_bar_contents.dart';
 
 class MediaPage extends StatefulWidget {
-  const MediaPage({Key? key}) : super(key: key);
+  MediaPage({Key? key}) : super(key: key);
+
+  bool isCalendarDialogShowing = false;
 
   @override
   State<MediaPage> createState() => _MediaPageState();
@@ -24,19 +26,27 @@ class _MediaPageState extends State<MediaPage> {
       MediaData(mediaName: "media name 3")
     ];
     return ScreenTypeLayout(
-      desktop: _MediaPageDesktop(mediaDataList: mediaData),
+      desktop: _MediaPageDesktop(mediaDataList: mediaData, isDialogShowing: widget.isCalendarDialogShowing),
       mobile: _MediaPageMobile(
         mediaDataList: mediaData,
+        onDialogStateChanged: _onDialogStateChanged
       ),
     );
+  }
+
+  _onDialogStateChanged(bool haveState) {
+    setState(() {
+      widget.isCalendarDialogShowing = haveState;
+    });
   }
 }
 
 class _MediaPageDesktop extends StatefulWidget {
   List<MediaData> mediaDataList;
   int? selectedIndex;
+  bool isDialogShowing;
 
-  _MediaPageDesktop({Key? key, required this.mediaDataList}) : super(key: key);
+  _MediaPageDesktop({Key? key, required this.mediaDataList, required this.isDialogShowing}) : super(key: key);
 
   @override
   State<_MediaPageDesktop> createState() => _MediaPageDesktopState();
@@ -45,9 +55,13 @@ class _MediaPageDesktop extends StatefulWidget {
 class _MediaPageDesktopState extends State<_MediaPageDesktop> {
   bool _showHoursPage = false;
   DateTime _dateTime = DateTime.now();
+  int i =0;
 
   @override
   Widget build(BuildContext context) {
+    if(widget.isDialogShowing){
+      Navigator.pop(context);
+    }
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(MediaQuery.of(context).size.width, 100),
@@ -120,8 +134,9 @@ class _MediaPageDesktopState extends State<_MediaPageDesktop> {
 
 class _MediaPageMobile extends StatelessWidget {
   final List<MediaData> mediaDataList;
+  final Function(bool haveState)? onDialogStateChanged;
 
-  const _MediaPageMobile({Key? key, required this.mediaDataList}) : super(key: key);
+  const _MediaPageMobile({Key? key, required this.mediaDataList, this.onDialogStateChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -147,10 +162,12 @@ class _MediaPageMobile extends StatelessWidget {
           MediaTile(
             mediaData: mediaDataList[1],
             isTileSelected: false,
+            onDialogStateChanged: onDialogStateChanged
           ),
           MediaTile(
             mediaData: mediaDataList[2],
             isTileSelected: false,
+            onDialogStateChanged: onDialogStateChanged
           )
         ],
       ),

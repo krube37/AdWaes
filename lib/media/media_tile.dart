@@ -8,20 +8,21 @@ import '../calendar/calendar.dart';
 class MediaTile extends StatelessWidget {
   final MediaData mediaData;
   Function()? onClick;
+  Function(bool haveState)? onDialogStateChanged;
   bool isTileSelected;
 
-  MediaTile({Key? key, required this.mediaData, this.onClick, required this.isTileSelected}) : super(key: key);
+  MediaTile({Key? key, required this.mediaData, this.onClick, required this.isTileSelected, this.onDialogStateChanged}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     DeviceScreenType screenType = getDeviceType(MediaQuery.of(context).size);
     return Padding(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: InkWell(
         onTap: (){
           onClick?.call();
           if(screenType != DeviceScreenType.desktop){
-            _showCalendarDialog(context);
+            _showCalendarDialog(context, onDialogStateChanged);
           }
         },
         borderRadius: BorderRadius.circular(10),
@@ -44,11 +45,13 @@ class MediaTile extends StatelessWidget {
     );
   }
 
-  void _showCalendarDialog(BuildContext context) async {
+  void _showCalendarDialog(BuildContext context, Function(bool haveState)? onDialogStateChanged) async {
+    onDialogStateChanged?.call(true);
     DateTime? date = await Calendar.showDatePickerDialog(
       context,
       DateTime.now(),
     );
+    onDialogStateChanged?.call(false);
     debugPrint('_BaseWidgetState._showCalendarDialog: pickedDate: $date');
   }
 }

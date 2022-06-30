@@ -35,7 +35,7 @@ class Routes {
       //   // widget =
       //   break;
       case MEDIA:
-         widget = const MediaPage();
+         widget = MediaPage();
          break;
       // case STREAMING:
       //   // widget =
