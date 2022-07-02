@@ -8,10 +8,12 @@ import '../calendar/calendar.dart';
 class MediaTile extends StatelessWidget {
   final MediaData mediaData;
   Function()? onClick;
-  Function(bool haveState)? onDialogStateChanged;
+  Function(bool haveState, DateTime? date)? onDialogStateChanged;
+
   bool isTileSelected;
 
-  MediaTile({Key? key, required this.mediaData, this.onClick, required this.isTileSelected, this.onDialogStateChanged}) : super(key: key);
+  MediaTile({Key? key, required this.mediaData, this.onClick, this.isTileSelected = false, this.onDialogStateChanged})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,24 +21,30 @@ class MediaTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: InkWell(
-        onTap: (){
+        onTap: () async {
           onClick?.call();
-          if(screenType != DeviceScreenType.desktop){
-            _showCalendarDialog(context, onDialogStateChanged);
+          if (screenType != DeviceScreenType.desktop) {
+            await _showCalendarDialog(context, onDialogStateChanged, mediaData);
           }
         },
         borderRadius: BorderRadius.circular(10),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ( isTileSelected) ? Colors.lightBlue.shade200 : null,
+            color: (isTileSelected) ? Colors.lightBlue.shade200 : null,
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
             child: Row(
               children: [
-                Expanded(child: Text(mediaData.mediaName, overflow: TextOverflow.ellipsis,)),
-                Text(mediaData.availableSlots.toString(),)
+                Expanded(
+                    child: Text(
+                  mediaData.mediaName,
+                  overflow: TextOverflow.ellipsis,
+                )),
+                Text(
+                  mediaData.availableSlots.toString(),
+                )
               ],
             ),
           ),
@@ -45,13 +53,15 @@ class MediaTile extends StatelessWidget {
     );
   }
 
-  void _showCalendarDialog(BuildContext context, Function(bool haveState)? onDialogStateChanged) async {
-    onDialogStateChanged?.call(true);
+  Future _showCalendarDialog(
+      BuildContext context, Function(bool haveState, DateTime? date)? onDialogStateChanged, MediaData mediaData) async {
+    onDialogStateChanged?.call(true, null);
     DateTime? date = await Calendar.showDatePickerDialog(
       context,
       DateTime.now(),
+      mediaData,
     );
-    onDialogStateChanged?.call(false);
+    onDialogStateChanged?.call(false, date);
     debugPrint('_BaseWidgetState._showCalendarDialog: pickedDate: $date');
   }
 }

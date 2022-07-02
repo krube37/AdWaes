@@ -27,10 +27,7 @@ class _MediaPageState extends State<MediaPage> {
     ];
     return ScreenTypeLayout(
       desktop: _MediaPageDesktop(mediaDataList: mediaData, isDialogShowing: widget.isCalendarDialogShowing),
-      mobile: _MediaPageMobile(
-        mediaDataList: mediaData,
-        onDialogStateChanged: _onDialogStateChanged
-      ),
+      mobile: _MediaPageMobile(mediaDataList: mediaData, onDialogStateChanged: _onDialogStateChanged),
     );
   }
 
@@ -55,11 +52,11 @@ class _MediaPageDesktop extends StatefulWidget {
 class _MediaPageDesktopState extends State<_MediaPageDesktop> {
   bool _showHoursPage = false;
   DateTime _dateTime = DateTime.now();
-  int i =0;
+  int i = 0;
 
   @override
   Widget build(BuildContext context) {
-    if(widget.isDialogShowing){
+    if (widget.isDialogShowing) {
       Navigator.pop(context);
     }
     return Scaffold(
@@ -132,11 +129,20 @@ class _MediaPageDesktopState extends State<_MediaPageDesktop> {
   }
 }
 
-class _MediaPageMobile extends StatelessWidget {
+class _MediaPageMobile extends StatefulWidget {
   final List<MediaData> mediaDataList;
   final Function(bool haveState)? onDialogStateChanged;
+  int? selectedIndex;
 
-  const _MediaPageMobile({Key? key, required this.mediaDataList, this.onDialogStateChanged}) : super(key: key);
+  _MediaPageMobile({Key? key, required this.mediaDataList, this.onDialogStateChanged}) : super(key: key);
+
+  @override
+  State<_MediaPageMobile> createState() => _MediaPageMobileState();
+}
+
+class _MediaPageMobileState extends State<_MediaPageMobile> {
+  bool _showHoursPage = false;
+  DateTime _dateTime = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -156,21 +162,40 @@ class _MediaPageMobile extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView(
-        children: [
-          MediaTile(mediaData: mediaDataList[0], isTileSelected: false, onDialogStateChanged: onDialogStateChanged),
-          MediaTile(
-            mediaData: mediaDataList[1],
-            isTileSelected: false,
-            onDialogStateChanged: onDialogStateChanged
-          ),
-          MediaTile(
-            mediaData: mediaDataList[2],
-            isTileSelected: false,
-            onDialogStateChanged: onDialogStateChanged
-          )
-        ],
-      ),
+      body: _showHoursPage
+          ? CalendarDay(
+              onBackPressed: backFromHoursPage,
+              dateTime: _dateTime,
+              mediaEvent: widget.selectedIndex != null ? widget.mediaDataList[widget.selectedIndex!].slots : null,
+            )
+          : ListView.builder(
+              itemCount: widget.mediaDataList.length,
+              itemBuilder: (context, index) => MediaTile(
+                mediaData: widget.mediaDataList[index],
+                onClick: () {
+                  setState(() {
+                    widget.selectedIndex = index;
+                  });
+                },
+                onDialogStateChanged: onModeChanged,
+              ),
+            ),
     );
+  }
+
+  void backFromHoursPage() {
+    setState(() {
+      _showHoursPage = false;
+    });
+  }
+
+  void onModeChanged(bool dialogState, DateTime? dateTime) async {
+    widget.onDialogStateChanged?.call(dialogState);
+    if (dialogState == false && dateTime != null) {
+      setState(() {
+        _showHoursPage = true;
+        _dateTime = dateTime;
+      });
+    }
   }
 }

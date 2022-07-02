@@ -4,13 +4,14 @@ class CalendarDay extends StatelessWidget {
   final Function onBackPressed;
   final DateTime dateTime;
   final List<Event>? mediaEvent;
+
   const CalendarDay({Key? key, required this.onBackPressed, required this.dateTime, this.mediaEvent}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     int hours = 24;
     List<Event>? eventsOnThisDay = mediaEvent != null ? mediaEvent!.map((e) => e).toList() : null;
-    List<int>?  eventHoursOnThisDay = eventsOnThisDay?.map((e) => e.dateTime.hour).toList();
+    List<int>? eventHoursOnThisDay = eventsOnThisDay?.map((e) => e.dateTime.hour).toList();
     String formattedDate = DateFormat('MMMM dd yyyy').format(dateTime);
     return Column(
       children: [
@@ -34,7 +35,8 @@ class CalendarDay extends StatelessWidget {
                       ),
                     )),
               ),
-              Expanded(child: Center(
+              Expanded(
+                  child: Center(
                 child: Text(formattedDate),
               ))
             ],
@@ -69,16 +71,16 @@ class CalendarDay extends StatelessWidget {
                               ),
                             ),
                             child: eventHoursOnThisDay != null && eventHoursOnThisDay.contains(i)
-                            ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.lightBlue,
-                                ),
-                              ),
-                            )
-                            : const SizedBox(),
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.lightBlue,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox(),
                           ),
                         ),
                       ),

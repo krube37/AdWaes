@@ -20,6 +20,7 @@ class _CalendarMonth extends StatelessWidget {
   late final int _firstDayOffset;
   late final int noOfDaysInMonth;
   final MediaData? mediaData;
+  bool isDialogView;
 
   _CalendarMonth({
     Key? key,
@@ -27,6 +28,7 @@ class _CalendarMonth extends StatelessWidget {
     required this.width,
     required this.weekStart,
     this.selectedDateTime,
+    this.isDialogView = false,
     this.postBuildCallback,
     this.onDatePicked,
     this.mediaData,
@@ -130,14 +132,16 @@ class _CalendarMonth extends StatelessWidget {
                                           height: 10,
                                           width: 10,
                                           decoration: BoxDecoration(
-                                              border: Border.all(color: Colors.grey, width: 0.2),),
+                                            border: Border.all(color: Colors.grey, width: 0.2),
+                                          ),
                                           child: isValid
                                               ? InkWell(
-                                                  // splashColor: Colors.transparent,
-                                                  // customBorder: const ContinuousRectangleBorder(
-                                                  //   borderRadius: BorderRadius.all(Radius.circular(20)),
-                                                  // ),
-                                                  onTap: () => onDatePicked?.call(thisDay),
+                                                  onTap: () {
+                                                    onDatePicked?.call(thisDay);
+                                                    if (isDialogView) {
+                                                      Navigator.pop(context, thisDay);
+                                                    }
+                                                  },
                                                   child: Column(
                                                     children: [
                                                       Padding(

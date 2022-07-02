@@ -7,11 +7,11 @@ class _DateTimeTitle extends StatelessWidget {
   final void Function() onYearTapped;
 
   const _DateTimeTitle(
-      this.dateTime, {
-        Key? key,
-        required this.onMonthTapped,
-        required this.onYearTapped,
-      }) : super(key: key);
+    this.dateTime, {
+    Key? key,
+    required this.onMonthTapped,
+    required this.onYearTapped,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,99 +23,99 @@ class _DateTimeTitle extends StatelessWidget {
   }
 
   Widget _portraitTitle(DateTime value) => Container(
-    padding: const EdgeInsets.symmetric(vertical: 20.0),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        GestureDetector(
-          onTap: onMonthTapped,
-          child: Text(
-            DateFormat("MMMM").format(value),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-              color: Colors.black,
+        padding: const EdgeInsets.symmetric(vertical: 20.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            GestureDetector(
+              onTap: onMonthTapped,
+              child: Text(
+                DateFormat("MMMM").format(value),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                  color: Colors.black,
+                ),
+              ),
             ),
-          ),
-        ),
-        const SizedBox(width: 5.0),
-        Text(
-          DateFormat("d").format(value),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18.0,
-            color: Colors.black,
-          ),
-        ),
-        Text(
-          DateFormat(", EEEE").format(value),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18.0,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(width: 5.0),
-        GestureDetector(
-          onTap: onYearTapped,
-          child: Text(
-            DateFormat("yyyy").format(value),
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-
-  Widget _landscapeTitle(DateTime value) => Column(
-    mainAxisSize: MainAxisSize.min,
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      GestureDetector(
-        onTap: onYearTapped,
-        child: Text(
-          DateFormat("yyyy").format(value),
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 12.0,
-            color: Colors.grey,
-          ),
-        ),
-      ),
-      Text(
-        DateFormat("EEEE").format(value),
-        style: const TextStyle(
-          fontSize: 22.0,
-          fontWeight: FontWeight.w500,
-          color: Colors.black,
-        ),
-      ),
-      Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            DateFormat("d ").format(value),
-            style: const TextStyle(
-              fontSize: 16.0,
-              color: Colors.black,
-            ),
-          ),
-          GestureDetector(
-            onTap: onMonthTapped,
-            child: Text(
-              DateFormat("MMMM").format(value),
+            const SizedBox(width: 5.0),
+            Text(
+              DateFormat("d").format(value),
               style: const TextStyle(
-                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
                 color: Colors.black,
               ),
             ),
+            Text(
+              DateFormat(", EEEE").format(value),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(width: 5.0),
+            GestureDetector(
+              onTap: onYearTapped,
+              child: Text(
+                DateFormat("yyyy").format(value),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _landscapeTitle(DateTime value) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: onYearTapped,
+            child: Text(
+              DateFormat("yyyy").format(value),
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 12.0,
+                color: Colors.grey,
+              ),
+            ),
           ),
+          Text(
+            DateFormat("EEEE").format(value),
+            style: const TextStyle(
+              fontSize: 22.0,
+              fontWeight: FontWeight.w500,
+              color: Colors.black,
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                DateFormat("d ").format(value),
+                style: const TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.black,
+                ),
+              ),
+              GestureDetector(
+                onTap: onMonthTapped,
+                child: Text(
+                  DateFormat("MMMM").format(value),
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ],
+          )
         ],
-      )
-    ],
-  );
+      );
 }

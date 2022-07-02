@@ -5,8 +5,5 @@ class MediaData {
   int availableSlots;
   List<MediaEvent> slots;
 
-  MediaData(
-      {required this.mediaName,
-      this.availableSlots = 0,
-      this.slots = const []});
+  MediaData({required this.mediaName, this.availableSlots = 0, this.slots = const []});
 }

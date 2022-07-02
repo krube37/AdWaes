@@ -43,7 +43,8 @@ class Calendar {
     }
   }
 
-  static Future<DateTime?> showDatePickerDialog(BuildContext context, DateTime initialDateTime) async =>
+  static Future<DateTime?> showDatePickerDialog(
+          BuildContext context, DateTime initialDateTime, MediaData mediaData) async =>
       await showDialog<DateTime?>(
         context: context,
         barrierColor: Colors.black45,
@@ -55,6 +56,8 @@ class Calendar {
           ),
           child: _CalendarPickerWidget(
             initialDateTime: initialDateTime,
+            isDialogView: true,
+            mediaData: mediaData,
           ),
         ),
       );
@@ -62,7 +65,8 @@ class Calendar {
   static Widget getCalenderWidget(double width, double height,
       {required Function(bool _, DateTime __) onModeChanged, DateTime? dateTime, MediaData? mediaData}) {
     dateTime ??= DateTime.now();
-    return _CalendarPickerWidget(initialDateTime: dateTime, width: width, onModeChanged: onModeChanged, mediaData: mediaData);
+    return _CalendarPickerWidget(
+        initialDateTime: dateTime, width: width, onModeChanged: onModeChanged, mediaData: mediaData);
   }
 }
 
@@ -102,8 +106,9 @@ class _CalendarWrapper extends StatefulWidget {
 
   final double? width;
   final MediaData? mediaData;
+  bool isDialogView;
 
-  const _CalendarWrapper({
+  _CalendarWrapper({
     Key? key,
     required this.month,
     required this.year,
@@ -112,6 +117,7 @@ class _CalendarWrapper extends StatefulWidget {
     this.onMonthChanged,
     this.onDatePicked,
     this.mediaData,
+    this.isDialogView = false,
     this.showMonthInHeader = false,
     this.showMonthActionButtons = false,
   }) : super(key: key);
@@ -174,7 +180,11 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
       child: ValueListenableBuilder<int>(
         valueListenable: weekStart,
         builder: (context, value, child) => SizedBox(
-          height: deviceType == DeviceScreenType.desktop ? 550 : (deviceType == DeviceScreenType.tablet) ? 420 : 300,
+          height: deviceType == DeviceScreenType.desktop
+              ? 550
+              : (deviceType == DeviceScreenType.tablet)
+                  ? 420
+                  : 300,
           child: Stack(
             children: [
               //  Actual calendar
@@ -219,6 +229,7 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
                             weekStart: value,
                             selectedDateTime: _selectedDateTime,
                             mediaData: widget.mediaData,
+                            isDialogView: widget.isDialogView,
                             onDatePicked: widget.onDatePicked != null
                                 ? (date) {
                                     _selectedDateTime = date;
@@ -253,9 +264,7 @@ class _CalendarWrapperState extends State<_CalendarWrapper> with TickerProviderS
   }
 
   /// left for future use
-  void _onPageChanged(int index, [bool notify = true]) {
-
-  }
+  void _onPageChanged(int index, [bool notify = true]) {}
 
   void _onMonthChanged(int action) => (action == _nextMonth)
       ? _monthPageController.nextPage(

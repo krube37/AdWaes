@@ -1,13 +1,11 @@
 // ignore_for_file: constant_identifier_names
 
-
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/media_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
-
   static const String SIGN_IN = '/';
   static const String HOME_ROUTE = '/home';
   static const String BILL_BOARD = '/BillBoard';
@@ -16,12 +14,11 @@ class Routes {
   static const String STREAMING = '/Streaming';
   static const String SOCIAL_MEDIA = '/SocialMedia';
 
-  static Route<dynamic> onGenerateRoute(RouteSettings settings){
-
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     Widget widget;
     var args = settings.arguments;
 
-    switch(settings.name){
+    switch (settings.name) {
       // case SIGN_IN:
       //   // widget =
       //   break;
@@ -35,8 +32,8 @@ class Routes {
       //   // widget =
       //   break;
       case MEDIA:
-         widget = MediaPage();
-         break;
+        widget = MediaPage();
+        break;
       // case STREAMING:
       //   // widget =
       //   break;
@@ -44,12 +41,9 @@ class Routes {
       //   // widget =
       //   break;
       default:
-         widget = HomePage();
+        widget = HomePage();
         break;
     }
     return MaterialPageRoute(builder: (_) => widget, settings: settings);
-
   }
-
-
 }

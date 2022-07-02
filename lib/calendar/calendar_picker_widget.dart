@@ -8,12 +8,14 @@ class _CalendarPickerWidget extends StatefulWidget {
   final double? width;
   final Function(bool shouldShowHorsPage, DateTime dateTime)? onModeChanged;
   final MediaData? mediaData;
+  bool isDialogView;
 
-  const _CalendarPickerWidget(
+  _CalendarPickerWidget(
       {Key? key,
       required this.initialDateTime,
       this.mediaData,
       this.onModeChanged,
+      this.isDialogView = false,
       this.width})
       : super(key: key);
 
@@ -67,13 +69,11 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
 
   @override
   Widget build(BuildContext context) {
-
     Size size = MediaQuery.of(context).size;
     double width = widget.width ?? size.width / 2;
-    bool isDesktopScreen = getDeviceType(size) == DeviceScreenType.desktop;
 
     return Align(
-      alignment: isDesktopScreen ? Alignment.topCenter : Alignment.center,
+      alignment: widget.isDialogView ? Alignment.center : Alignment.topCenter,
       child: Wrap(
         children: [
           Container(
@@ -131,6 +131,7 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
                                       showMonthInHeader: true,
                                       showMonthActionButtons: true,
                                       onDatePicked: _onDatePicked,
+                                      isDialogView: widget.isDialogView,
                                       mediaData: widget.mediaData);
                                   break;
                                 case _PickerMode.month:
@@ -158,9 +159,8 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
                         ),
                       ),
                       const SizedBox(height: 10.0),
-                      isDesktopScreen
-                          ? const SizedBox()
-                          : Container(
+                      widget.isDialogView
+                          ? Container(
                               padding: const EdgeInsets.only(
                                 bottom: 15.0,
                                 right: 15.0,
@@ -168,9 +168,10 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
                               ),
                               child: _FooterButton(
                                 onOKTapped: () => Navigator.pop(context, _dateTime.value),
-                                onCancelTapped: () => Navigator.pop(context, widget.initialDateTime),
+                                onCancelTapped: () => Navigator.pop(context),
                               ),
                             )
+                          : const SizedBox()
                     ],
                   ),
                 ),
@@ -192,7 +193,7 @@ class _CalendarPickerWidgetState extends State<_CalendarPickerWidget> with Ticke
 
   void _onDatePicked(DateTime pickedDate) {
     _dateTime.value = pickedDate;
-    widget.onModeChanged?.call(true, _dateTime.value);
+    widget.onModeChanged?.call(true, pickedDate);
   }
 }
 
