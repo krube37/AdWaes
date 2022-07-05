@@ -16,7 +16,7 @@ class _MediaPageState extends State<MediaPage> {
   @override
   Widget build(BuildContext context) {
     List<MediaData> mediaData = [
-      MediaData(mediaName: "media name 1", slots: [MediaEvent("event name 1", dateTime: DateTime(2022, 6, 25, 10))]),
+      MediaData(mediaName: "media name 1", events: getTestEvents()),
       MediaData(mediaName: "media name 2"),
       MediaData(mediaName: "media name 3")
     ];
@@ -25,6 +25,14 @@ class _MediaPageState extends State<MediaPage> {
       mobile: _MediaPageMobile(mediaDataList: mediaData),
     );
   }
+}
+
+List<MediaEvent> getTestEvents() {
+  List<MediaEvent> events = [];
+  for (int i = 0; i < 50; i++) {
+    events.add(MediaEvent("event name $i", dateTime: DateTime(2022, 6, 25, 10)));
+  }
+  return events;
 }
 
 class _MediaPageDesktop extends StatefulWidget {
@@ -40,10 +48,15 @@ class _MediaPageDesktop extends StatefulWidget {
 }
 
 class _MediaPageDesktopState extends State<_MediaPageDesktop> {
-  int i = 0;
+  int? selectedIndex;
+  int cursorIndex = -1;
 
   @override
   Widget build(BuildContext context) {
+    List<MediaEvent>? events;
+    if (selectedIndex != null) {
+      events = widget.mediaDataList[selectedIndex!].events;
+    }
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size(MediaQuery.of(context).size.width, 100),
@@ -59,14 +72,52 @@ class _MediaPageDesktopState extends State<_MediaPageDesktop> {
                     itemCount: widget.mediaDataList.length,
                     itemBuilder: (context, index) => MediaTile(
                           mediaData: widget.mediaDataList[index],
-                          onClick: () {},
+                          isTileSelected: index == selectedIndex,
+                          onClick: () {
+                            setState(() {
+                              selectedIndex = index;
+                            });
+                          },
                         )),
               )),
           Expanded(
               flex: 3,
-              child: SingleChildScrollView(
-                child: Container(),
-              ))
+              child: events != null
+                  ? ListView.builder(
+                      itemCount: events.length,
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: MouseRegion(
+                          onEnter: (_) => setState(() => cursorIndex = index),
+                          onExit: (_) => setState(() => cursorIndex = -1),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide(
+                                  color: Colors.grey.shade400,
+                                  width: 0.5,
+                                )),
+                            elevation: cursorIndex == index ? 10 : 0,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(10),
+                              hoverColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onTap: () {},
+                              child: Container(
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                                height: 100,
+                                child: Center(child: Text(events![index].eventName)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : const Center(
+                      child: Text(
+                        "nothing selected",
+                      ),
+                    ))
         ],
       ),
     );

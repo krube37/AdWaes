@@ -14,7 +14,9 @@ class MediaTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          onClick?.call();
+        },
         borderRadius: BorderRadius.circular(10),
         child: Container(
           decoration: BoxDecoration(
@@ -31,7 +33,7 @@ class MediaTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 )),
                 Text(
-                  mediaData.availableSlots.toString(),
+                  mediaData.totalEvents.toString(),
                 )
               ],
             ),
