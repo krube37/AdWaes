@@ -4,8 +4,6 @@ import 'package:ad/media/media_tile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import '../calendar/calendar.dart';
 import '../widgets/top_bar_contents.dart';
 
 class MediaPage extends StatefulWidget {
@@ -84,30 +82,9 @@ class _MediaPageDesktopState extends State<_MediaPageDesktop> {
           Expanded(
             flex: 3,
             child: widget.selectedIndex != null
-                ? _showHoursPage
-                    ? CalendarDay(
-                        onBackPressed: backFromHoursPage,
-                        dateTime: _dateTime,
-                        mediaEvent:
-                            widget.selectedIndex != null ? widget.mediaDataList[widget.selectedIndex!].slots : null,
-                      )
-                    : SingleChildScrollView(
-                        child: LayoutBuilder(
-                          builder: (BuildContext context, BoxConstraints constraint) {
-                            return Container(
-                              child: widget.selectedIndex != null
-                                  ? Calendar.getCalenderWidget(
-                                      constraint.maxWidth - (constraint.maxWidth / 6),
-                                      constraint.maxHeight,
-                                      onModeChanged: onModeChanged,
-                                      dateTime: _dateTime,
-                                      mediaData: widget.mediaDataList[widget.selectedIndex!],
-                                    )
-                                  : null,
-                            );
-                          },
-                        ),
-                      )
+                ? SingleChildScrollView(
+                    child: Container(),
+                  )
                 : const SizedBox(),
           )
         ],
@@ -162,24 +139,18 @@ class _MediaPageMobileState extends State<_MediaPageMobile> {
           ),
         ),
       ),
-      body: _showHoursPage
-          ? CalendarDay(
-              onBackPressed: backFromHoursPage,
-              dateTime: _dateTime,
-              mediaEvent: widget.selectedIndex != null ? widget.mediaDataList[widget.selectedIndex!].slots : null,
-            )
-          : ListView.builder(
-              itemCount: widget.mediaDataList.length,
-              itemBuilder: (context, index) => MediaTile(
-                mediaData: widget.mediaDataList[index],
-                onClick: () {
-                  setState(() {
-                    widget.selectedIndex = index;
-                  });
-                },
-                onDialogStateChanged: onModeChanged,
-              ),
-            ),
+      body: ListView.builder(
+        itemCount: widget.mediaDataList.length,
+        itemBuilder: (context, index) => MediaTile(
+          mediaData: widget.mediaDataList[index],
+          onClick: () {
+            setState(() {
+              widget.selectedIndex = index;
+            });
+          },
+          onDialogStateChanged: onModeChanged,
+        ),
+      ),
     );
   }
 

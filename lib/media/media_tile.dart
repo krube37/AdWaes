@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-import '../calendar/calendar.dart';
-
 class MediaTile extends StatelessWidget {
   final MediaData mediaData;
   Function()? onClick;
@@ -21,12 +19,7 @@ class MediaTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: InkWell(
-        onTap: () async {
-          onClick?.call();
-          if (screenType != DeviceScreenType.desktop) {
-            await _showCalendarDialog(context, onDialogStateChanged, mediaData);
-          }
-        },
+        onTap: () {},
         borderRadius: BorderRadius.circular(10),
         child: Container(
           decoration: BoxDecoration(
@@ -51,17 +44,5 @@ class MediaTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future _showCalendarDialog(
-      BuildContext context, Function(bool haveState, DateTime? date)? onDialogStateChanged, MediaData mediaData) async {
-    onDialogStateChanged?.call(true, null);
-    DateTime? date = await Calendar.showDatePickerDialog(
-      context,
-      DateTime.now(),
-      mediaData,
-    );
-    onDialogStateChanged?.call(false, date);
-    debugPrint('_BaseWidgetState._showCalendarDialog: pickedDate: $date');
   }
 }
