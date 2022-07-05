@@ -1,21 +1,16 @@
 import 'package:ad/media/media_data.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 
 class MediaTile extends StatelessWidget {
   final MediaData mediaData;
-  Function()? onClick;
-  Function(bool haveState, DateTime? date)? onDialogStateChanged;
+  final Function()? onClick;
+  final bool isTileSelected;
 
-  bool isTileSelected;
-
-  MediaTile({Key? key, required this.mediaData, this.onClick, this.isTileSelected = false, this.onDialogStateChanged})
+  const MediaTile({Key? key, required this.mediaData, this.onClick, this.isTileSelected = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    DeviceScreenType screenType = getDeviceType(MediaQuery.of(context).size);
     return Padding(
       padding: const EdgeInsets.all(5),
       child: InkWell(
