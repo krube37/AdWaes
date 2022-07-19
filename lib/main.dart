@@ -1,34 +1,31 @@
-import 'dart:js';
-
-import 'package:ad/routes/rotes.dart';
-import 'package:ad/screens/productscreens/billBoard.dart';
-import 'package:ad/screens/second_page.dart';
+import 'package:ad/media/firebase/auth_manager.dart';
+import 'package:ad/media/firebase/local_user.dart';
+import 'package:ad/screens/adwaes_app.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'screens/home_page.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  AuthManager authManager = AuthManager();
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Web',
-      theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      debugShowCheckedModeBanner: false,
-      initialRoute: "/",
-      onGenerateRoute: Routes.onGenerateRoute,
-    );
-  }
+  runApp(
+    StreamProvider<LocalUser?>(
+        create: (BuildContext context) => authManager.onAuthStateChange,
+        initialData: null,
+        child: Consumer<LocalUser?>(
+          builder: (_, user, __) {
+            print("_AdWaesAppState build: checkzzz user $user");
+            AuthManager authManager = AuthManager();
+            authManager.user = user;
+            return const AdWaesApp();
+          },
+        )
+        ),
+  );
 }

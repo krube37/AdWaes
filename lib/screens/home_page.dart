@@ -66,14 +66,12 @@ class _HomePageState extends State<HomePage> {
             children: [
               Stack(
                 children: [
-                  Container(
-                    child: SizedBox(
-                      height: screenSize.height * 0.65,
-                      width: screenSize.width,
-                      child: Image.asset(
-                        '../assets/images/sample3.jpg',
-                        fit: BoxFit.cover,
-                      ),
+                  SizedBox(
+                    height: screenSize.height * 0.65,
+                    width: screenSize.width,
+                    child: Image.asset(
+                      '../assets/images/sample3.jpg',
+                      fit: BoxFit.cover,
                     ),
                   ),
                   Column(

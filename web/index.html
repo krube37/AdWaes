@@ -20,6 +20,9 @@
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">
 
+  <meta name="google-signin-client_id" content="813450648626-g6fpbksrijvfrb7qv1o5qeud2uaup85b.apps.googleusercontent.com">
+
+
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -77,5 +80,27 @@
       });
     });
   </script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.9.0/firebase-auth.js"></script>
+
+  <script>
+
+  var firebaseConfig = {
+    apiKey: "AIzaSyD-OPh4q1vaNoeSlUrcfR07Rz5mf7DkKUw",
+    authDomain: "adwaes-f79d8.firebaseapp.com",
+    projectId: "adwaes-f79d8",
+    storageBucket: "adwaes-f79d8.appspot.com",
+    messagingSenderId: "813450648626",
+    appId: "1:813450648626:web:5962de338ad5c8e90c302b",
+    measurementId: "G-5M9FYBMS1R"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics(app);
+</script>
 </body>
 </html>

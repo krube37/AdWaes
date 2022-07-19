@@ -59,12 +59,12 @@ class BottomBar extends StatelessWidget {
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: const [
                     InfoText(
                       type: 'Email',
                       text: 'customercare@adwisor.com',
                     ),
-                    const SizedBox(height: 5),
+                    SizedBox(height: 5),
                     InfoText(
                       type: 'Address',
                       text: 'Kent Mahal 😂',
@@ -118,12 +118,12 @@ class BottomBar extends StatelessWidget {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         InfoText(
                           type: 'Email',
                           text: 'customercare@adwisor.com',
                         ),
-                        const SizedBox(height: 5),
+                        SizedBox(height: 5),
                         InfoText(
                           type: 'Address',
                           text: 'Kent Mahal 😂',

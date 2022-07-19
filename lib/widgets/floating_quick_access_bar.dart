@@ -1,5 +1,5 @@
 import 'package:ad/main.dart';
-import 'package:ad/routes/rotes.dart';
+import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/second_page.dart';
 import 'package:ad/widgets/responsive.dart';
@@ -129,15 +129,15 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                 },
                                 onTap: () {
                                   if (items[i] == "BillBoard") {
-                                    Navigator.pushNamed(context, '/BillBoard');
+                                    Navigator.pushNamed(context, Routes.BILL_BOARD);
                                   } else if (items[i] == "Newspaper") {
-                                    Navigator.pushNamed(context, '/Newspaper');
+                                    Navigator.pushNamed(context, Routes.NEWS_PAPER);
                                   } else if (items[i] == "Media") {
-                                    Navigator.pushNamed(context, '/Media');
+                                    Navigator.pushNamed(context, Routes.MEDIA);
                                   } else if (items[i] == "Streaming") {
-                                    Navigator.pushNamed(context, '/BillBoard');
+                                    Navigator.pushNamed(context, Routes.STREAMING);
                                   } else if (items[i] == "SocialMedia") {
-                                    Navigator.pushNamed(context, '/BillBoard');
+                                    Navigator.pushNamed(context, Routes.SOCIAL_MEDIA);
                                   }
                                 },
                                 child: Text(

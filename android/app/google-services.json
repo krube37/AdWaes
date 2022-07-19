@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "813450648626",
+    "project_id": "adwaes-f79d8",
+    "storage_bucket": "adwaes-f79d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813450648626:android:434322df99577b4e0c302b",
+        "android_client_info": {
+          "package_name": "com.example.ad"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "813450648626-g6fpbksrijvfrb7qv1o5qeud2uaup85b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwyorGmq_dqLJlKit2fH7rZ_7aGn7DbCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "813450648626-g6fpbksrijvfrb7qv1o5qeud2uaup85b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

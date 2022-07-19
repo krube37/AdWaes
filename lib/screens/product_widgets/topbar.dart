@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class TopBar extends StatefulWidget {
   final double opacity;
 
-  TopBar(this.opacity);
+  const TopBar(this.opacity);
 
   @override
   _TopBarState createState() => _TopBarState();
