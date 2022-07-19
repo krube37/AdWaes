@@ -1,8 +1,9 @@
 import 'package:ad/constants.dart';
-import 'package:ad/media/firebase/local_user.dart';
 import 'package:ad/provider/firebase_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
+import 'local_user.dart';
 
 class AuthManager  {
   /// singleton class

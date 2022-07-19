@@ -1,5 +1,6 @@
-import 'package:ad/media/firebase/local_user.dart';
 import 'package:flutter/foundation.dart';
+
+import '../firebase/local_user.dart';
 
 class FirebaseProvider extends ChangeNotifier {
 

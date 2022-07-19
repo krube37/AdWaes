@@ -6,7 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../media/firebase/auth_manager.dart';
+import '../firebase/auth_manager.dart';
+import '../firebase/auth_manager.dart';
 import '../provider/sign_in_provider.dart';
 import '../routes/routes.dart';
 
@@ -160,7 +161,7 @@ class _SignInCardState extends State<SignInCard> {
     bool isSuccess = await AuthManager().signInWithGoogle();
     _provider.setIdleState(googleErrorMessage: isSuccess ? null : 'Something went wrong!');
     if (!mounted) return;
-    Navigator.pushReplacementNamed(context, '/home');
+    Navigator.pushReplacementNamed(context, Routes.HOME_ROUTE);
   }
 }
 

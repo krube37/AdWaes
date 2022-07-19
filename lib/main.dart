@@ -1,10 +1,10 @@
-import 'package:ad/media/firebase/auth_manager.dart';
-import 'package:ad/media/firebase/local_user.dart';
 import 'package:ad/screens/adwaes_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase/auth_manager.dart';
+import 'firebase/local_user.dart';
 import 'firebase_options.dart';
 
 void main() async {

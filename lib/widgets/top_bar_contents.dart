@@ -1,4 +1,4 @@
-import 'package:ad/media/firebase/auth_manager.dart';
+import 'package:ad/firebase/auth_manager.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:flutter/material.dart';
 
