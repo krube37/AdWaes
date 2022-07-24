@@ -194,18 +194,18 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                     onTap: () {
                                       if (items[i] == "BillBoard") {
                                         Navigator.pushNamed(
-                                            context, '/BillBoard');
+                                            context, Routes.BILL_BOARD);
                                       } else if (items[i] == "Newspaper") {
                                         Navigator.pushNamed(
-                                            context, '/Newspaper');
+                                            context, Routes.NEWS_PAPER);
                                       } else if (items[i] == "Media") {
-                                        Navigator.pushNamed(context, '/Media');
+                                        Navigator.pushNamed(context, Routes.MEDIA);
                                       } else if (items[i] == "Streaming") {
                                         Navigator.pushNamed(
-                                            context, '/BillBoard');
+                                            context, Routes.BILL_BOARD);
                                       } else if (items[i] == "SocialMedia") {
                                         Navigator.pushNamed(
-                                            context, '/BillBoard');
+                                            context, Routes.BILL_BOARD);
                                       }
                                     },
                                     child: Text(

@@ -2,6 +2,7 @@
 
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/media_page.dart';
+import 'package:ad/screens/productscreens/news_papers_page.dart';
 import 'package:ad/screens/sign_in_page.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +33,9 @@ class Routes {
       // case BILL_BOARD:
       //  // widget =
       //   break;
-      // case NEWS_PAPER:
-      //   // widget =
-      //   break;
+      case NEWS_PAPER:
+        widget = const NewsPapersPage();
+        break;
       case MEDIA:
         widget = const MediaPage();
         break;

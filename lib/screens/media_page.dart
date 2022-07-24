@@ -83,7 +83,11 @@ class _MediaPageDesktopState extends State<_MediaPageDesktop> {
           Expanded(
               flex: 3,
               child: events != null
-                  ? ListView.builder(
+                  ? GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 3/2,
+                      ),
                       itemCount: events.length,
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.all(3.0),
@@ -105,7 +109,6 @@ class _MediaPageDesktopState extends State<_MediaPageDesktop> {
                               onTap: () {},
                               child: Container(
                                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                                height: 100,
                                 child: Center(child: Text(events![index].eventName)),
                               ),
                             ),

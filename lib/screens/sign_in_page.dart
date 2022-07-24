@@ -1,5 +1,6 @@
 library manage_sign_in;
 
+import 'package:ad/globals.dart';
 import 'package:ad/provider/sign_in_provider.dart';
 import 'package:ad/widgets/sign_in_card.dart';
 import 'package:flutter/material.dart';
@@ -33,43 +34,12 @@ class _SignInPageState extends State<SignInPage> {
     var screenSize = MediaQuery.of(context).size;
     DeviceScreenType screenType = getDeviceType(screenSize);
     bool isDesktopView = screenType == DeviceScreenType.desktop;
+
     return ChangeNotifierProvider(
       create: (BuildContext context) => _signInProvider,
       builder: (context, _) {
         return Scaffold(
-          appBar: isDesktopView
-              ? PreferredSize(
-                  preferredSize: Size(screenSize.width, 100),
-                  child: Container(
-                    padding: const EdgeInsets.all(15),
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                    child: const Text(
-                      'Adwisor',
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        fontSize: 48,
-                        fontFamily: 'Raleway',
-                        fontWeight: FontWeight.bold,
-                        //letterSpacing: 3,
-                      ),
-                    ),
-                  ),
-                )
-              : AppBar(
-                  iconTheme: const IconThemeData(color: Colors.white),
-                  elevation: 0,
-                  backgroundColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(1),
-                  title: const Text(
-                    'Adwisor',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 255, 255, 255),
-                      fontSize: 24,
-                      fontFamily: 'Raleway',
-                      fontWeight: FontWeight.bold,
-                      //letterSpacing: 3,
-                    ),
-                  ),
-                ),
+          appBar: getAppBar(MediaQuery.of(context).size),
           body: Row(
             children: [
               isDesktopView ? const Expanded(flex: 10, child: Placeholder()) : const SizedBox(),

@@ -39,39 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
           _signInProvider = Provider.of<SignInProvider>(context);
 
           return Scaffold(
-            appBar: isDesktopView
-                ? PreferredSize(
-                    preferredSize: Size(screenSize.width, 100),
-                    child: Container(
-                      padding: const EdgeInsets.all(15),
-                      color: const Color.fromARGB(255, 0, 0, 0),
-                      child: const Text(
-                        'Adwisor',
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 255, 255, 255),
-                          fontSize: 48,
-                          fontFamily: 'Raleway',
-                          fontWeight: FontWeight.bold,
-                          //letterSpacing: 3,
-                        ),
-                      ),
-                    ),
-                  )
-                : AppBar(
-                    iconTheme: const IconThemeData(color: Colors.white),
-                    elevation: 0,
-                    backgroundColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(1),
-                    title: const Text(
-                      'Adwisor',
-                      style: TextStyle(
-                        color: Color.fromARGB(255, 255, 255, 255),
-                        fontSize: 24,
-                        fontFamily: 'Raleway',
-                        fontWeight: FontWeight.bold,
-                        //letterSpacing: 3,
-                      ),
-                    ),
-                  ),
+            appBar: getAppBar(screenSize),
             body: Row(
               children: [
                 isDesktopView ? const Expanded(flex: 10, child: Placeholder()) : const SizedBox(),
