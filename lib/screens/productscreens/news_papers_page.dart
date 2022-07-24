@@ -132,7 +132,7 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
                     ElevatedButton(
                         onPressed: () {
                           List<NewsPaperEvent> events = [
-                            NewsPaperEvent("movie event india ", "left corner", 2000, 4, dateTime: DateTime.now()),
+                            NewsPaperEvent("movie event india ", "left corner", 2000, 4, DateTime.now()),
                             // NewsPaperEvent("Function event india ", "center", 10000, 1, dateTime: DateTime.now()),
                             // NewsPaperEvent("scientific event ", "top center", 5000, 5, dateTime: DateTime.now())
                           ];
@@ -142,7 +142,7 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
                             NewsPaper(name: 'The Times of India', events: events),
                           ];
                           NewsPaperEventProvider.addNewsPaperData(
-                            NewsPaper(name: 'The New York Times', events: events),
+                            NewsPaper(name: 'The Hindu', events: events),
                           );
                         },
                         child: Text("Add")),
@@ -156,7 +156,7 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
                     ElevatedButton(
                         onPressed: () {
                           NewsPaperEventProvider.addNewsPaperEvent('The Hindu',
-                              NewsPaperEvent("scientific event ", "top center", 5000, 5, dateTime: DateTime.now()));
+                              NewsPaperEvent("scientific event ", "top center", 5000, 5, DateTime.now()));
                         },
                         child: Text("add Event")),
                     SizedBox(height: 10,),

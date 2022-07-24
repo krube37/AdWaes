@@ -30,7 +30,7 @@ class _MediaPageState extends State<MediaPage> {
 List<MediaEvent> getTestEvents() {
   List<MediaEvent> events = [];
   for (int i = 0; i < 50; i++) {
-    events.add(MediaEvent("event name $i", dateTime: DateTime(2022, 6, 25, 10)));
+    events.add(MediaEvent("event name $i", DateTime(2022, 6, 25, 10)));
   }
   return events;
 }

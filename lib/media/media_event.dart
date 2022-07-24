@@ -1,8 +1,14 @@
-import 'package:ad/event.dart';
 
-class MediaEvent extends Event {
 
-  final String eventName;
+class MediaEvent {
+  final String _eventName;
+  final DateTime _dateTime;
 
-  MediaEvent(this.eventName, {required dateTime}) : super(dateTime: dateTime);
+  MediaEvent(String eventName, DateTime dateTime)
+      : _eventName = eventName,
+        _dateTime = dateTime;
+
+  get eventName => _eventName;
+
+  get dateTime => _dateTime;
 }

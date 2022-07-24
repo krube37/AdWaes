@@ -34,6 +34,7 @@ class NewsPaperEventProvider extends ChangeNotifier {
       eventsStream!.cancel();
       eventsStream = null;
     }
+    _newsPaperEvents.clear();
     eventsStream = getEventRef(newsPaperName).snapshots().listen((QuerySnapshot<Map> event) {
       print("NewsPaperEventProvider listenToEvents: listening ${newsPaperName}");
       _newsPaperEvents.clear();
