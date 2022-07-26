@@ -20,6 +20,7 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
   int selectedIndex = 0;
   List<NewsPaper> newsPapers = [];
   late NewsPaperEventProvider newsPaperProvider;
+  bool _isListeningToEvent = false;
 
   @override
   void didChangeDependencies() {
@@ -37,13 +38,13 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
     if (newsPapers.isNotEmpty) {
+      _isListeningToEvent = true;
       newsPaperProvider.listenToEvents(newsPapers[selectedIndex].name);
     }
 
     return Scaffold(
         appBar: getAppBar(MediaQuery.of(context).size),
         body: StreamBuilder<QuerySnapshot<Map>>(
-          initialData: null,
           stream: newsPaperProvider.newsPaperRef.snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map>> snapshot) {
             if (!snapshot.hasData) {
@@ -54,6 +55,10 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
             newsPapers.clear();
             for (QueryDocumentSnapshot<Map> value in snapshot.data!.docs) {
               newsPapers.add(NewsPaper.fromFirestore(value.data()));
+            }
+            if (!_isListeningToEvent) {
+              newsPaperProvider.listenToEvents(newsPapers[selectedIndex].name);
+              _isListeningToEvent = true;
             }
             return Row(
               children: [
@@ -76,14 +81,14 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
                 Expanded(
                   flex: 3,
                   child: newsPapers.isEmpty
-                      //todo: replace with Sized box
                       ? const Center(
-                          child: CircularProgressIndicator(),
+                          child: Text("there are no Events available "),
                         )
                       : Consumer<NewsPaperEventProvider>(builder: (_, newsPaperValue, child) {
                           List<NewsPaperEvent> events = Provider.of<NewsPaperEventProvider>(context).newsPaperEvents;
                           print("_NewsPapersPageState build: checkzzz events ${events.length}");
                           return events.isEmpty
+                          //todo: do something here because if is empty, then will always show circular progress
                               ? const Center(child: CircularProgressIndicator())
                               : GridView.builder(
                                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -146,23 +151,31 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
                           );
                         },
                         child: Text("Add")),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     ElevatedButton(
                         onPressed: () {
                           NewsPaperEventProvider.removeNewsPaperData('The Hindu');
                         },
                         child: Text("delete")),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     ElevatedButton(
                         onPressed: () {
-                          NewsPaperEventProvider.addNewsPaperEvent('The Hindu',
-                              NewsPaperEvent("scientific event ", "top center", 5000, 5, DateTime.now()));
+                          NewsPaperEventProvider.addNewsPaperEvent(
+                              'The Hindu', NewsPaperEvent("scientific event ", "top center", 5000, 5, DateTime.now()));
                         },
                         child: Text("add Event")),
-                    SizedBox(height: 10,),
-                    ElevatedButton(onPressed: () {
-                      NewsPaperEventProvider.deleteLastNewsPaperEvent('The Hindu');
-                    }, child: Text("delete Event"))
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          NewsPaperEventProvider.deleteLastNewsPaperEvent('The Hindu');
+                        },
+                        child: Text("delete Event"))
                   ],
                 ))
               ],
