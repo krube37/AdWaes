@@ -1,18 +1,11 @@
-import 'dart:async';
-
-import 'package:ad/news_paper/news_paper_data.dart';
-import 'package:ad/news_paper/news_paper_event.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+part of news_paper;
 
 class NewsPaperEventProvider extends ChangeNotifier {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   /// singleton Class
   static NewsPaperEventProvider? mInstance;
-
   NewsPaperEventProvider._internal();
-
   factory NewsPaperEventProvider() => mInstance ?? (mInstance = NewsPaperEventProvider._internal());
 
   static disposeProvider() {
@@ -20,7 +13,7 @@ class NewsPaperEventProvider extends ChangeNotifier {
     mInstance = null;
   }
 
-  List<NewsPaperEvent> _newsPaperEvents = [];
+  final List<NewsPaperEvent> _newsPaperEvents = [];
   final CollectionReference<Map> newsPaperRef = firestore.collection('newsPaper');
 
   get newsPaperEvents => _newsPaperEvents;

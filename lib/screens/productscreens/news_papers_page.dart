@@ -1,12 +1,11 @@
-import 'package:ad/firebase/news_paper_event_provider.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/news_paper/news_paper_data.dart';
 import 'package:ad/news_paper/news_paper_tile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../news_paper/news_paper_event.dart';
+import '../../provider/news_paper_provider.dart';
 
 class NewsPapersPage extends StatefulWidget {
   const NewsPapersPage({Key? key}) : super(key: key);
@@ -19,18 +18,21 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
   int cursorIndex = -1;
   int selectedIndex = 0;
   List<NewsPaper> newsPapers = [];
-  late NewsPaperEventProvider newsPaperProvider;
+  late NewsPaperEventProvider newsPaperEventProvider;
+  late NewsPaperProvider newsPaperProvider;
   bool _isListeningToEvent = false;
 
   @override
   void didChangeDependencies() {
-    newsPaperProvider = NewsPaperEventProvider();
+    newsPaperProvider =  NewsPaperProvider();
+    newsPaperEventProvider = NewsPaperEventProvider();
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
     NewsPaperEventProvider.disposeProvider();
+    NewsPaperProvider.disposeProvider();
     super.dispose();
   }
 
@@ -39,25 +41,16 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
     var screenSize = MediaQuery.of(context).size;
     if (newsPapers.isNotEmpty) {
       _isListeningToEvent = true;
-      newsPaperProvider.listenToEvents(newsPapers[selectedIndex].name);
+      newsPaperEventProvider.listenToEvents(newsPapers[selectedIndex].name);
     }
+    newsPapers = newsPaperProvider.newsPapers;
 
     return Scaffold(
         appBar: getAppBar(MediaQuery.of(context).size),
-        body: StreamBuilder<QuerySnapshot<Map>>(
-          stream: newsPaperProvider.newsPaperRef.snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map>> snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            newsPapers.clear();
-            for (QueryDocumentSnapshot<Map> value in snapshot.data!.docs) {
-              newsPapers.add(NewsPaper.fromFirestore(value.data()));
-            }
+        body: Consumer<NewsPaperProvider>(
+          builder: (context, newsPaperValue, _) {
             if (!_isListeningToEvent) {
-              newsPaperProvider.listenToEvents(newsPapers[selectedIndex].name);
+              newsPaperEventProvider.listenToEvents(newsPapers[selectedIndex].name);
               _isListeningToEvent = true;
             }
             return Row(
@@ -74,6 +67,7 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
                               if (selectedIndex == index) return;
                               setState(() {
                                 selectedIndex = index;
+                                _isListeningToEvent = false;
                               });
                             });
                       }),
@@ -88,7 +82,7 @@ class _NewsPapersPageState extends State<NewsPapersPage> {
                           List<NewsPaperEvent> events = Provider.of<NewsPaperEventProvider>(context).newsPaperEvents;
                           print("_NewsPapersPageState build: checkzzz events ${events.length}");
                           return events.isEmpty
-                          //todo: do something here because if is empty, then will always show circular progress
+                              //todo: do something here because if is empty, then will always show circular progress
                               ? const Center(child: CircularProgressIndicator())
                               : GridView.builder(
                                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

@@ -1,9 +1,6 @@
-import 'package:ad/firebase/news_paper_event_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-import 'news_paper/news_paper_data.dart';
-import 'news_paper/news_paper_event.dart';
 
 /// THEME DETAILS
 /// ===========================================

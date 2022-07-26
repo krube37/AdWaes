@@ -1,4 +1,4 @@
-import 'package:ad/firebase/news_paper_event_provider.dart';
+import 'package:ad/provider/news_paper_provider.dart';
 import 'package:ad/screens/adwaes_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +14,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   AuthManager authManager = AuthManager();
-  NewsPaperEventProvider newsPaperProvider = NewsPaperEventProvider();
+  NewsPaperProvider newsPaperProvider = NewsPaperProvider();
+  newsPaperProvider.initialise();
   // todo : initialise variables in newspaper provider
 
   runApp(
     MultiProvider(
       providers: [
         StreamProvider<LocalUser?>(create: (context) => authManager.onAuthStateChange, initialData: null),
+        ChangeNotifierProvider<NewsPaperProvider>(create: (_) => NewsPaperProvider()),
         ChangeNotifierProvider<NewsPaperEventProvider>(create: (_) => NewsPaperEventProvider()),
       ],
       child: Consumer<LocalUser?>(
