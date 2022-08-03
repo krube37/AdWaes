@@ -1,22 +1,24 @@
 part of news_paper;
 
-class NewsPaperEventProvider extends ChangeNotifier {
+class ProductEventProvider extends ChangeNotifier {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   /// singleton Class
-  static NewsPaperEventProvider? mInstance;
-  NewsPaperEventProvider._internal();
-  factory NewsPaperEventProvider() => mInstance ?? (mInstance = NewsPaperEventProvider._internal());
+  static ProductEventProvider? mInstance;
+
+  ProductEventProvider._internal();
+
+  factory ProductEventProvider() => mInstance ?? (mInstance = ProductEventProvider._internal());
 
   static disposeProvider() {
     mInstance?.dispose();
     mInstance = null;
   }
 
-  final List<NewsPaperEvent> _newsPaperEvents = [];
+  final List<ProductEvent> _productEvents = [];
   final CollectionReference<Map> newsPaperRef = firestore.collection('newsPaper');
 
-  get newsPaperEvents => _newsPaperEvents;
+  get productEvents => _productEvents;
 
   StreamSubscription<QuerySnapshot>? eventsStream;
 
@@ -27,24 +29,24 @@ class NewsPaperEventProvider extends ChangeNotifier {
       eventsStream!.cancel();
       eventsStream = null;
     }
-    _newsPaperEvents.clear();
+    _productEvents.clear();
     eventsStream = getEventRef(newsPaperName).snapshots().listen((QuerySnapshot<Map> event) {
       print("NewsPaperEventProvider listenToEvents: listening ${newsPaperName}");
-      _newsPaperEvents.clear();
+      _productEvents.clear();
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         print("NewsPaperEventProvider listenToEvents: insidee------------- ${value.data()}");
-        _newsPaperEvents.add(NewsPaperEvent.fromFirestore(value.data()));
+        _productEvents.add(ProductEvent.fromFirestore(value.data()));
       }
       notifyListeners();
     });
   }
 
   // todo remove test code.
-  static addNewsPaperData(NewsPaper newsPaper) async {
-    DocumentReference ref = FirebaseFirestore.instance.collection('newsPaper').doc(newsPaper.name);
-    await ref.set(newsPaper.map);
+  static addNewsPaperData(ProductData product, List<ProductEvent> events) async {
+    DocumentReference ref = FirebaseFirestore.instance.collection('newsPaper').doc(product.name);
+    await ref.set(product.map);
     CollectionReference eventsRef = ref.collection('events');
-    for (NewsPaperEvent event in newsPaper.events) {
+    for (ProductEvent event in events) {
       await eventsRef.add(event.map);
     }
   }
@@ -52,16 +54,16 @@ class NewsPaperEventProvider extends ChangeNotifier {
   static removeNewsPaperData(String newsPaperName) async =>
       await FirebaseFirestore.instance.collection('newsPaper').doc(newsPaperName).delete();
 
-  static addNewsPaperEvent(String newsPaperName, NewsPaperEvent event) async{
+  static addNewsPaperEvent(String newsPaperName, ProductEvent event) async {
     DocumentReference ref = FirebaseFirestore.instance.collection('newsPaper').doc(newsPaperName);
     await ref.collection('events').add(event.map);
   }
 
-  static deleteLastNewsPaperEvent(String newsPaper) async{
+  static deleteLastNewsPaperEvent(String newsPaper) async {
     CollectionReference ref = FirebaseFirestore.instance.collection('newsPaper').doc(newsPaper).collection('events');
     QuerySnapshot events = await ref.get();
 
-    if(events.docs.isNotEmpty){
+    if (events.docs.isNotEmpty) {
       events.docs.last.reference.delete();
     }
   }

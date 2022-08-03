@@ -9,7 +9,7 @@ class DataManager {
   DataManager._internal();
   factory DataManager() => _mInstance;
 
-  List<NewsPaper> newsPapers = [];
+  List<ProductData> products = [];
   List<MediaData> media = [];
 
 }

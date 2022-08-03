@@ -2,7 +2,7 @@
 
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/media_page.dart';
-import 'package:ad/screens/productscreens/news_papers_page.dart';
+import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:ad/screens/sign_in_page.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +34,7 @@ class Routes {
       //  // widget =
       //   break;
       case NEWS_PAPER:
-        widget = const NewsPapersPage();
+        widget = const ProductPage();
         break;
       case MEDIA:
         widget = const MediaPage();

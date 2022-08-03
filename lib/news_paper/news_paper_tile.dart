@@ -3,12 +3,12 @@
 import 'package:ad/news_paper/news_paper_data.dart';
 import 'package:flutter/material.dart';
 
-class NewsPaperTile extends StatelessWidget {
-  final NewsPaper newsPaper;
+class ProductTile extends StatelessWidget {
+  final ProductData productData;
   final Function()? onClick;
   final bool isTileSelected;
 
-  const NewsPaperTile({Key? key, required this.newsPaper, this.onClick, this.isTileSelected = false})
+  const ProductTile({Key? key, required this.productData, this.onClick, this.isTileSelected = false})
       : super(key: key);
 
   @override
@@ -31,11 +31,11 @@ class NewsPaperTile extends StatelessWidget {
               children: [
                 Expanded(
                     child: Text(
-                      newsPaper.name,
+                      productData.name,
                       overflow: TextOverflow.ellipsis,
                     )),
                 Text(
-                  newsPaper.events.length.toString(),
+                  productData.totalEvents.toString(),
                 )
               ],
             ),

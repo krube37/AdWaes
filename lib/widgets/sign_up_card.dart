@@ -88,7 +88,6 @@ class _SignUpCardState extends State<SignUpCard> {
 
                     bool isValid = _validateFilledFields(firstName, email, password, confirmPass);
 
-                    print("_SignUpCardState build: checkzzz isvalid $isValid");
 
                     if (!isValid) {
                       setState(() {});

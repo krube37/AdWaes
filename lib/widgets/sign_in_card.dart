@@ -156,7 +156,6 @@ class _SignInCardState extends State<SignInCard> {
   }
 
   _onGoogleSignInClicked() async {
-    print("_SignInCardState _onGoogleSignInClicked: checkzzzz into on pressed ");
     _provider.setGoogleLoadingState();
     bool isSuccess = await AuthManager().signInWithGoogle();
     _provider.setIdleState(googleErrorMessage: isSuccess ? null : 'Something went wrong!');

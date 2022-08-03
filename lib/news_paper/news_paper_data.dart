@@ -1,17 +1,36 @@
-import 'package:ad/news_paper/news_paper_event.dart';
+import '../constants.dart';
 
-class NewsPaper {
-  String name;
-  String? description;
-  List<NewsPaperEvent> events;
+class ProductData {
+  final String _name;
+  final String _description;
+  final int _totalEvents;
+  final ProductType _type;
 
-  NewsPaper({required this.name, this.description, this.events = const []});
+  ProductData({required String name, required String description, int totalEvents = 0, required type})
+      : _name = name,
+        _description = description,
+        _totalEvents = totalEvents,
+        _type = type;
 
-  factory NewsPaper.fromFirestore(Map json) => NewsPaper(name: json['name'], description: json['description']);
+  factory ProductData.fromFirestore(Map json) => ProductData(
+        name: json['name'],
+        description: json['description'],
+        totalEvents: json['totalEvents'],
+        type: ProductType.values[json['type']],
+      );
 
-  get map => {
-        'name': name,
-        'description': description,
-        'totalEvents': events.length,
+  String get name => _name;
+
+  String get description => _description;
+
+  int get totalEvents => _totalEvents;
+
+  ProductType get type => _type;
+
+  Map<String, dynamic> get map => {
+        'name': _name,
+        'description': _description,
+        'totalEvents': _totalEvents,
+        'type': _type.index,
       };
 }

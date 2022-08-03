@@ -2,39 +2,40 @@ library news_paper;
 
 import 'dart:async';
 
+import 'package:ad/news_paper/news_paper_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../news_paper/news_paper_data.dart';
-import '../news_paper/news_paper_event.dart';
 import 'data_manager.dart';
 
 part 'news_paper_event_provider.dart';
 
-class NewsPaperProvider extends ChangeNotifier {
+class ProductDataProvider extends ChangeNotifier {
   static FirebaseFirestore firestore = FirebaseFirestore.instance;
   final CollectionReference<Map> newsPaperRef = firestore.collection('newsPaper');
-  final List<NewsPaper> _newsPapers;
+  final List<ProductData> _products;
   late DataManager dataManager;
 
   /// sigleton class
-  static NewsPaperProvider? mInstance;
+  static ProductDataProvider? mInstance;
 
-  NewsPaperProvider._internal()
+  ProductDataProvider._internal()
       : dataManager = DataManager(),
-        _newsPapers = DataManager().newsPapers;
+        _products = DataManager().products;
 
-  factory NewsPaperProvider() => mInstance ?? (mInstance = NewsPaperProvider._internal());
+  factory ProductDataProvider() => mInstance ?? (mInstance = ProductDataProvider._internal());
 
-  initialise() async {
+  Future<List<ProductData>> initialise() async {
     QuerySnapshot<Map> papers = await newsPaperRef.get();
-    newsPapers.clear();
+    _products.clear();
     for (QueryDocumentSnapshot<Map> value in papers.docs) {
-      newsPapers.add(NewsPaper.fromFirestore(value.data()));
+      _products.add(ProductData.fromFirestore(value.data()));
     }
-    dataManager.newsPapers = newsPapers;
+    dataManager.products = _products;
+    return _products;
   }
 
-  List<NewsPaper> get newsPapers => _newsPapers;
+  List<ProductData> get products => _products;
 
   StreamSubscription<QuerySnapshot>? newsPapersStream;
 
@@ -44,11 +45,11 @@ class NewsPaperProvider extends ChangeNotifier {
       newsPapersStream = null;
     }
     newsPapersStream = newsPaperRef.snapshots().listen((event) {
-      _newsPapers.clear();
+      _products.clear();
       for (QueryDocumentSnapshot<Map> value in event.docs) {
-        _newsPapers.add(NewsPaper.fromFirestore(value.data()));
+        _products.add(ProductData.fromFirestore(value.data()));
       }
-      dataManager.newsPapers = _newsPapers;
+      dataManager.products = _products;
       notifyListeners();
     });
   }

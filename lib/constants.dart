@@ -13,3 +13,15 @@ enum FirebaseResult {
   userNotFound,
   userAlreadyExist
 }
+
+enum ProductType {
+  tvChannel,
+  newsPaper,
+  billBoard,
+  onlineGame,
+  webpage,
+  youtube,
+  instagram,
+  fmRadio,
+  sponsorship,
+}

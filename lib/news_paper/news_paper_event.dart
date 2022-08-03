@@ -1,36 +1,35 @@
+import '../constants.dart';
 
-class NewsPaperEvent {
+class ProductEvent {
   final String _eventName;
-  final String _eventSpot;
   final int _price;
-  final int _pageNumber;
   final DateTime _dateTime;
+  final ProductType _type;
 
-  NewsPaperEvent(String eventName, String eventSpot, int price, int pageNumber, DateTime dateTime)
+  ProductEvent({required String eventName, required int price, required DateTime dateTime, required ProductType type})
       : _eventName = eventName,
-        _eventSpot = eventSpot,
         _price = price,
-        _pageNumber = pageNumber,
-        _dateTime = dateTime;
+        _dateTime = dateTime,
+        _type = type;
 
-  factory NewsPaperEvent.fromFirestore(Map json) => NewsPaperEvent(json['eventName'], json['eventSpot'], json['price'],
-      json['pageNumber'], DateTime.fromMillisecondsSinceEpoch(json['dateTime']));
+  factory ProductEvent.fromFirestore(Map json) => ProductEvent(
+      eventName: json['eventName'],
+      price: json['price'],
+      dateTime: DateTime.fromMillisecondsSinceEpoch(json['dateTime']),
+      type: ProductType.values[json['type']]);
 
-  get eventName => _eventName;
+  String get eventName => _eventName;
 
-  get eventSpot => _eventSpot;
+  int get price => _price;
 
-  get price => _price;
+  DateTime get dateTime => _dateTime;
 
-  get pageNumber => _pageNumber;
-
-  get dateTime => _dateTime;
+  ProductType get type => _type;
 
   get map => {
-        'dateTime': dateTime.millisecondsSinceEpoch,
         'eventName': eventName,
-        'eventSpot': eventSpot,
         'price': price,
-        'pageNumber': pageNumber
+        'dateTime': dateTime.millisecondsSinceEpoch,
+        'type': type.index,
       };
 }

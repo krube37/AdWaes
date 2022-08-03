@@ -14,16 +14,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   AuthManager authManager = AuthManager();
-  NewsPaperProvider newsPaperProvider = NewsPaperProvider();
-  newsPaperProvider.initialise();
+  // ProductDataProvider newsPaperProvider = ProductDataProvider();
   // todo : initialise variables in newspaper provider
 
   runApp(
     MultiProvider(
       providers: [
         StreamProvider<LocalUser?>(create: (context) => authManager.onAuthStateChange, initialData: null),
-        ChangeNotifierProvider<NewsPaperProvider>(create: (_) => NewsPaperProvider()),
-        ChangeNotifierProvider<NewsPaperEventProvider>(create: (_) => NewsPaperEventProvider()),
+        ChangeNotifierProvider<ProductDataProvider>(create: (_) => ProductDataProvider()),
+        ChangeNotifierProvider<ProductEventProvider>(create: (_) => ProductEventProvider()),
       ],
       child: Consumer<LocalUser?>(
         builder: (_, user, __) {
