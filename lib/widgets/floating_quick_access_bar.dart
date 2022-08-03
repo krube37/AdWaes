@@ -1,3 +1,4 @@
+import 'package:ad/constants.dart';
 import 'package:ad/main.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/home_page.dart';
@@ -51,7 +52,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
           if (items[i] == "BillBoard") {
             Navigator.pushNamed(context, Routes.BILL_BOARD);
           } else if (items[i] == "Newspaper") {
-            Navigator.pushNamed(context, Routes.NEWS_PAPER);
+            Navigator.pushNamed(context, Routes.NEWS_PAPER, arguments: ProductType.newsPaper);
           } else if (items[i] == "Media") {
             Navigator.pushNamed(context, Routes.MEDIA);
           } else if (items[i] == "Streaming") {
@@ -131,7 +132,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                   if (items[i] == "BillBoard") {
                                     Navigator.pushNamed(context, Routes.BILL_BOARD);
                                   } else if (items[i] == "Newspaper") {
-                                    Navigator.pushNamed(context, Routes.NEWS_PAPER);
+                                    Navigator.pushNamed(context, Routes.NEWS_PAPER, arguments: ProductType.newsPaper);
                                   } else if (items[i] == "Media") {
                                     Navigator.pushNamed(context, Routes.MEDIA);
                                   } else if (items[i] == "Streaming") {
@@ -197,7 +198,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                             context, Routes.BILL_BOARD);
                                       } else if (items[i] == "Newspaper") {
                                         Navigator.pushNamed(
-                                            context, Routes.NEWS_PAPER);
+                                            context, Routes.NEWS_PAPER, arguments: ProductType.newsPaper);
                                       } else if (items[i] == "Media") {
                                         Navigator.pushNamed(context, Routes.MEDIA);
                                       } else if (items[i] == "Streaming") {

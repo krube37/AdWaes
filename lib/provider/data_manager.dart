@@ -1,6 +1,7 @@
 import 'package:ad/media/media_data.dart';
+import 'package:ad/product/product_data.dart';
 
-import '../news_paper/news_paper_data.dart';
+
 
 class DataManager {
 

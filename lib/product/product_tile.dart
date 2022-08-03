@@ -1,6 +1,4 @@
-
-
-import 'package:ad/news_paper/news_paper_data.dart';
+import 'package:ad/product/product_data.dart';
 import 'package:flutter/material.dart';
 
 class ProductTile extends StatelessWidget {

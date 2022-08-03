@@ -2,17 +2,19 @@ library news_paper;
 
 import 'dart:async';
 
-import 'package:ad/news_paper/news_paper_event.dart';
+
+import 'package:ad/constants.dart';
+import 'package:ad/product/product_data.dart';
+import 'package:ad/product/product_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import '../news_paper/news_paper_data.dart';
+import 'package:flutter/cupertino.dart';
+
 import 'data_manager.dart';
 
-part 'news_paper_event_provider.dart';
+part 'product_event_provider.dart';
 
 class ProductDataProvider extends ChangeNotifier {
-  static FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final CollectionReference<Map> newsPaperRef = firestore.collection('newsPaper');
+  final CollectionReference<Map> productCollectionRef = FirebaseFirestore.instance.collection('newsPaper');
   final List<ProductData> _products;
   late DataManager dataManager;
 
@@ -25,8 +27,9 @@ class ProductDataProvider extends ChangeNotifier {
 
   factory ProductDataProvider() => mInstance ?? (mInstance = ProductDataProvider._internal());
 
-  Future<List<ProductData>> initialise() async {
-    QuerySnapshot<Map> papers = await newsPaperRef.get();
+  Future<List<ProductData>> getProductData({required ProductType type}) async {
+    final CollectionReference<Map> collectionRef = FirebaseFirestore.instance.collection(type.name);
+    QuerySnapshot<Map> papers = await collectionRef.get();
     _products.clear();
     for (QueryDocumentSnapshot<Map> value in papers.docs) {
       _products.add(ProductData.fromFirestore(value.data()));
@@ -44,7 +47,7 @@ class ProductDataProvider extends ChangeNotifier {
       newsPapersStream!.cancel();
       newsPapersStream = null;
     }
-    newsPapersStream = newsPaperRef.snapshots().listen((event) {
+    newsPapersStream = productCollectionRef.snapshots().listen((event) {
       _products.clear();
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         _products.add(ProductData.fromFirestore(value.data()));

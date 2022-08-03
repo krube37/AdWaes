@@ -1,5 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:ad/constants.dart';
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/media_page.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
@@ -34,7 +35,11 @@ class Routes {
       //  // widget =
       //   break;
       case NEWS_PAPER:
-        widget = const ProductPage();
+        if (args == null || args is! ProductType) {
+          widget = HomePage();
+        } else {
+          widget = ProductPage(productType: args);
+        }
         break;
       case MEDIA:
         widget = const MediaPage();

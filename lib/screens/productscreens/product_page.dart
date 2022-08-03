@@ -1,15 +1,18 @@
+import 'dart:math';
+
 import 'package:ad/constants.dart';
 import 'package:ad/globals.dart';
-import 'package:ad/news_paper/news_paper_data.dart';
-import 'package:ad/news_paper/news_paper_tile.dart';
+import 'package:ad/product/product_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../news_paper/news_paper_event.dart';
-import '../../provider/news_paper_provider.dart';
+import '../../product/product_event.dart';
+import '../../product/product_tile.dart';
+import '../../provider/product_data_provider.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({Key? key}) : super(key: key);
+  final ProductType productType;
+  const ProductPage({Key? key, required this.productType}) : super(key: key);
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -24,10 +27,11 @@ class _ProductPageState extends State<ProductPage> {
   bool _isListeningToEvent = false;
 
   @override
-  void didChangeDependencies() {
+  void initState() {
     productDataProvider = ProductDataProvider();
     productEventProvider = ProductEventProvider();
-    super.didChangeDependencies();
+    productDataProvider.listenToNewsPapers();
+    super.initState();
   }
 
   @override
@@ -43,7 +47,7 @@ class _ProductPageState extends State<ProductPage> {
     products = productDataProvider.products;
 
     return FutureBuilder(
-      future: productDataProvider.initialise(),
+      future: productDataProvider.getProductData(type: widget.productType),
       builder: (BuildContext context, AsyncSnapshot<List<ProductData>> snapshot) {
         if(!snapshot.hasData){
           return const Center(child: CircularProgressIndicator());
@@ -93,6 +97,7 @@ class _ProductPageState extends State<ProductPage> {
             appBar: getAppBar(MediaQuery.of(context).size),
             body: Consumer<ProductDataProvider>(
               builder: (context, newsPaperValue, _) {
+                products = Provider.of<ProductDataProvider>(context).products;
                 if (!_isListeningToEvent) {
                   productEventProvider.listenToEvents(products[selectedIndex].name);
                   _isListeningToEvent = true;
@@ -196,7 +201,7 @@ class _ProductPageState extends State<ProductPage> {
                                   ];
                                   ProductEventProvider.addNewsPaperData(
                                     ProductData(
-                                        name: 'The New York Times',
+                                        name: 'The Hindu ${Random().nextInt(100)}',
                                         totalEvents: 15,
                                         description: 'this is product data description string ',
                                         type: ProductType.newsPaper),
