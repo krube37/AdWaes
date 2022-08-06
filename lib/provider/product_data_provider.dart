@@ -49,6 +49,7 @@ class ProductDataProvider extends ChangeNotifier {
     }
     newsPapersStream = productCollectionRef.snapshots().listen((event) {
       _products.clear();
+      print("ProductDataProvider listenToNewsPapers: mInStance ${mInstance}");
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         _products.add(ProductData.fromFirestore(value.data()));
       }

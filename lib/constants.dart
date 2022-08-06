@@ -25,3 +25,29 @@ enum ProductType {
   fmRadio,
   sponsorship,
 }
+
+extension ProductTypeExtention on ProductType {
+
+  String getDisplayName(){
+    switch(this){
+      case ProductType.tvChannel:
+        return 'Tv Channel';
+      case ProductType.newsPaper:
+        return 'Newspaper';
+      case ProductType.billBoard:
+        return 'Billboard';
+      case ProductType.onlineGame:
+        return 'Online Game';
+      case ProductType.webpage:
+        return 'Webpage';
+      case ProductType.youtube:
+        return 'Youtube';
+      case ProductType.instagram:
+        return 'Instagram';
+      case ProductType.fmRadio:
+        return 'FM Radio';
+      case ProductType.sponsorship:
+        return 'Sponsorship';
+    }
+  }
+}
