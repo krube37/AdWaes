@@ -22,7 +22,6 @@ void main() async {
       providers: [
         StreamProvider<LocalUser?>(create: (context) => authManager.onAuthStateChange, initialData: null),
         ChangeNotifierProvider<ProductDataProvider>(create: (_) => ProductDataProvider()),
-        ChangeNotifierProvider<ProductEventProvider>(create: (_) => ProductEventProvider()),
       ],
       child: Consumer<LocalUser?>(
         builder: (_, user, __) {
