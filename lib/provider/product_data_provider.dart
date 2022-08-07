@@ -35,14 +35,14 @@ class ProductDataProvider extends ChangeNotifier {
 
   List<ProductEvent> get productEvents => _productEvents;
 
-  StreamSubscription<QuerySnapshot>? newsPapersStream;
+  StreamSubscription<QuerySnapshot>? productDataStream;
 
   listenToProductData(ProductType productType) {
-    if (newsPapersStream != null) {
-      newsPapersStream!.cancel();
-      newsPapersStream = null;
+    if (productDataStream != null) {
+      productDataStream!.cancel();
+      productDataStream = null;
     }
-    newsPapersStream = FirebaseFirestore.instance.collection(productType.name).snapshots().listen((event) {
+    productDataStream = FirebaseFirestore.instance.collection(productType.name).snapshots().listen((event) {
       _products.clear();
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         _products.add(ProductData.fromFirestore(value.data()));
@@ -92,25 +92,20 @@ class ProductDataProvider extends ChangeNotifier {
     }
   }
 
-  static removeNewsPaperData(String newsPaperName, ProductType type) async =>
-      await FirebaseFirestore.instance.collection(type.name).doc(newsPaperName).delete();
+  static removeProductData(String productName, ProductType type) async =>
+      await FirebaseFirestore.instance.collection(type.name).doc(productName).delete();
 
-  static addNewsPaperEvent(String newsPaperName, ProductEvent event) async {
-    DocumentReference ref = FirebaseFirestore.instance.collection(event.type.name).doc(newsPaperName);
+  static addProductEvent(String productName, ProductEvent event) async {
+    DocumentReference ref = FirebaseFirestore.instance.collection(event.type.name).doc(productName);
     await ref.collection('events').add(event.map);
   }
 
-  static deleteLastNewsPaperEvent(String newsPaper) async {
-    CollectionReference ref = FirebaseFirestore.instance.collection('newsPaper').doc(newsPaper).collection('events');
+  static deleteLastProductEvent(String productName, ProductType type) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection(type.name).doc(productName).collection('events');
     QuerySnapshot events = await ref.get();
 
     if (events.docs.isNotEmpty) {
       events.docs.last.reference.delete();
     }
-  }
-
-  static getTestNewsPaperData() async {
-    DocumentSnapshot snapshot = await FirebaseFirestore.instance.collection('Data').doc('NewsPaper').get();
-    DocumentReference reference = snapshot.reference;
   }
 }

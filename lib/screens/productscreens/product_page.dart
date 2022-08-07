@@ -20,7 +20,6 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  int cursorIndex = -1;
   int selectedIndex = 0;
   List<ProductData> products = [];
   List<ProductEvent> events = [];
@@ -52,8 +51,8 @@ class _ProductPageState extends State<ProductPage> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return const Center(
-            child: Text('Could not load Page!'),
+          return Center(
+            child: Text('Could not load Page! ${snapshot.error}'),
           );
         }
         products = snapshot.data!;
@@ -85,10 +84,9 @@ class _ProductPageState extends State<ProductPage> {
         return Scaffold(
           appBar: getAppBar(MediaQuery.of(context).size),
           body: Consumer<ProductDataProvider>(
-            builder: (context, newsPaperValue, _) {
+            builder: (context, productDataValue, _) {
               productDataProvider = Provider.of<ProductDataProvider>(context);
               products = productDataProvider.products;
-              print("_ProductPageState build: checkzzz products in cunsumer ${productDataProvider.products.map((e) => e.name)}");
               events = productDataProvider.productEvents;
 
               if (!_isListeningToEvent) {
@@ -114,20 +112,7 @@ class _ProductPageState extends State<ProductPage> {
                       children: [
                         Expanded(
                           flex: 1,
-                          child: ListView.builder(
-                              itemCount: products.length,
-                              itemBuilder: (context, index) {
-                                return ProductTile(
-                                    productData: products[index],
-                                    isTileSelected: selectedIndex == index,
-                                    onClick: () {
-                                      if (selectedIndex == index) return;
-                                      setState(() {
-                                        selectedIndex = index;
-                                        _isListeningToEvent = false;
-                                      });
-                                    });
-                              }),
+                          child: _productListView(),
                         ),
                         Expanded(
                           flex: 3,
@@ -145,37 +130,7 @@ class _ProductPageState extends State<ProductPage> {
                                       ),
                                       itemCount: events.length,
                                       itemBuilder: (context, index) {
-                                        return StatefulBuilder(
-                                          builder: (BuildContext context, void Function(void Function()) setState) {
-                                            return Padding(
-                                              padding: const EdgeInsets.all(3.0),
-                                              child: MouseRegion(
-                                                onEnter: (_) => setState(() => cursorIndex = index),
-                                                onExit: (_) => setState(() => cursorIndex = -1),
-                                                child: Card(
-                                                  shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(10),
-                                                      side: BorderSide(
-                                                        color: Colors.grey.shade400,
-                                                        width: 0.5,
-                                                      )),
-                                                  elevation: cursorIndex == index ? 10 : 0,
-                                                  child: InkWell(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    hoverColor: Colors.transparent,
-                                                    splashColor: Colors.transparent,
-                                                    onTap: () {},
-                                                    child: Container(
-                                                      decoration:
-                                                          BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                                                      child: Center(child: Text(events[index].eventName)),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
+                                        return _ProductEventTile(index: index, events: events);
                                       }),
                         ),
                         // todo: remove test code
@@ -207,7 +162,7 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                             ElevatedButton(
                                 onPressed: () {
-                                  ProductDataProvider.removeNewsPaperData(
+                                  ProductDataProvider.removeProductData(
                                       products[selectedIndex].name, widget.productType);
                                 },
                                 child: Text("delete")),
@@ -216,7 +171,7 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                             ElevatedButton(
                                 onPressed: () {
-                                  ProductDataProvider.addNewsPaperEvent(
+                                  ProductDataProvider.addProductEvent(
                                     '${products[selectedIndex].name}',
                                     ProductEvent(
                                         eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
@@ -231,7 +186,8 @@ class _ProductPageState extends State<ProductPage> {
                             ),
                             ElevatedButton(
                                 onPressed: () {
-                                  ProductDataProvider.deleteLastNewsPaperEvent(products[selectedIndex].name);
+                                  ProductDataProvider.deleteLastProductEvent(
+                                      products[selectedIndex].name, widget.productType);
                                 },
                                 child: Text("delete Event"))
                           ],
@@ -245,6 +201,65 @@ class _ProductPageState extends State<ProductPage> {
           ),
         );
       },
+    );
+  }
+
+  _productListView() => ListView.builder(
+      itemCount: products.length,
+      itemBuilder: (context, index) {
+        return ProductTile(
+            productData: products[index],
+            isTileSelected: selectedIndex == index,
+            onClick: () {
+              if (selectedIndex == index) return;
+              setState(() {
+                selectedIndex = index;
+                _isListeningToEvent = false;
+              });
+            });
+      });
+}
+
+class _ProductEventTile extends StatefulWidget {
+  final int index;
+  final List<ProductEvent> events;
+
+  const _ProductEventTile({Key? key, required this.index, required this.events}) : super(key: key);
+
+  @override
+  State<_ProductEventTile> createState() => _ProductEventTileState();
+}
+
+class _ProductEventTileState extends State<_ProductEventTile> {
+  int cursorIndex = -1;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => cursorIndex = widget.index),
+        onExit: (_) => setState(() => cursorIndex = -1),
+        child: Card(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(
+                color: Colors.grey.shade400,
+                width: 0.5,
+              )),
+          elevation: cursorIndex == widget.index ? 10 : 0,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            hoverColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            onTap: () {},
+            child: Container(
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+              child: Center(child: Text(widget.events[widget.index].eventName)),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

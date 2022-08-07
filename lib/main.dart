@@ -14,8 +14,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   AuthManager authManager = AuthManager();
-  // ProductDataProvider newsPaperProvider = ProductDataProvider();
-  // todo : initialise variables in newspaper provider
 
   runApp(
     MultiProvider(
