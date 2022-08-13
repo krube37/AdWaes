@@ -120,15 +120,20 @@ class _SignInCardState extends State<SignInCard> {
     try {
       _provider.setVerifyingOtpState();
       UserCredential user = await _otpSentResult!.confirm(_provider.otpTextController.text.trim());
-      _provider.setIdleState();
-      SnackBar snackBar = const SnackBar(
-        content: Text('Successfully logged in'),
-        behavior: SnackBarBehavior.floating,
-        width: 500.0,
-      );
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        Navigator.pop(context);
+
+      if(user.user != null){
+        // AdWiseUser adWiseUser = AdWiseUser(user.user!.uid, userName, phoneNumber)
+
+        _provider.setIdleState();
+        SnackBar snackBar = const SnackBar(
+          content: Text('Successfully logged in'),
+          behavior: SnackBarBehavior.floating,
+          width: 500.0,
+        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          Navigator.pop(context);
+        }
       }
     } catch (e) {
       _provider.setIdleState(otpErrorMessage: 'Incorrect OTP entered. Please try again.');

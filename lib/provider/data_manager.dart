@@ -1,4 +1,4 @@
-import 'package:ad/media/media_data.dart';
+import 'package:ad/AdWiseUser.dart';
 import 'package:ad/product/product_data.dart';
 
 
@@ -11,6 +11,7 @@ class DataManager {
   factory DataManager() => _mInstance;
 
   List<ProductData> products = [];
-  List<MediaData> media = [];
+  AdWiseUser? user;
+  // List<MediaData> media = [];
 
 }

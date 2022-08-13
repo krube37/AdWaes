@@ -48,6 +48,7 @@ class _ProductPageState extends State<ProductPage> {
     return FutureBuilder(
       future: productDataProvider.getProductData(type: widget.productType),
       builder: (BuildContext context, AsyncSnapshot<List<ProductData>> snapshot) {
+        print("_ProductPageState build: ${snapshot.data} ${snapshot.hasData} ${snapshot.hasError} ${snapshot.error}");
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -79,7 +80,7 @@ class _ProductPageState extends State<ProductPage> {
                     events,
                     widget.productType);
               },
-              child: Text("Add"));
+              child: const Text("Add"));
         }
 
         return Scaffold(
@@ -158,7 +159,7 @@ class _ProductPageState extends State<ProductPage> {
                                       widget.productType);
                                 },
                                 child: Text("Add")),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             ElevatedButton(
