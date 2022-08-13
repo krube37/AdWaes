@@ -48,7 +48,7 @@ class _TopBarState extends State<TopBar> {
                     style: TextStyle(
                       color: Color.fromARGB(255, 0, 0, 0),
                       fontSize: 48,
-                      fontFamily: 'Raleway',
+                      fontFamily: 'Ubuntu',
                       fontWeight: FontWeight.bold,
                       //letterSpacing: 3,
                     ),

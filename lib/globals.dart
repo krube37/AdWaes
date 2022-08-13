@@ -7,6 +7,13 @@ import 'package:responsive_builder/responsive_builder.dart';
 
 const primaryColor = Color(0xFF0449D1);
 
+
+
+final ThemeData defaultTheme = ThemeData(
+  fontFamily: "Ubuntu",
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+);
+
 PreferredSizeWidget getAppBar(Size screenSize) {
   DeviceScreenType screenType = getDeviceType(screenSize);
   bool isDesktopView = screenType == DeviceScreenType.desktop;
@@ -22,7 +29,7 @@ PreferredSizeWidget getAppBar(Size screenSize) {
               style: TextStyle(
                 color: Color.fromARGB(255, 255, 255, 255),
                 fontSize: 48,
-                fontFamily: 'Raleway',
+                fontFamily: 'Ubuntu',
                 fontWeight: FontWeight.bold,
                 //letterSpacing: 3,
               ),

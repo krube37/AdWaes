@@ -23,58 +23,63 @@ class AuthManager  {
   Stream<LocalUser?> get onAuthStateChange =>
       auth.authStateChanges().map((event) => event != null ? LocalUser.fromFirebaseUser(event) : null);
 
-  Future<FirebaseResult> createUser(String email, String password) async {
-    FirebaseProvider provider = FirebaseProvider();
-    try {
-      UserCredential credential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+  // Future<FirebaseResult> createUser(String email, String password) async {
+  //   FirebaseProvider provider = FirebaseProvider();
+  //   try {
+  //     UserCredential credential = await auth.createUserWithEmailAndPassword(email: email, password: password);
+  //
+  //     // await value.user!.sendEmailVerification();
+  //     // print("AuthManager createUserWithEmailPassword: success user email sent");
+  //     // auth
+  //     //     .sendSignInLinkToEmail(
+  //     //         email: email, actionCodeSettings: ActionCodeSettings(url: 'localhost', handleCodeInApp: true))
+  //     //     .catchError((error) {
+  //     //   print("AuthManager createUserWithEmailPassword: check error in signin intent too $error");
+  //     // });
+  //     // final user = auth.currentUser;
+  //     // print("AuthManager createUserWithEmailPassword: checkzzz current user $user");
+  //     // await user!.sendEmailVerification()
+  //     //   .catchError((error) => print("AuthManager createUserWithEmailPassword: checkzzzz on error $error"));
+  //
+  //     print("AuthManager createUserWithEmailPassword: User created ");
+  //     if (credential.user == null) return FirebaseResult.somethingWentWrong;
+  //     provider.updateActiveUser(LocalUser.fromFirebaseUser(credential.user!));
+  //     return FirebaseResult.success;
+  //   } catch (e) {
+  //     print("AuthManager createUserWithEmailPassword: Exception in creating user $e");
+  //     return FirebaseResult.somethingWentWrong;
+  //   }
+  // }
 
-      // await value.user!.sendEmailVerification();
-      // print("AuthManager createUserWithEmailPassword: success user email sent");
-      // auth
-      //     .sendSignInLinkToEmail(
-      //         email: email, actionCodeSettings: ActionCodeSettings(url: 'localhost', handleCodeInApp: true))
-      //     .catchError((error) {
-      //   print("AuthManager createUserWithEmailPassword: check error in signin intent too $error");
-      // });
-      // final user = auth.currentUser;
-      // print("AuthManager createUserWithEmailPassword: checkzzz current user $user");
-      // await user!.sendEmailVerification()
-      //   .catchError((error) => print("AuthManager createUserWithEmailPassword: checkzzzz on error $error"));
+  // Future<bool> signInWithEmail(String email, String password) async {
+  //   try {
+  //     UserCredential cred = await auth.signInWithEmailAndPassword(email: email, password: password);
+  //     print("AuthManager signInWithEmailPassword: sigin succeeded ${cred.toString()}");
+  //     return true;
+  //   } catch (e, stack) {
+  //     print("AuthManager signInWithEmailPassword: signin failed $e\n$stack");
+  //     return false;
+  //   }
+  // }
 
-      print("AuthManager createUserWithEmailPassword: User created ");
-      if (credential.user == null) return FirebaseResult.somethingWentWrong;
-      provider.updateActiveUser(LocalUser.fromFirebaseUser(credential.user!));
-      return FirebaseResult.success;
-    } catch (e) {
-      print("AuthManager createUserWithEmailPassword: Exception in creating user $e");
-      return FirebaseResult.somethingWentWrong;
-    }
-  }
+  // Future<bool> signInWithGoogle() async {
+  //   try {
+  //     GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+  //     final AuthCredential credential =
+  //         GoogleAuthProvider.credential(accessToken: googleAuth!.accessToken, idToken: googleAuth.idToken);
+  //     final authResult = await auth.signInWithCredential(credential);
+  //     print("AuthManager signInWithGoogle: google signed in $authResult");
+  //     return true;
+  //   } catch (e) {
+  //     print("AuthManager signInWithGoogle: firebase exception $e");
+  //     return false;
+  //   }
+  // }
 
-  Future<bool> signInWithEmail(String email, String password) async {
-    try {
-      UserCredential cred = await auth.signInWithEmailAndPassword(email: email, password: password);
-      print("AuthManager signInWithEmailPassword: sigin succeeded ${cred.toString()}");
-      return true;
-    } catch (e, stack) {
-      print("AuthManager signInWithEmailPassword: signin failed $e\n$stack");
-      return false;
-    }
-  }
-
-  Future<bool> signInWithGoogle() async {
-    try {
-      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-      final AuthCredential credential =
-          GoogleAuthProvider.credential(accessToken: googleAuth!.accessToken, idToken: googleAuth.idToken);
-      final authResult = await auth.signInWithCredential(credential);
-      print("AuthManager signInWithGoogle: google signed in $authResult");
-      return true;
-    } catch (e) {
-      print("AuthManager signInWithGoogle: firebase exception $e");
-      return false;
-    }
+  Future<ConfirmationResult> signInWithPhoneNumber(String phoneNumber) async {
+    print("AuthManager signInWithPhoneNumber: ");
+    return auth.signInWithPhoneNumber(phoneNumber);
   }
 
   Future<bool> signOut() async {
@@ -86,13 +91,5 @@ class AuthManager  {
       print("AuthManager signOut: unable to Sign out $e");
       return false;
     }
-  }
-
-  signInWithPhoneNumber(String phoneNumber) async {
-    print("AuthManager signInWithPhoneNumber: ");
-
-
-    ConfirmationResult result = await auth.signInWithPhoneNumber(phoneNumber, );
-    print("AuthManager signInWithPhoneNumber: result ${result.verificationId}");
   }
 }

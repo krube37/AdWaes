@@ -1,6 +1,5 @@
 import 'package:ad/firebase/auth_manager.dart';
-import 'package:ad/routes/routes.dart';
-import 'package:ad/utils/sign_in_utils.dart';
+import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:flutter/material.dart';
 
 class TopBarContents extends StatefulWidget {
@@ -49,7 +48,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                     style: TextStyle(
                       color: Color.fromARGB(255, 255, 255, 255),
                       fontSize: 48,
-                      fontFamily: 'Raleway',
+                      fontFamily: 'Ubuntu',
                       fontWeight: FontWeight.bold,
                       //letterSpacing: 3,
                     ),
@@ -65,7 +64,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                                 });
                               },
                               onTap: () {
-                                SignInUtils().showSignInDialog(context, TextEditingController(), TextEditingController());
+                                SignInManager().showSignInDialog(context);
                               },
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -97,47 +96,46 @@ class _TopBarContentsState extends State<TopBarContents> {
                                 ],
                               ),
                             ),
-                            SizedBox(
-                              width: screenSize.width / 50,
-                            ),
+                            // SizedBox(
+                            //   width: screenSize.width / 50,
+                            // ),
                             //SizedBox(width: screenSize.width / 55),
-                            InkWell(
-                              onHover: (value) {
-                                setState(() {
-                                  value ? _isHovering[3] = true : _isHovering[3] = false;
-                                });
-                              },
-                              onTap: () {
-                                Navigator.pushNamed(context, Routes.SIGN_UP);
-                              },
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'SignUp',
-                                    style: TextStyle(
-                                        color: _isHovering[3]
-                                            ? const Color.fromARGB(255, 255, 255, 255)
-                                            : const Color.fromARGB(255, 255, 255, 255),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),
-                                  ),
-                                  //const SizedBox(height: 5),
-                                  SizedBox(width: screenSize.width / 20),
-                                  Visibility(
-                                    maintainAnimation: true,
-                                    maintainState: true,
-                                    maintainSize: true,
-                                    visible: _isHovering[3],
-                                    child: Container(
-                                      height: 2,
-                                      width: 20,
-                                      color: const Color(0xFF051441),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
+                            // InkWell(
+                            //   onHover: (value) {
+                            //     setState(() {
+                            //       value ? _isHovering[3] = true : _isHovering[3] = false;
+                            //     });
+                            //   },
+                            //   onTap: () {
+                            //   },
+                            //   child: Column(
+                            //     mainAxisSize: MainAxisSize.min,
+                            //     children: [
+                            //       Text(
+                            //         'SignUp',
+                            //         style: TextStyle(
+                            //             color: _isHovering[3]
+                            //                 ? const Color.fromARGB(255, 255, 255, 255)
+                            //                 : const Color.fromARGB(255, 255, 255, 255),
+                            //             fontWeight: FontWeight.bold,
+                            //             fontSize: 18),
+                            //       ),
+                            //       //const SizedBox(height: 5),
+                            //       SizedBox(width: screenSize.width / 20),
+                            //       Visibility(
+                            //         maintainAnimation: true,
+                            //         maintainState: true,
+                            //         maintainSize: true,
+                            //         visible: _isHovering[3],
+                            //         child: Container(
+                            //           height: 2,
+                            //           width: 20,
+                            //           color: const Color(0xFF051441),
+                            //         ),
+                            //       )
+                            //     ],
+                            //   ),
+                            // )
                           ],
                         )
                       : InkWell(

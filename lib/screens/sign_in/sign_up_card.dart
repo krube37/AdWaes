@@ -1,4 +1,4 @@
-part of pre_process_sign_in;
+part of sign_in;
 
 class SignUpCard extends StatefulWidget {
   final TextEditingController firstNameTextController,
@@ -77,58 +77,58 @@ class _SignUpCardState extends State<SignUpCard> {
                 const SizedBox(
                   height: 20,
                 ),
-                _CustomButton(
-                  'Sign Up',
-                  onPressed: () async {
-                    String firstName = widget.firstNameTextController.text.trim();
-                    String lastName = widget.lastNameTextController.text.trim();
-                    String email = widget.emailTextController.text.trim();
-                    String password = widget.passwordTextController.text.trim();
-                    String confirmPass = widget.confirmPassTextController.text.trim();
-
-                    bool isValid = _validateFilledFields(firstName, email, password, confirmPass);
-
-
-                    if (!isValid) {
-                      setState(() {});
-                      return;
-                    }
-                    _provider.setLoadingState();
-
-                    bool isSuccess = await AuthManager().createUser(
-                        widget.emailTextController.text.trim(), widget.passwordTextController.text.trim()) == FirebaseResult.success;
-                    await Future.delayed(const Duration(seconds: 4));
-
-                    _provider.setIdleState(errorMessage: isSuccess ? null : "Something went wrong");
-
-                    if (isSuccess) {
-                      print("_DesktopPageState build: success ");
-                    } else {
-                      print("_DesktopPageState build: failed ");
-                    }
-                  },
-                ),
+                // _CustomButton(
+                //   'Sign Up',
+                //   onPressed: () async {
+                //     String firstName = widget.firstNameTextController.text.trim();
+                //     String lastName = widget.lastNameTextController.text.trim();
+                //     String email = widget.emailTextController.text.trim();
+                //     String password = widget.passwordTextController.text.trim();
+                //     String confirmPass = widget.confirmPassTextController.text.trim();
+                //
+                //     bool isValid = _validateFilledFields(firstName, email, password, confirmPass);
+                //
+                //
+                //     if (!isValid) {
+                //       setState(() {});
+                //       return;
+                //     }
+                //     _provider.setSendingOtpState();
+                //
+                //     // bool isSuccess = await AuthManager().createUser(
+                //     //     widget.emailTextController.text.trim(), widget.passwordTextController.text.trim()) == FirebaseResult.success;
+                //     // await Future.delayed(const Duration(seconds: 4));
+                //     //
+                //     // _provider.setIdleState(errorMessage: isSuccess ? null : "Something went wrong");
+                //     //
+                //     // if (isSuccess) {
+                //     //   print("_DesktopPageState build: success ");
+                //     // } else {
+                //     //   print("_DesktopPageState build: failed ");
+                //     // }
+                //   },
+                // ),
                 const SizedBox(
                   height: 10,
                 ),
-                Center(
-                    child: RichText(
-                  text: TextSpan(children: [
-                    const TextSpan(
-                      text: "Already have an account? ",
-                    ),
-                    TextSpan(
-                      text: 'Sign in',
-                      style: const TextStyle(
-                        color: Colors.blue,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.pushReplacementNamed(context, Routes.SIGN_IN);
-                        },
-                    )
-                  ]),
-                ))
+                // Center(
+                //     child: RichText(
+                //   text: TextSpan(children: [
+                //     const TextSpan(
+                //       text: "Already have an account? ",
+                //     ),
+                //     TextSpan(
+                //       text: 'Sign in',
+                //       style: const TextStyle(
+                //         color: Colors.blue,
+                //       ),
+                //       recognizer: TapGestureRecognizer()
+                //         ..onTap = () {
+                //           Navigator.pushReplacementNamed(context, Routes.SIGN_IN);
+                //         },
+                //     )
+                //   ]),
+                // ))
               ],
             ),
           ),

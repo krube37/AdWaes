@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ad/globals.dart';
 
 import '../routes/routes.dart';
 import 'home_page.dart';
@@ -20,9 +21,7 @@ class _AdWaesAppState extends State<AdWaesApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Web',
-        theme: ThemeData(
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
+        theme: defaultTheme,
         debugShowCheckedModeBanner: false,
         // initialRoute: "/home",
         onGenerateRoute: Routes.onGenerateRoute,

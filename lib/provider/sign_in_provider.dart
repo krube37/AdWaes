@@ -1,44 +1,52 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 
 class SignInProvider extends ChangeNotifier {
   static SignInProvider? _mInstance;
 
+  TextEditingController? _phoneNumberTextController, _otpTextController;
+
   SignInProvider() {
+    _phoneNumberTextController ??= TextEditingController();
+    _otpTextController ??= TextEditingController();
     _mInstance = this;
   }
 
-  bool _isLoading = false;
-  String? _errorMessage;
-  String? _googleErrorMessage;
-  bool _isGoogleLoading = false;
+  TextEditingController get phoneNumberTextController => _phoneNumberTextController!;
 
-  bool get isLoading => _isLoading;
+  TextEditingController get otpTextController => _otpTextController!;
 
-  String? get errorMessage => _errorMessage;
+  bool _sendingOtp = false;
+  bool _verifyingOtp = false;
+  String? _phoneNumberErrorMessage;
+  String? _otpErrorMessage;
 
-  bool get isGoogleLoading => _isGoogleLoading;
+  bool get isSendingOtp => _sendingOtp;
 
-  String? get googleErrorMessage => _googleErrorMessage;
+  bool get isVerifyingOtp => _verifyingOtp;
+
+  String? get phoneNumberErrorMessage => _phoneNumberErrorMessage;
+
+  String? get otpErrorMessage => _otpErrorMessage;
 
   static notify() => _mInstance?.notifyListeners();
 
-  setLoadingState() {
-    _isLoading = true;
-    _errorMessage = null;
+  setSendingOtpState() {
+    _sendingOtp = true;
+    _phoneNumberErrorMessage = null;
     notifyListeners();
   }
 
-  setGoogleLoadingState() {
-    _isGoogleLoading = true;
-    _errorMessage = null;
+  setVerifyingOtpState() {
+    _verifyingOtp = true;
+    _otpErrorMessage = null;
     notifyListeners();
   }
 
-  setIdleState({String? errorMessage, String? googleErrorMessage}) {
-    _isLoading = false;
-    _isGoogleLoading = false;
-    _errorMessage = errorMessage;
-    _googleErrorMessage = googleErrorMessage;
+  setIdleState({String? phoneNumberErrorMessage, String? otpErrorMessage}) {
+    _sendingOtp = false;
+    _verifyingOtp = false;
+    _phoneNumberErrorMessage = phoneNumberErrorMessage;
+    _otpErrorMessage = otpErrorMessage;
     notifyListeners();
   }
 }
