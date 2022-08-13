@@ -40,19 +40,24 @@ class _SignInPageState extends State<SignInPage> {
       builder: (context, _) {
         return Scaffold(
           appBar: getAppBar(MediaQuery.of(context).size),
-          body: Row(
-            children: [
-              isDesktopView ? const Expanded(flex: 10, child: Placeholder()) : const SizedBox(),
-              Expanded(
-                flex: 7,
-                child: SingleChildScrollView(
-                  child: SignInCard(
-                    emailTextController: _emailTextController,
-                    passwordTextController: _passwordTextController,
+          body: Center(
+            child: Row(
+              children: [
+//              isDesktopView
+                false  // todo: for now using same layout for all views
+                    ? const Expanded(flex: 10, child: Placeholder())
+                    : const SizedBox(),
+                Expanded(
+                  flex: 7,
+                  child: SingleChildScrollView(
+                    child: SignInCard(
+                      mobileNumberTextController: _emailTextController,
+                      passwordTextController: _passwordTextController,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

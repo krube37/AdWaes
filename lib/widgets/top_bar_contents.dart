@@ -1,5 +1,6 @@
 import 'package:ad/firebase/auth_manager.dart';
 import 'package:ad/routes/routes.dart';
+import 'package:ad/utils/sign_in_utils.dart';
 import 'package:flutter/material.dart';
 
 class TopBarContents extends StatefulWidget {
@@ -64,7 +65,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                                 });
                               },
                               onTap: () {
-                                Navigator.pushNamed(context, Routes.SIGN_IN);
+                                SignInUtils().showSignInDialog(context, TextEditingController(), TextEditingController());
                               },
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,

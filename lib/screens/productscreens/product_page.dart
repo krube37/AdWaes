@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:ad/constants.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_data.dart';
+import 'package:ad/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -252,7 +253,8 @@ class _ProductEventTileState extends State<_ProductEventTile> {
             borderRadius: BorderRadius.circular(10),
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
-            onTap: () {},
+            onTap: () =>
+                Navigator.pushNamed(context, Routes.PRODUCT_EVENT_DATA, arguments: widget.events[widget.index]),
             child: Container(
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: Center(child: Text(widget.events[widget.index].eventName)),

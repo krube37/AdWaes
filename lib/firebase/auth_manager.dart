@@ -1,6 +1,9 @@
 import 'package:ad/constants.dart';
+import 'package:ad/firebase_options.dart';
 import 'package:ad/provider/firebase_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_firebase_recaptcha/firebase_recaptcha_verifier_modal.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'local_user.dart';
@@ -48,7 +51,7 @@ class AuthManager  {
     }
   }
 
-  Future<bool> signIn(String email, String password) async {
+  Future<bool> signInWithEmail(String email, String password) async {
     try {
       UserCredential cred = await auth.signInWithEmailAndPassword(email: email, password: password);
       print("AuthManager signInWithEmailPassword: sigin succeeded ${cred.toString()}");
@@ -83,5 +86,13 @@ class AuthManager  {
       print("AuthManager signOut: unable to Sign out $e");
       return false;
     }
+  }
+
+  signInWithPhoneNumber(String phoneNumber) async {
+    print("AuthManager signInWithPhoneNumber: ");
+
+
+    ConfirmationResult result = await auth.signInWithPhoneNumber(phoneNumber, );
+    print("AuthManager signInWithPhoneNumber: result ${result.verificationId}");
   }
 }

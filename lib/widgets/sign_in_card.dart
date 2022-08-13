@@ -14,11 +14,11 @@ import '../routes/routes.dart';
 part 'sign_up_card.dart';
 
 class SignInCard extends StatefulWidget {
-  final TextEditingController emailTextController, passwordTextController;
+  final TextEditingController mobileNumberTextController, passwordTextController;
 
   const SignInCard({
     Key? key,
-    required this.emailTextController,
+    required this.mobileNumberTextController,
     required this.passwordTextController,
   }) : super(key: key);
 
@@ -27,11 +27,12 @@ class SignInCard extends StatefulWidget {
 }
 
 class _SignInCardState extends State<SignInCard> {
-  String? _emailErrorText, _passwordErrorText;
+  String? _phoneNumberErrorText, _passwordErrorText;
   late SignInProvider _provider;
 
   @override
   void initState() {
+    print("_SignInCardState initState: checkzzz into sigincard ");
     super.initState();
   }
 
@@ -46,62 +47,87 @@ class _SignInCardState extends State<SignInCard> {
     return Center(
       child: Container(
         width: 400,
+        height: 400,
         margin: const EdgeInsets.all(20.0),
         child: Card(
           elevation: 10,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
             child: Column(
               children: [
-                _CustomTextField(
-                  'Your Email Address',
-                  labelText: 'Email Address',
-                  controller: widget.emailTextController,
-                  errorText: _emailErrorText,
-                ),
-                _CustomTextField(
-                  'Your Password',
-                  labelText: 'Password',
-                  controller: widget.passwordTextController,
-                  errorText: _passwordErrorText,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                _CustomButton(
-                  'Sign In',
-                  onPressed: _onSignInButtonClicked,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                _CustomButton(
-                  'Sign in with Google',
-                  iconName: 'images/google_icon.png',
-                  onPressed: _onGoogleSignInClicked,
-                  isGoogleBtn: true,
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Center(
-                    child: RichText(
-                  text: TextSpan(children: [
-                    const TextSpan(
-                      text: "Don't have an Account? ",
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () => _onBackPressed,
+                      child: const Icon(Icons.arrow_back),
                     ),
-                    TextSpan(
-                      text: 'Sign up',
-                      style: const TextStyle(
-                        color: Colors.blue,
+                    const Expanded(child: SizedBox()),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(Icons.clear_rounded),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _CustomTextField(
+                        'Your Mobile Number',
+                        labelText: 'Mobile Number',
+                        controller: widget.mobileNumberTextController,
+                        errorText: _phoneNumberErrorText,
                       ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.pushReplacementNamed(context, Routes.SIGN_UP);
-                        },
-                    )
-                  ]),
-                ))
+                      // _CustomTextField(
+                      //   'Your Password',
+                      //   labelText: 'Password',
+                      //   controller: widget.passwordTextController,
+                      //   errorText: _passwordErrorText,
+                      // ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      _CustomButton(
+                        'Continue',
+                        onPressed: _onContinueButtonClicked,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10.0),
+                        child: Text('or'),
+                      ),
+                      _CustomButton(
+                        'Sign in with Google',
+                        iconName: 'images/google_icon.png',
+                        onPressed: _onGoogleSignInClicked,
+                        isGoogleBtn: true,
+                      ),
+                    ],
+                  ),
+                )
+                // const SizedBox(
+                //   height: 20,
+                // ),
+                // Center(
+                //     child: RichText(
+                //   text: TextSpan(children: [
+                //     const TextSpan(
+                //       text: "Don't have an Account? ",
+                //     ),
+                //     TextSpan(
+                //       text: 'Sign up',
+                //       style: const TextStyle(
+                //         color: Colors.blue,
+                //       ),
+                //       recognizer: TapGestureRecognizer()
+                //         ..onTap = () {
+                //           Navigator.pushReplacementNamed(context, Routes.SIGN_UP);
+                //         },
+                //     )
+                //   ]),
+                // ))
               ],
             ),
           ),
@@ -110,28 +136,25 @@ class _SignInCardState extends State<SignInCard> {
     );
   }
 
-  bool _validateFilledFields(String email, String password) {
+  bool _validateFilledFields(String phoneNumber) {
     bool isValid = true;
-    _emailErrorText = _passwordErrorText = null;
+    _phoneNumberErrorText = _passwordErrorText = null;
 
-    if (email.isEmpty) {
-      _emailErrorText = 'Email is Empty';
-      isValid = false;
-    } else if (_isInValidEmail(email)) {
-      _emailErrorText = 'Enter a valid email';
+    if (phoneNumber.isEmpty) {
+      _phoneNumberErrorText = 'Email is Empty';
       isValid = false;
     }
-    if (password.isEmpty) {
-      _passwordErrorText = 'Password is Empty';
-      isValid = false;
-    }
+    // else if (_isInValidEmail(phoneNumber)) {
+    //   _emailErrorText = 'Enter a valid email';
+    //   isValid = false;
+    // }
     return isValid;
   }
 
-  _onSignInButtonClicked() async {
-    String email = widget.emailTextController.text.trim();
-    String password = widget.passwordTextController.text.trim();
-    bool isValid = _validateFilledFields(email, password);
+  _onContinueButtonClicked() async {
+    String email = widget.mobileNumberTextController.text.trim();
+    // String password = widget.passwordTextController.text.trim();
+    bool isValid = _validateFilledFields(email);
 
     if (!isValid) {
       setState(() {});
@@ -141,18 +164,19 @@ class _SignInCardState extends State<SignInCard> {
     _provider.setLoadingState();
 
     // for now using boolean, later need to mention all firebase errors in UI
-    bool isSuccess =
-        await AuthManager().signIn(widget.emailTextController.text.trim(), widget.passwordTextController.text.trim());
+    // bool isSuccess = await AuthManager()
+    //     .signInWithEmail(widget.mobileNumberTextController.text.trim(), widget.passwordTextController.text.trim());
+    await AuthManager().signInWithPhoneNumber(widget.mobileNumberTextController.text.trim());
     await Future.delayed(const Duration(seconds: 4));
-    if (isSuccess) {
-      // User Signed In... navigate to home page
-      if (!mounted) return;
-      // Navigator.pushReplacementNamed(context, Routes.HOME_ROUTE);
-      print("_DesktopPageState build: success ");
-    } else {
-      _provider.setIdleState(errorMessage: 'Invalid credentials');
-      print("_DesktopPageState build: failed ");
-    }
+    // if (isSuccess) {
+    //   // User Signed In... navigate to home page
+    //   if (!mounted) return;
+    //   // Navigator.pushReplacementNamed(context, Routes.HOME_ROUTE);
+    //   print("_DesktopPageState build: success ");
+    // } else {
+    //   _provider.setIdleState(errorMessage: 'Invalid credentials');
+    //   print("_DesktopPageState build: failed ");
+    // }
   }
 
   _onGoogleSignInClicked() async {
@@ -162,6 +186,8 @@ class _SignInCardState extends State<SignInCard> {
     if (!mounted) return;
     Navigator.pushReplacementNamed(context, Routes.HOME_ROUTE);
   }
+
+  _onBackPressed() {}
 }
 
 bool _isInValidEmail(String email) => (!email.contains('@') ||
@@ -177,7 +203,13 @@ class _CustomTextField extends StatelessWidget {
   final String? labelText, errorText;
   final TextEditingController? controller;
 
-  const _CustomTextField(this.hintText, {Key? key, this.labelText, this.controller, this.errorText}) : super(key: key);
+  const _CustomTextField(
+    this.hintText, {
+    Key? key,
+    this.labelText,
+    this.controller,
+    this.errorText,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

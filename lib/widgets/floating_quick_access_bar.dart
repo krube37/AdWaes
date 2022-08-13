@@ -38,7 +38,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
           });
         },
         onTap: () {
-          Navigator.pushNamed(context, Routes.NEWS_PAPER, arguments: items[i]);
+          Navigator.pushNamed(context, Routes.PRODUCT_DATA, arguments: items[i]);
           // if (items[i] == "BillBoard") {
           //   Navigator.pushNamed(context, Routes.BILL_BOARD);
           // } else if (items[i] == "Newspaper") {
@@ -115,7 +115,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                     });
                                   },
                                   onTap: () {
-                                    Navigator.pushNamed(context, Routes.NEWS_PAPER, arguments: items[i]);
+                                    Navigator.pushNamed(context, Routes.PRODUCT_DATA, arguments: items[i]);
                                     // if (items[i] == "BillBoard") {
                                     //   Navigator.pushNamed(context, Routes.BILL_BOARD);
                                     // } else if (items[i] == "Newspaper") {
@@ -176,7 +176,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                         });
                                       },
                                       onTap: () {
-                                        Navigator.pushNamed(context, Routes.NEWS_PAPER, arguments: items[i]);
+                                        Navigator.pushNamed(context, Routes.PRODUCT_DATA, arguments: items[i]);
                                         // if (items[i] == "BillBoard") {
                                         //   Navigator.pushNamed(
                                         //       context, Routes.BILL_BOARD);

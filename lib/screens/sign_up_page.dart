@@ -40,22 +40,27 @@ class _SignUpPageState extends State<SignUpPage> {
 
           return Scaffold(
             appBar: getAppBar(screenSize),
-            body: Row(
-              children: [
-                isDesktopView ? const Expanded(flex: 10, child: Placeholder()) : const SizedBox(),
-                Expanded(
-                  flex: 7,
-                  child: SingleChildScrollView(
-                    child: SignUpCard(
-                      firstNameTextController: _firstNameTextController,
-                      lastNameTextController: _lastNameTextController,
-                      emailTextController: _emailTextController,
-                      passwordTextController: _passwordTextController,
-                      confirmPassTextController: _confirmPassTextController,
+            body: Center(
+              child: Row(
+                children: [
+//                isDesktopView
+                    false  //todo: for now using same layout
+                      ? const Expanded(flex: 10, child: Placeholder())
+                      : const SizedBox(),
+                  Expanded(
+                    flex: 7,
+                    child: SingleChildScrollView(
+                      child: SignUpCard(
+                        firstNameTextController: _firstNameTextController,
+                        lastNameTextController: _lastNameTextController,
+                        emailTextController: _emailTextController,
+                        passwordTextController: _passwordTextController,
+                        confirmPassTextController: _confirmPassTextController,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         });
