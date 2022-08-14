@@ -1,10 +1,13 @@
 library sign_in;
 
+import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
+import 'package:ad/provider/data_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../AdWiseUser.dart';
 import '../../firebase/auth_manager.dart';
 import '../../provider/sign_in_provider.dart';
 
@@ -54,14 +57,23 @@ class _SignInCardState extends State<SignInCard> {
               children: [
                 Row(
                   children: [
-                    InkWell(
-                      onTap: _onBackPressed,
-                      child: const Icon(Icons.arrow_back),
-                    ),
+                    if (waitingForOTP)
+                      InkWell(
+                        onTap: _onBackPressed,
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(Icons.arrow_back),
+                        ),
+                      ),
                     const Expanded(child: SizedBox()),
                     InkWell(
                       onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.clear_rounded),
+                      borderRadius: BorderRadius.circular(20.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(Icons.clear_rounded),
+                      ),
                     ),
                   ],
                 ),
@@ -82,7 +94,7 @@ class _SignInCardState extends State<SignInCard> {
     _phoneNumberErrorText = _otpErrorText = null;
 
     if (phoneNumber.isEmpty) {
-      _phoneNumberErrorText = 'Email is Empty';
+      _phoneNumberErrorText = 'phone Number is Empty';
       isValid = false;
     }
     return isValid;
@@ -119,10 +131,19 @@ class _SignInCardState extends State<SignInCard> {
   _onSigInButtonClicked() async {
     try {
       _provider.setVerifyingOtpState();
-      UserCredential user = await _otpSentResult!.confirm(_provider.otpTextController.text.trim());
+      UserCredential userCreds = await _otpSentResult!.confirm(_provider.otpTextController.text.trim());
 
-      if(user.user != null){
-        // AdWiseUser adWiseUser = AdWiseUser(user.user!.uid, userName, phoneNumber)
+      if (userCreds.user != null) {
+        bool isNewUser = userCreds.additionalUserInfo?.isNewUser ?? false;
+
+        AdWiseUser adWiseUser;
+        if (isNewUser) {
+          adWiseUser = AdWiseUser.newUser(userCreds.user!);
+          await FirestoreDatabase().updateNewUserDetails(adWiseUser);
+        } else {
+          adWiseUser = await FirestoreDatabase().getCurrentUserDetails(userCreds.user!.uid);
+        }
+        DataManager().user = adWiseUser;
 
         _provider.setIdleState();
         SnackBar snackBar = const SnackBar(
@@ -134,10 +155,12 @@ class _SignInCardState extends State<SignInCard> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           Navigator.pop(context);
         }
+      } else {
+        _provider.setIdleState(otpErrorMessage: 'Error signing in. Please try after sometime');
       }
-    } catch (e) {
+    } catch (e, stack) {
       _provider.setIdleState(otpErrorMessage: 'Incorrect OTP entered. Please try again.');
-      print("_SignInCardState _onSigInButtonClicked: wrong otp");
+      print("_SignInCardState _onSigInButtonClicked: wrong otp, $e\n$stack");
     }
   }
 
@@ -162,6 +185,7 @@ class _SignInCardState extends State<SignInCard> {
               labelText: 'Mobile Number',
               controller: _provider.phoneNumberTextController,
               errorText: _phoneNumberErrorText,
+              onFieldSubmitted: (_) => _onContinueButtonClicked,
             ),
             const SizedBox(
               height: 20,
@@ -178,7 +202,7 @@ class _SignInCardState extends State<SignInCard> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('Enter the 6 digit code sent to $phoneNumber'),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             _CustomTextField(
@@ -186,6 +210,7 @@ class _SignInCardState extends State<SignInCard> {
               labelText: 'Enter OTP',
               controller: _provider.otpTextController,
               errorText: _otpErrorText,
+              onFieldSubmitted: (_) => _onSigInButtonClicked,
             ),
             const SizedBox(
               height: 20,

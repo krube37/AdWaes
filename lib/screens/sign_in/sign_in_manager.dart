@@ -10,7 +10,7 @@ class SignInManager {
           return ChangeNotifierProvider(
             create: (_) => SignInProvider(),
             builder: (context, child) =>
-                SignInCard(),
+                const SignInCard(),
           );
         });
   }
@@ -21,6 +21,8 @@ class _CustomTextField extends StatelessWidget {
   final String hintText;
   final String? labelText, errorText;
   final TextEditingController? controller;
+  final Function(String)? onFieldSubmitted;
+
 
   const _CustomTextField(
       this.hintText, {
@@ -28,13 +30,14 @@ class _CustomTextField extends StatelessWidget {
         this.labelText,
         this.controller,
         this.errorText,
+        this.onFieldSubmitted,
       }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           hintText: hintText,
@@ -46,6 +49,7 @@ class _CustomTextField extends StatelessWidget {
               )),
           errorText: errorText,
         ),
+        onFieldSubmitted: onFieldSubmitted,
       ),
     );
   }

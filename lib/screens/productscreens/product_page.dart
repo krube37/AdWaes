@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:ad/constants.dart';
+import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/routes/routes.dart';
@@ -46,7 +47,7 @@ class _ProductPageState extends State<ProductPage> {
     products = productDataProvider.products;
 
     return FutureBuilder(
-      future: productDataProvider.getProductData(type: widget.productType),
+      future: FirestoreDatabase().getProductData(type: widget.productType),
       builder: (BuildContext context, AsyncSnapshot<List<ProductData>> snapshot) {
         print("_ProductPageState build: ${snapshot.data} ${snapshot.hasData} ${snapshot.hasError} ${snapshot.error}");
         if (!snapshot.hasData) {

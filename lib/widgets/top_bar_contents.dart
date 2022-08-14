@@ -1,4 +1,6 @@
 import 'package:ad/firebase/auth_manager.dart';
+import 'package:ad/provider/data_manager.dart';
+import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:flutter/material.dart';
 
@@ -145,8 +147,9 @@ class _TopBarContentsState extends State<TopBarContents> {
                             });
                           },
                           onTap: () {
-                            _authManager.signOut();
+                            Navigator.of(context).pushNamed(Routes.ACCOUNT_PAGE, arguments: DataManager().user);
                           },
+                          onDoubleTap: () => _authManager.signOut(),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

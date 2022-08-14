@@ -1,7 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:ad/AdWiseUser.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/product/product_event.dart';
+import 'package:ad/screens/account_page.dart';
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/product_event_page.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
@@ -12,6 +14,7 @@ class Routes {
   static const String BILL_BOARD = '/billboard';
   static const String PRODUCT_DATA = '/product-data';
   static const String PRODUCT_EVENT_DATA = '/product-event-data';
+  static const String ACCOUNT_PAGE = '/account';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     Widget widget;
@@ -34,6 +37,9 @@ class Routes {
         } else {
           widget = ProductEventPage(event: args);
         }
+        break;
+      case ACCOUNT_PAGE:
+        widget = AccountPage(user: args as AdWiseUser);
         break;
       default:
         widget = HomePage();
