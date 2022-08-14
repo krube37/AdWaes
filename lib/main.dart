@@ -1,11 +1,10 @@
+import 'package:ad/provider/data_manager.dart';
 import 'package:ad/provider/product_data_provider.dart';
 import 'package:ad/screens/adwaes_app.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'firebase/auth_manager.dart';
-import 'firebase/local_user.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -13,19 +12,19 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  AuthManager authManager = AuthManager();
+  print(" main: current user ${FirebaseAuth.instance.currentUser?.uid}");
+  DataManager dataManager = DataManager();
+  await dataManager.initialize();
 
   runApp(
     MultiProvider(
       providers: [
-        StreamProvider<LocalUser?>(create: (context) => authManager.onAuthStateChange, initialData: null),
+        ChangeNotifierProvider(create: (_) => dataManager),
         ChangeNotifierProvider<ProductDataProvider>(create: (_) => ProductDataProvider()),
       ],
-      child: Consumer<LocalUser?>(
-        builder: (_, user, __) {
-          print("_AdWaesAppState build: user $user");
-          AuthManager authManager = AuthManager();
-          authManager.user = user;
+      child: Consumer<DataManager>(
+        builder: (_, dataManagerValue, __) {
+          print("_AdWaesAppState build: user ${dataManagerValue.user}");
           return const AdWaesApp();
         },
       ),

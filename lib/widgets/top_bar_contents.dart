@@ -56,7 +56,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                     ),
                   ),
                   SizedBox(width: screenSize.width / 30),
-                  _authManager.user == null
+                  DataManager().user == null
                       ? Row(
                           children: [
                             InkWell(

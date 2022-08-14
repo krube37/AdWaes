@@ -1,5 +1,9 @@
+import 'package:ad/AdWiseUser.dart';
+import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_event.dart';
+import 'package:ad/screens/sign_in/sign_in_card.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +16,7 @@ class ProductEventPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isBookingBtnLoading = false;
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: getAppBar(screenSize),
@@ -87,6 +92,48 @@ class ProductEventPage extends StatelessWidget {
                           ),
                           child: Text('Contact details'),
                         ),
+                        Container(
+                          padding: const EdgeInsets.all(20.0),
+                          margin: const EdgeInsets.all(20.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: StatefulBuilder(builder: (context, setState) {
+                            print("ProductEventPage build: checkzz rebuild ");
+                            return IgnorePointer(
+                              ignoring: isBookingBtnLoading,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  if (FirebaseAuth.instance.currentUser == null) {
+                                    setState(() {
+                                      isBookingBtnLoading = true;
+                                    });
+                                    AdWiseUser? user = await SignInManager().showSignInDialog(context);
+                                    if (user == null) {
+                                      setState(() {
+                                        isBookingBtnLoading = false;
+                                      });
+                                      return;
+                                    }
+                                  }
+                                  // todo: book event
+                                  print("ProductEventPage build: booking implementation yet to be completed ");
+                                  bool isBookingSuccess = await FirestoreDatabase().bookEvent(_event);
+                                  print("ProductEventPage build: booking success ${isBookingSuccess}");
+
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: isBookingBtnLoading
+                                      ? const CircularProgressIndicator(
+                                          color: Colors.white,
+                                        )
+                                      : const Text('Book'),
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
                       ],
                     ),
                   ),
@@ -98,8 +145,7 @@ class ProductEventPage extends StatelessWidget {
                     ),
                     child: RichText(
                         text: TextSpan(children: [
-                      TextSpan(
-                          text: 'Description: \n\n', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      TextSpan(text: 'Description: \n\n', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       TextSpan(
                           text:
                               '     The Hindu ePaper is a Hindi language daily newspaper in India which is headquartered'

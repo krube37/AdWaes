@@ -68,7 +68,7 @@ class _SignInCardState extends State<SignInCard> {
                       ),
                     const Expanded(child: SizedBox()),
                     InkWell(
-                      onTap: () => Navigator.pop(context),
+                      onTap: () => Navigator.pop(context, null),
                       borderRadius: BorderRadius.circular(20.0),
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
@@ -153,7 +153,7 @@ class _SignInCardState extends State<SignInCard> {
         );
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          Navigator.pop(context);
+          Navigator.pop(context, adWiseUser);
         }
       } else {
         _provider.setIdleState(otpErrorMessage: 'Error signing in. Please try after sometime');
@@ -172,7 +172,7 @@ class _SignInCardState extends State<SignInCard> {
         waitingForOTP = false;
       });
     } else {
-      Navigator.pop(context);
+      Navigator.pop(context, null);
     }
   }
 

@@ -3,8 +3,8 @@ part of sign_in;
 
 
 class SignInManager {
-  showSignInDialog(BuildContext context) async {
-    await showDialog(
+  Future<AdWiseUser?> showSignInDialog(BuildContext context) async {
+    return await showDialog<AdWiseUser?>(
         context: context,
         builder: (context) {
           return ChangeNotifierProvider(

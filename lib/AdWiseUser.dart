@@ -17,7 +17,10 @@ class AdWiseUser {
     this.age,
     this.businessType,
     this.profilePhotoUrl,
-  }) : assert((emailId != null || isEmailVerified == false), 'if isEmailVerified is true, emailId should be provided');
+  }) : assert(
+          (emailId != null || isEmailVerified == false),
+          'if isEmailVerified is true, emailId should be provided',
+        );
 
   factory AdWiseUser.fromFirestoreDB(Map<String, dynamic> user) =>
       AdWiseUser(user['userId'], user['userName'], user['phoneNumber'],

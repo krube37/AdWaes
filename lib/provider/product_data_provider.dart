@@ -11,26 +11,29 @@ class ProductDataProvider extends ChangeNotifier {
   final List<ProductData> _products;
   final List<ProductEvent> _productEvents = [];
   late DataManager dataManager;
+  late FirestoreDatabase firestoreDatabase;
+  static ProductDataProvider? _mInstance;
 
   ProductDataProvider._internal()
       : dataManager = DataManager(),
+        firestoreDatabase = FirestoreDatabase(),
         _products = DataManager().products;
 
-  factory ProductDataProvider() => ProductDataProvider._internal();
+  factory ProductDataProvider() => _mInstance = ProductDataProvider._internal();
 
   List<ProductData> get products => _products;
 
   List<ProductEvent> get productEvents => _productEvents;
 
-  listenToProductData(ProductType productType) => FirestoreDatabase().listenToProductData(productType, (products) {
+  listenToProductData(ProductType productType) => firestoreDatabase.listenToProductData(productType, (products) {
         _products
           ..clear()
           ..addAll(products);
         notifyListeners();
       });
 
-  listenToEvents(ProductType type, String productDataName) =>
-      FirestoreDatabase().listenToEvents(type, productDataName, (productEvents) {
+  listenToEvents(ProductType type, String productDataId) =>
+      firestoreDatabase.listenToEvents(type, productDataId, (productEvents) {
         _productEvents
           ..clear()
           ..addAll(productEvents);
@@ -39,28 +42,35 @@ class ProductDataProvider extends ChangeNotifier {
 
   // todo remove test code.
   static addProductData(ProductData product, List<ProductEvent> events, ProductType type) async {
-    DocumentReference ref = FirebaseFirestore.instance.collection(type.name).doc(product.name);
+    DocumentReference ref = FirebaseFirestore.instance.collection(type.name).doc(product.productId);
     await ref.set(product.map);
     CollectionReference eventsRef = ref.collection('events');
     for (ProductEvent event in events) {
-      await eventsRef.add(event.map);
+      await eventsRef.doc(event.eventId).set(event.map);
     }
   }
 
-  static removeProductData(String productName, ProductType type) async =>
-      await FirebaseFirestore.instance.collection(type.name).doc(productName).delete();
+  static removeProductData(String productId, ProductType type) async =>
+      await FirebaseFirestore.instance.collection(type.name).doc(productId).delete();
 
-  static addProductEvent(String productName, ProductEvent event) async {
-    DocumentReference ref = FirebaseFirestore.instance.collection(event.type.name).doc(productName);
-    await ref.collection('events').add(event.map);
+  static addProductEvent(String productId, ProductEvent event) async {
+    DocumentReference ref = FirebaseFirestore.instance.collection(event.type.name).doc(productId);
+    await ref.collection('events').doc(event.eventId).set(event.map);
   }
 
-  static deleteLastProductEvent(String productName, ProductType type) async {
-    CollectionReference ref = FirebaseFirestore.instance.collection(type.name).doc(productName).collection('events');
+  static deleteLastProductEvent(String productId, ProductType type) async {
+    CollectionReference ref = FirebaseFirestore.instance.collection(type.name).doc(productId).collection('events');
     QuerySnapshot events = await ref.get();
 
     if (events.docs.isNotEmpty) {
       events.docs.last.reference.delete();
     }
   }
+
+  disposeProvider() {
+    _mInstance?.dispose();
+    _mInstance = null;
+  }
+
+  static notify() => _mInstance?.notifyListeners();
 }
