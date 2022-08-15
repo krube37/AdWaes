@@ -1,3 +1,5 @@
+import 'package:ad/routes/route_delegate.dart';
+import 'package:ad/routes/route_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:ad/globals.dart';
 
@@ -19,12 +21,13 @@ class _AdWaesAppState extends State<AdWaesApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Web',
-        theme: defaultTheme,
-        debugShowCheckedModeBanner: false,
-        // initialRoute: "/home",
-        onGenerateRoute: Routes.onGenerateRoute,
-        home:HomePage());
+    return MaterialApp.router(
+      title: 'Adwisor',
+      theme: defaultTheme,
+      debugShowCheckedModeBanner: false,
+      routerDelegate: RouteDelegate(),
+      routeInformationParser: RouteParser(),
+      builder: (context, child) => child!,
+    );
   }
 }

@@ -19,7 +19,13 @@ class ProductDataProvider extends ChangeNotifier {
         firestoreDatabase = FirestoreDatabase(),
         _products = DataManager().products;
 
-  factory ProductDataProvider() => _mInstance = ProductDataProvider._internal();
+  factory ProductDataProvider() {
+    if (_mInstance != null) {
+      _mInstance!._products.addAll(DataManager().products);
+      return _mInstance!;
+    }
+    return ProductDataProvider._internal();
+  }
 
   List<ProductData> get products => _products;
 
@@ -42,7 +48,7 @@ class ProductDataProvider extends ChangeNotifier {
 
   // todo remove test code.
   static addProductData(ProductData product, List<ProductEvent> events, ProductType type) async {
-    DocumentReference ref = FirebaseFirestore.instance.collection(type.name).doc(product.productId);
+    DocumentReference ref = FirebaseFirestore.instance.collection(type.name).doc(product.userName);
     await ref.set(product.map);
     CollectionReference eventsRef = ref.collection('events');
     for (ProductEvent event in events) {
@@ -65,11 +71,6 @@ class ProductDataProvider extends ChangeNotifier {
     if (events.docs.isNotEmpty) {
       events.docs.last.reference.delete();
     }
-  }
-
-  disposeProvider() {
-    _mInstance?.dispose();
-    _mInstance = null;
   }
 
   static notify() => _mInstance?.notifyListeners();

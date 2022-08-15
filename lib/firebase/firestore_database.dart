@@ -12,6 +12,7 @@ import '../constants.dart';
 
 class FirestoreDatabase {
   StreamSubscription<QuerySnapshot>? productDataStream;
+  StreamSubscription<QuerySnapshot>? eventsStream;
   final FirebaseFirestore _mInstance;
   final DataManager _dataManager;
 
@@ -50,7 +51,8 @@ class FirestoreDatabase {
     return products;
   }
 
-  listenToProductData(ProductType productType, Function(List<ProductData> productData)? onUpdate) {
+  StreamSubscription<QuerySnapshot> listenToProductData(
+      ProductType productType, Function(List<ProductData> productData)? onUpdate) {
     DataManager dataManager = DataManager();
     if (productDataStream != null) {
       productDataStream!.cancel();
@@ -64,14 +66,14 @@ class FirestoreDatabase {
       dataManager.products = products;
       onUpdate?.call(products);
     });
+    return productDataStream!;
   }
 
   CollectionReference<Map> getEventCollectionRef(ProductType type, String productDataId) =>
       _mInstance.collection(type.name).doc(productDataId).collection(eventsCollectionName);
 
-  StreamSubscription<QuerySnapshot>? eventsStream;
-
-  listenToEvents(ProductType type, String productDataId, Function(List<ProductEvent> productEvent)? onUpdate) {
+  StreamSubscription<QuerySnapshot> listenToEvents(
+      ProductType type, String productDataId, Function(List<ProductEvent> productEvent)? onUpdate) {
     if (eventsStream != null) {
       eventsStream!.cancel();
       eventsStream = null;
@@ -83,6 +85,16 @@ class FirestoreDatabase {
       }
       onUpdate?.call(productEvents);
     });
+    return eventsStream!;
+  }
+
+  Future<ProductEvent?> getEventById(ProductType type, String eventId) async {
+    try {
+      // getEventCollectionRef(type, productDataId)
+    } catch (e) {
+      print("FirestoreDatabase getEventById: error fetching event $eventId, erro $e");
+      return null;
+    }
   }
 
   /// first creates same [event] in user bookedEvents location (users/userId/bookedEvents/eventsId)
@@ -104,7 +116,7 @@ class FirestoreDatabase {
           .collection(eventsCollectionName)
           .doc(event.eventId)
           .delete();
-     // ProductDataProvider.notify();
+      // ProductDataProvider.notify();
       return true;
     } catch (e, stack) {
       print("FirestoreDatabase updateBookingDetails: error booking event $e\n$stack");

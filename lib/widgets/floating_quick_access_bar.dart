@@ -1,5 +1,6 @@
 import 'package:ad/constants.dart';
 import 'package:ad/main.dart';
+import 'package:ad/product/product_data.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/second_page.dart';
@@ -10,9 +11,11 @@ class FloatingQuickAccessBar extends StatefulWidget {
   const FloatingQuickAccessBar({
     Key? key,
     required this.screenSize,
+    required this.navigateToProductsPage,
   }) : super(key: key);
 
   final Size screenSize;
+  final Function(ProductType productType) navigateToProductsPage;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -38,7 +41,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
           });
         },
         onTap: () {
-          Navigator.pushNamed(context, Routes.PRODUCT_DATA, arguments: items[i]);
+          widget.navigateToProductsPage.call(items[i]);
           // if (items[i] == "BillBoard") {
           //   Navigator.pushNamed(context, Routes.BILL_BOARD);
           // } else if (items[i] == "Newspaper") {
@@ -115,7 +118,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                     });
                                   },
                                   onTap: () {
-                                    Navigator.pushNamed(context, Routes.PRODUCT_DATA, arguments: items[i]);
+                                    widget.navigateToProductsPage.call(items[i]);
                                     // if (items[i] == "BillBoard") {
                                     //   Navigator.pushNamed(context, Routes.BILL_BOARD);
                                     // } else if (items[i] == "Newspaper") {
@@ -176,7 +179,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                         });
                                       },
                                       onTap: () {
-                                        Navigator.pushNamed(context, Routes.PRODUCT_DATA, arguments: items[i]);
+                                        widget.navigateToProductsPage.call(items[i]);
                                         // if (items[i] == "BillBoard") {
                                         //   Navigator.pushNamed(
                                         //       context, Routes.BILL_BOARD);

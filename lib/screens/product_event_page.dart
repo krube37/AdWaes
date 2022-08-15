@@ -25,7 +25,7 @@ class ProductEventPage extends StatelessWidget {
           color: Colors.grey.shade200,
           alignment: Alignment.center,
           child: Container(
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
               maxWidth: 800,
             ),
             child: Padding(
@@ -36,10 +36,10 @@ class ProductEventPage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Text(
                       _event.eventName,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -48,11 +48,11 @@ class ProductEventPage extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Container(
-                      constraints: BoxConstraints(
+                      constraints: const BoxConstraints(
                         maxWidth: 800,
                         maxHeight: 700,
                       ),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                       ),
                       child: Padding(
@@ -68,18 +68,18 @@ class ProductEventPage extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(20.0),
                           margin: const EdgeInsets.all(20.0),
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.white,
                           ),
                           child: Text(
                             '\u20B9${_event.price}',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
                           padding: const EdgeInsets.all(20.0),
                           margin: const EdgeInsets.all(20.0),
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.white,
                           ),
                           child: Text('Date of Event : ${DateFormat('dd/MM/YYYY').format(_event.dateTime)}'),
@@ -87,15 +87,15 @@ class ProductEventPage extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(20.0),
                           margin: const EdgeInsets.all(20.0),
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.white,
                           ),
-                          child: Text('Contact details'),
+                          child: const Text('Contact details'),
                         ),
                         Container(
                           padding: const EdgeInsets.all(20.0),
                           margin: const EdgeInsets.all(20.0),
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.white,
                           ),
                           child: StatefulBuilder(builder: (context, setState) {
@@ -140,11 +140,11 @@ class ProductEventPage extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(20.0),
                     margin: const EdgeInsets.all(20.0),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.white,
                     ),
                     child: RichText(
-                        text: TextSpan(children: [
+                        text: const TextSpan(children: [
                       TextSpan(text: 'Description: \n\n', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       TextSpan(
                           text:

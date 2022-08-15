@@ -1,18 +1,7 @@
-
-
-
-
 /// firebase signIn/signUp errors and success enum
 ///
 
-enum FirebaseResult {
-  success,
-  somethingWentWrong,
-  invalidCredentials,
-  passwordWrong,
-  userNotFound,
-  userAlreadyExist
-}
+enum FirebaseResult { success, somethingWentWrong, invalidCredentials, passwordWrong, userNotFound, userAlreadyExist }
 
 enum ProductType {
   tvChannel,
@@ -27,9 +16,8 @@ enum ProductType {
 }
 
 extension ProductTypeExtention on ProductType {
-
-  String getDisplayName(){
-    switch(this){
+  String getDisplayName() {
+    switch (this) {
       case ProductType.tvChannel:
         return 'Tv Channel';
       case ProductType.newsPaper:
@@ -48,6 +36,14 @@ extension ProductTypeExtention on ProductType {
         return 'FM Radio';
       case ProductType.sponsorship:
         return 'Sponsorship';
+    }
+  }
+
+  static ProductType? getTypeByName(String name) {
+    try {
+      return ProductType.values.firstWhere((element) => element.name == name);
+    } catch (e) {
+      return null;
     }
   }
 }

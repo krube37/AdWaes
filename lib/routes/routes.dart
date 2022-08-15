@@ -1,50 +1,63 @@
-// ignore_for_file: constant_identifier_names
-
-import 'package:ad/AdWiseUser.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/product/product_event.dart';
-import 'package:ad/screens/account_page.dart';
-import 'package:ad/screens/home_page.dart';
-import 'package:ad/screens/product_event_page.dart';
-import 'package:ad/screens/productscreens/product_page.dart';
-import 'package:flutter/material.dart';
+
+enum RouteState {
+  home,
+  product,
+  company,
+  invalidProduct,
+  productEvent,
+  invalidProductEvent,
+  error,
+}
 
 class Routes {
-  static const String HOME_ROUTE = '/home';
-  static const String BILL_BOARD = '/billboard';
-  static const String PRODUCT_DATA = '/product-data';
-  static const String PRODUCT_EVENT_DATA = '/product-event-data';
-  static const String ACCOUNT_PAGE = '/account';
+  final String path;
+  final RouteState state;
 
-  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
-    Widget widget;
-    var args = settings.arguments;
+  ProductEvent? event;
+  ProductType? productType;
+  String? productUserName;
 
-    switch (settings.name) {
-      case HOME_ROUTE:
-        widget = HomePage();
-        break;
-      case PRODUCT_DATA:
-        if (args == null || args is! ProductType) {
-          widget = HomePage();
-        } else {
-          widget = ProductPage(productType: args);
-        }
-        break;
-      case PRODUCT_EVENT_DATA:
-        if (args == null || args is! ProductEvent) {
-          widget = HomePage();
-        } else {
-          widget = ProductEventPage(event: args);
-        }
-        break;
-      case ACCOUNT_PAGE:
-        widget = AccountPage(user: args as AdWiseUser);
-        break;
-      default:
-        widget = HomePage();
-        break;
-    }
-    return MaterialPageRoute(builder: (_) => widget, settings: settings);
-  }
+  Routes.home()
+      : path = '/',
+        state = RouteState.home;
+
+  Routes.product(this.productType)
+      : path = '/p/${productType!.name}',
+        state = RouteState.product;
+
+  Routes.invalidProduct()
+      : path = '/p/404',
+        state = RouteState.invalidProduct;
+
+  Routes.company(this.productType, this.productUserName)
+      : path = '/p/${productType!.name}/$productUserName',
+        state = RouteState.company;
+
+  Routes.productEvent(this.productType, this.productUserName, this.event)
+      : path = '/p/${productType!.name}/$productUserName/${event!.eventId}',
+        state = RouteState.productEvent;
+
+  Routes.invalidProductEvent(this.productType, this.productUserName)
+      : path = '/p/${productType!.name}/$productUserName/404',
+        state = RouteState.invalidProductEvent;
+
+  Routes.unknown()
+      : path = '/error',
+        state = RouteState.error;
+
+  bool get isHomePage => state == RouteState.home;
+
+  bool get isProductPage => (state == RouteState.product && productType != null);
+
+  bool get isCompanyPage => (state == RouteState.company);
+
+  bool get isProductErrorPage => (state == RouteState.product && productType == null);
+
+  bool get isProductEventPage => (state == RouteState.productEvent && event != null);
+
+  bool get isProductEventErrorPage => (state == RouteState.productEvent && event == null);
+
+  bool get isErrorPage => state == RouteState.error;
 }

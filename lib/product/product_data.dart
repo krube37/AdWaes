@@ -1,31 +1,31 @@
 import '../constants.dart';
 
 class ProductData {
-  final String _productId, _name, _description;
+  final String _userName, _name, _description;
   final int _totalEvents;
   final ProductType _type;
 
   ProductData({
-    required String productId,
+    required String userName,
     required String name,
     required String description,
     int totalEvents = 0,
     required type,
-  })  : _productId = productId,
+  })  : _userName = userName,
         _name = name,
         _description = description,
         _totalEvents = totalEvents,
         _type = type;
 
   factory ProductData.fromFirestore(Map json) => ProductData(
-        productId: json['productId'],
+        userName: json['userName'],
         name: json['name'],
         description: json['description'],
         totalEvents: json['totalEvents'],
         type: ProductType.values[json['type']],
       );
 
-  String get productId => _productId;
+  String get userName => _userName;
 
   String get name => _name;
 
@@ -36,7 +36,7 @@ class ProductData {
   ProductType get type => _type;
 
   Map<String, dynamic> get map => {
-        'productId': _productId,
+        'userName': _userName,
         'name': _name,
         'description': _description,
         'totalEvents': _totalEvents,

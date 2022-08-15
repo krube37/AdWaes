@@ -15,8 +15,12 @@ import '../../provider/product_data_provider.dart';
 
 class ProductPage extends StatefulWidget {
   final ProductType productType;
+  final Function(ProductType type, String companyUserName, ProductEvent productEvent) navigateToProductEventPage;
+  final Function(ProductType type, String companyUserName) navigateToCompany;
 
-  const ProductPage({Key? key, required this.productType}) : super(key: key);
+  const ProductPage(
+      {Key? key, required this.productType, required this.navigateToProductEventPage, required this.navigateToCompany})
+      : super(key: key);
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -39,7 +43,6 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void dispose() {
     print("_ProductPageState dispose: ");
-    productDataProvider.dispose();
     super.dispose();
   }
 
@@ -51,7 +54,6 @@ class _ProductPageState extends State<ProductPage> {
     return FutureBuilder(
       future: FirestoreDatabase().getProductData(type: widget.productType),
       builder: (BuildContext context, AsyncSnapshot<List<ProductData>> snapshot) {
-        print("_ProductPageState build: ${snapshot.data} ${snapshot.hasData} ${snapshot.hasError} ${snapshot.error}");
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -61,14 +63,13 @@ class _ProductPageState extends State<ProductPage> {
           );
         }
         products = snapshot.data!;
-        print("_ProductPageState build: checkzzz snapshot ${snapshot.data}");
 
         //todo: remove test code.
         if (products.isEmpty) {
           return ElevatedButton(
               onPressed: () {
                 ProductData data = ProductData(
-                    productId: const Uuid().v1(),
+                    userName: 'username_${const Uuid().v1()}',
                     name: '${widget.productType.name} ${Random().nextInt(100)}',
                     totalEvents: 15,
                     description: 'this is product data description string ',
@@ -80,7 +81,7 @@ class _ProductPageState extends State<ProductPage> {
                       price: 2000,
                       dateTime: DateTime.now(),
                       type: widget.productType,
-                      productId: data.productId),
+                      productId: data.userName),
                 ];
                 ProductDataProvider.addProductData(data, events, widget.productType);
               },
@@ -91,12 +92,21 @@ class _ProductPageState extends State<ProductPage> {
           appBar: getAppBar(MediaQuery.of(context).size),
           body: Consumer<ProductDataProvider>(
             builder: (context, productDataValue, _) {
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                // widget.navigateToCompany.call(widget.productType, products[selectedIndex].userName);
+                Router.of(context).routerDelegate
+                  .setNewRoutePath(Routes.company(widget.productType, products[selectedIndex].userName));
+                Router.navigate(context, () {
+
+                });
+              });
+
               productDataProvider = Provider.of<ProductDataProvider>(context);
               products = productDataProvider.products;
               events = productDataProvider.productEvents;
 
               if (!_isListeningToEvent) {
-                productDataProvider.listenToEvents(widget.productType, products[selectedIndex].productId);
+                productDataProvider.listenToEvents(widget.productType, products[selectedIndex].userName);
                 productDataProvider.listenToProductData(widget.productType);
                 _isListeningToEvent = true;
               }
@@ -136,7 +146,12 @@ class _ProductPageState extends State<ProductPage> {
                                       ),
                                       itemCount: events.length,
                                       itemBuilder: (context, index) {
-                                        return _ProductEventTile(index: index, events: events);
+                                        return _ProductEventTile(
+                                          index: index,
+                                          event: events[index],
+                                          productData: products[selectedIndex],
+                                          navigateToEventsPage: widget.navigateToProductEventPage,
+                                        );
                                       }),
                         ),
                         // todo: remove test code
@@ -146,7 +161,7 @@ class _ProductPageState extends State<ProductPage> {
                             ElevatedButton(
                                 onPressed: () {
                                   ProductData data = ProductData(
-                                      productId: const Uuid().v1(),
+                                      userName: 'username_${const Uuid().v1()}',
                                       name: '${widget.productType.name} ${Random().nextInt(100)}',
                                       totalEvents: 15,
                                       description: 'this is product data description string ',
@@ -159,7 +174,7 @@ class _ProductPageState extends State<ProductPage> {
                                         price: 2000,
                                         dateTime: DateTime.now(),
                                         type: widget.productType,
-                                        productId: data.productId),
+                                        productId: data.userName),
                                   ];
 
                                   ProductDataProvider.addProductData(data, events, widget.productType);
@@ -171,7 +186,7 @@ class _ProductPageState extends State<ProductPage> {
                             ElevatedButton(
                                 onPressed: () {
                                   ProductDataProvider.removeProductData(
-                                      products[selectedIndex].productId, widget.productType);
+                                      products[selectedIndex].userName, widget.productType);
                                 },
                                 child: Text("delete")),
                             SizedBox(
@@ -180,14 +195,14 @@ class _ProductPageState extends State<ProductPage> {
                             ElevatedButton(
                                 onPressed: () {
                                   ProductDataProvider.addProductEvent(
-                                    '${products[selectedIndex].productId}',
+                                    '${products[selectedIndex].userName}',
                                     ProductEvent(
                                         eventId: const Uuid().v1(),
                                         eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
                                         price: 2000,
                                         dateTime: DateTime.now(),
                                         type: widget.productType,
-                                        productId: products[selectedIndex].productId),
+                                        productId: products[selectedIndex].userName),
                                   );
                                 },
                                 child: Text("add Event")),
@@ -197,7 +212,7 @@ class _ProductPageState extends State<ProductPage> {
                             ElevatedButton(
                                 onPressed: () {
                                   ProductDataProvider.deleteLastProductEvent(
-                                      products[selectedIndex].productId, widget.productType);
+                                      products[selectedIndex].userName, widget.productType);
                                 },
                                 child: Text("delete Event"))
                           ],
@@ -232,9 +247,13 @@ class _ProductPageState extends State<ProductPage> {
 
 class _ProductEventTile extends StatefulWidget {
   final int index;
-  final List<ProductEvent> events;
+  final ProductEvent event;
+  final ProductData productData;
+  final Function(ProductType type, String companyUserName, ProductEvent event)? navigateToEventsPage;
 
-  const _ProductEventTile({Key? key, required this.index, required this.events}) : super(key: key);
+  const _ProductEventTile(
+      {Key? key, required this.index, required this.event, required this.productData, this.navigateToEventsPage})
+      : super(key: key);
 
   @override
   State<_ProductEventTile> createState() => _ProductEventTileState();
@@ -263,10 +282,10 @@ class _ProductEventTileState extends State<_ProductEventTile> {
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
             onTap: () =>
-                Navigator.pushNamed(context, Routes.PRODUCT_EVENT_DATA, arguments: widget.events[widget.index]),
+                widget.navigateToEventsPage?.call(widget.event.type, widget.productData.userName, widget.event),
             child: Container(
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-              child: Center(child: Text(widget.events[widget.index].eventName)),
+              child: Center(child: Text(widget.event.eventName)),
             ),
           ),
         ),

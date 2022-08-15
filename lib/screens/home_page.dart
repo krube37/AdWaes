@@ -1,3 +1,4 @@
+import 'package:ad/constants.dart';
 import 'package:ad/widgets/bottom_bar.dart';
 import 'package:ad/widgets/carousel.dart';
 import 'package:ad/widgets/featured_heading.dart';
@@ -13,6 +14,10 @@ class HomePage extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
+
+  const HomePage({super.key, required this.navigateToProductPage});
+
+  final Function(ProductType productType) navigateToProductPage;
 }
 
 class _HomePageState extends State<HomePage> {
@@ -76,7 +81,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Column(
                     children: [
-                      FloatingQuickAccessBar(screenSize: screenSize),
+                      FloatingQuickAccessBar(
+                        screenSize: screenSize,
+                        navigateToProductsPage: widget.navigateToProductPage,
+                      ),
                       FeaturedHeading(screenSize: screenSize),
                       FeaturedTiles(screenSize: screenSize),
                       MainHeading(screenSize: screenSize),

@@ -147,7 +147,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                             });
                           },
                           onTap: () {
-                            Navigator.of(context).pushNamed(Routes.ACCOUNT_PAGE, arguments: DataManager().user);
+                            // Navigator.of(context).pushNamed(Routes.ACCOUNT_PAGE, arguments: DataManager().user);
                           },
                           onDoubleTap: () => _authManager.signOut(),
                           child: Column(
