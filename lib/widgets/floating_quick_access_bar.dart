@@ -1,6 +1,8 @@
 import 'package:ad/constants.dart';
+import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/main.dart';
 import 'package:ad/product/product_data.dart';
+import 'package:ad/routes/route_delegate.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/second_page.dart';
@@ -11,11 +13,9 @@ class FloatingQuickAccessBar extends StatefulWidget {
   const FloatingQuickAccessBar({
     Key? key,
     required this.screenSize,
-    required this.navigateToProductsPage,
   }) : super(key: key);
 
   final Size screenSize;
-  final Function(ProductType productType) navigateToProductsPage;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -40,19 +40,12 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
             value ? _isHovering[i] = true : _isHovering[i] = false;
           });
         },
-        onTap: () {
-          widget.navigateToProductsPage.call(items[i]);
-          // if (items[i] == "BillBoard") {
-          //   Navigator.pushNamed(context, Routes.BILL_BOARD);
-          // } else if (items[i] == "Newspaper") {
-          //   Navigator.pushNamed(context, Routes.NEWS_PAPER, arguments: ProductType.newsPaper);
-          // } else if (items[i] == "Media") {
-          //   Navigator.pushNamed(context, Routes.MEDIA);
-          // } else if (items[i] == "Streaming") {
-          //   Navigator.pushNamed(context, Routes.BILL_BOARD);
-          // } else if (items[i] == "SocialMedia") {
-          //   Navigator.pushNamed(context, Routes.BILL_BOARD);
-          // }
+        onTap: () async {
+          List<ProductData> products = await FirestoreDatabase().getProductData(type: items[i]);
+          if (mounted) {
+            (Router.of(context).routerDelegate as RouteDelegate)
+                .navigateToCompany(items[i], products, products.first.userName);
+          }
         },
         child: Text(
           items[i].getDisplayName(),
@@ -117,19 +110,13 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                       value ? _isHovering[i] = true : _isHovering[i] = false;
                                     });
                                   },
-                                  onTap: () {
-                                    widget.navigateToProductsPage.call(items[i]);
-                                    // if (items[i] == "BillBoard") {
-                                    //   Navigator.pushNamed(context, Routes.BILL_BOARD);
-                                    // } else if (items[i] == "Newspaper") {
-                                    //   Navigator.pushNamed(context, Routes.NEWS_PAPER, arguments: ProductType.newsPaper);
-                                    // } else if (items[i] == "Media") {
-                                    //   Navigator.pushNamed(context, Routes.MEDIA);
-                                    // } else if (items[i] == "Streaming") {
-                                    //   Navigator.pushNamed(context, Routes.STREAMING);
-                                    // } else if (items[i] == "SocialMedia") {
-                                    //   Navigator.pushNamed(context, Routes.SOCIAL_MEDIA);
-                                    // }
+                                  onTap: () async {
+                                    List<ProductData> products =
+                                        await FirestoreDatabase().getProductData(type: items[i]);
+                                    if (mounted) {
+                                      (Router.of(context).routerDelegate as RouteDelegate)
+                                          .navigateToCompany(items[i], products, products.first.userName);
+                                    }
                                   },
                                   child: Text(
                                     items[i].getDisplayName(),
@@ -178,23 +165,13 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                           value ? _isHovering[i] = true : _isHovering[i] = false;
                                         });
                                       },
-                                      onTap: () {
-                                        widget.navigateToProductsPage.call(items[i]);
-                                        // if (items[i] == "BillBoard") {
-                                        //   Navigator.pushNamed(
-                                        //       context, Routes.BILL_BOARD);
-                                        // } else if (items[i] == "Newspaper") {
-                                        //   Navigator.pushNamed(
-                                        //       context, Routes.NEWS_PAPER, arguments: ProductType.newsPaper);
-                                        // } else if (items[i] == "Media") {
-                                        //   Navigator.pushNamed(context, Routes.MEDIA);
-                                        // } else if (items[i] == "Streaming") {
-                                        //   Navigator.pushNamed(
-                                        //       context, Routes.BILL_BOARD);
-                                        // } else if (items[i] == "SocialMedia") {
-                                        //   Navigator.pushNamed(
-                                        //       context, Routes.BILL_BOARD);
-                                        // }
+                                      onTap: () async {
+                                        List<ProductData> products =
+                                            await FirestoreDatabase().getProductData(type: items[i]);
+                                        if (mounted) {
+                                          (Router.of(context).routerDelegate as RouteDelegate)
+                                              .navigateToCompany(items[i], products, products.first.userName);
+                                        }
                                       },
                                       child: Text(
                                         items[i].getDisplayName(),

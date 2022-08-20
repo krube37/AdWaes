@@ -99,7 +99,6 @@ class ProductEventPage extends StatelessWidget {
                             color: Colors.white,
                           ),
                           child: StatefulBuilder(builder: (context, setState) {
-                            print("ProductEventPage build: checkzz rebuild ");
                             return IgnorePointer(
                               ignoring: isBookingBtnLoading,
                               child: ElevatedButton(

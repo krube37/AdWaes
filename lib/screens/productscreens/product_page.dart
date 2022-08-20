@@ -4,7 +4,7 @@ import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_data.dart';
-import 'package:ad/routes/routes.dart';
+import 'package:ad/routes/route_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -15,20 +15,21 @@ import '../../provider/product_data_provider.dart';
 
 class ProductPage extends StatefulWidget {
   final ProductType productType;
-  final Function(ProductType type, String companyUserName, ProductEvent productEvent) navigateToProductEventPage;
-  final Function(ProductType type, String companyUserName) navigateToCompany;
+  final List<ProductData> products;
+  final String currentUserName;
 
-  const ProductPage(
-      {Key? key, required this.productType, required this.navigateToProductEventPage, required this.navigateToCompany})
-      : super(key: key);
+  ProductPage({Key? key, required this.productType, required this.products, required this.currentUserName})
+      : super(key: key) {
+    print("ProductPage ProductPage: constructor called..............................   ");
+  }
 
   @override
   State<ProductPage> createState() => _ProductPageState();
 }
 
 class _ProductPageState extends State<ProductPage> {
-  int selectedIndex = 0;
-  List<ProductData> products = [];
+  String currentUserName = '';
+  Map<String, ProductData> products = {};
   List<ProductEvent> events = [];
   late ProductDataProvider productDataProvider;
   bool _isListeningToEvent = false;
@@ -48,198 +49,183 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    for (var element in widget.products) {
+      products.update(element.userName, (value) => element, ifAbsent: () => element);
+    }
+    currentUserName = widget.currentUserName;
+    print("_ProductPageState build: current User Name $currentUserName");
     var screenSize = MediaQuery.of(context).size;
-    products = productDataProvider.products;
 
-    return FutureBuilder(
-      future: FirestoreDatabase().getProductData(type: widget.productType),
-      builder: (BuildContext context, AsyncSnapshot<List<ProductData>> snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(
-            child: Text('Could not load Page! ${snapshot.error}'),
-          );
-        }
-        products = snapshot.data!;
+    //todo: remove test code.
+    if (products.isEmpty) {
+      return ElevatedButton(
+          onPressed: () {
+            ProductData data = ProductData(
+                userName: 'username_${const Uuid().v1()}',
+                name: '${widget.productType.name} ${Random().nextInt(100)}',
+                totalEvents: 15,
+                description: 'this is product data description string ',
+                type: widget.productType);
+            List<ProductEvent> events = [
+              ProductEvent(
+                  eventId: const Uuid().v1(),
+                  eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
+                  price: 2000,
+                  dateTime: DateTime.now(),
+                  type: widget.productType,
+                  productId: data.userName),
+            ];
+            ProductDataProvider.addProductData(data, events, widget.productType);
+          },
+          child: const Text("Add"));
+    }
 
-        //todo: remove test code.
-        if (products.isEmpty) {
-          return ElevatedButton(
-              onPressed: () {
-                ProductData data = ProductData(
-                    userName: 'username_${const Uuid().v1()}',
-                    name: '${widget.productType.name} ${Random().nextInt(100)}',
-                    totalEvents: 15,
-                    description: 'this is product data description string ',
-                    type: widget.productType);
-                List<ProductEvent> events = [
-                  ProductEvent(
-                      eventId: const Uuid().v1(),
-                      eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
-                      price: 2000,
-                      dateTime: DateTime.now(),
-                      type: widget.productType,
-                      productId: data.userName),
-                ];
-                ProductDataProvider.addProductData(data, events, widget.productType);
-              },
-              child: const Text("Add"));
-        }
+    return Scaffold(
+      appBar: getAppBar(MediaQuery.of(context).size),
+      body: Consumer<ProductDataProvider>(
+        builder: (context, productDataValue, _) {
+          productDataProvider = Provider.of<ProductDataProvider>(context);
+          for (var element in productDataProvider.products) {
+            products.update(element.userName, (value) => element, ifAbsent: () => element);
+          }
+          events = productDataProvider.productEvents;
 
-        return Scaffold(
-          appBar: getAppBar(MediaQuery.of(context).size),
-          body: Consumer<ProductDataProvider>(
-            builder: (context, productDataValue, _) {
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                // widget.navigateToCompany.call(widget.productType, products[selectedIndex].userName);
-                Router.of(context).routerDelegate
-                  .setNewRoutePath(Routes.company(widget.productType, products[selectedIndex].userName));
-                Router.navigate(context, () {
-
-                });
-              });
-
-              productDataProvider = Provider.of<ProductDataProvider>(context);
-              products = productDataProvider.products;
-              events = productDataProvider.productEvents;
-
-              if (!_isListeningToEvent) {
-                productDataProvider.listenToEvents(widget.productType, products[selectedIndex].userName);
-                productDataProvider.listenToProductData(widget.productType);
-                _isListeningToEvent = true;
-              }
-              return Column(
-                children: [
-                  Center(
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          widget.productType.getDisplayName(),
-                          style: const TextStyle(fontSize: 18.0),
-                        ),
-                      ),
+          if (!_isListeningToEvent && currentUserName.isNotEmpty) {
+            productDataProvider.listenToEvents(widget.productType, currentUserName);
+            productDataProvider.listenToProductData(widget.productType);
+            _isListeningToEvent = true;
+          }
+          return Column(
+            children: [
+              Center(
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      widget.productType.getDisplayName(),
+                      style: const TextStyle(fontSize: 18.0),
                     ),
                   ),
-                  Expanded(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: _productListView(),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: products.isEmpty
-                              ? const Center(
-                                  child: Text("there are no Events available "),
-                                )
-                              : events.isEmpty
-                                  //todo: do something here because if is empty, then will always show circular progress
-                                  ? const Center(child: CircularProgressIndicator())
-                                  : GridView.builder(
-                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: isDesktopView(screenSize) ? 2 : 1,
-                                        childAspectRatio: isDesktopView(screenSize) ? 3 / 2 : 6,
-                                      ),
-                                      itemCount: events.length,
-                                      itemBuilder: (context, index) {
-                                        return _ProductEventTile(
-                                          index: index,
-                                          event: events[index],
-                                          productData: products[selectedIndex],
-                                          navigateToEventsPage: widget.navigateToProductEventPage,
-                                        );
-                                      }),
-                        ),
-                        // todo: remove test code
-                        Expanded(
-                            child: Column(
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  ProductData data = ProductData(
-                                      userName: 'username_${const Uuid().v1()}',
-                                      name: '${widget.productType.name} ${Random().nextInt(100)}',
-                                      totalEvents: 15,
-                                      description: 'this is product data description string ',
-                                      type: widget.productType);
-
-                                  List<ProductEvent> events = [
-                                    ProductEvent(
-                                        eventId: const Uuid().v1(),
-                                        eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
-                                        price: 2000,
-                                        dateTime: DateTime.now(),
-                                        type: widget.productType,
-                                        productId: data.userName),
-                                  ];
-
-                                  ProductDataProvider.addProductData(data, events, widget.productType);
-                                },
-                                child: Text("Add")),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  ProductDataProvider.removeProductData(
-                                      products[selectedIndex].userName, widget.productType);
-                                },
-                                child: Text("delete")),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  ProductDataProvider.addProductEvent(
-                                    '${products[selectedIndex].userName}',
-                                    ProductEvent(
-                                        eventId: const Uuid().v1(),
-                                        eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
-                                        price: 2000,
-                                        dateTime: DateTime.now(),
-                                        type: widget.productType,
-                                        productId: products[selectedIndex].userName),
-                                  );
-                                },
-                                child: Text("add Event")),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  ProductDataProvider.deleteLastProductEvent(
-                                      products[selectedIndex].userName, widget.productType);
-                                },
-                                child: Text("delete Event"))
-                          ],
-                        ))
-                      ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: _productListView(),
                     ),
-                  )
-                ],
-              );
-            },
-          ),
-        );
-      },
+                    Expanded(
+                      flex: 3,
+                      child: products.isEmpty || currentUserName.isEmpty
+                          ? const Center(
+                              child: Text("there are no Events available or selected "),
+                            )
+                          : events.isEmpty
+                              //todo: do something here because if is empty, then will always show circular progress
+                              ? const Center(child: CircularProgressIndicator())
+                              : GridView.builder(
+                                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: isDesktopView(screenSize) ? 2 : 1,
+                                    childAspectRatio: isDesktopView(screenSize) ? 3 / 2 : 6,
+                                  ),
+                                  itemCount: events.length,
+                                  itemBuilder: (context, index) {
+                                    return _ProductEventTile(
+                                      index: index,
+                                      event: events[index],
+                                      productData: products[currentUserName]!,
+                                    );
+                                  }),
+                    ),
+                    // todo: remove test code
+                    Expanded(
+                        child: Column(
+                      children: [
+                        ElevatedButton(
+                            onPressed: () {
+                              ProductData data = ProductData(
+                                  userName: 'username_${const Uuid().v1()}',
+                                  name: '${widget.productType.name} ${Random().nextInt(100)}',
+                                  totalEvents: 15,
+                                  description: 'this is product data description string ',
+                                  type: widget.productType);
+
+                              List<ProductEvent> events = [
+                                ProductEvent(
+                                    eventId: const Uuid().v1(),
+                                    eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
+                                    price: 2000,
+                                    dateTime: DateTime.now(),
+                                    type: widget.productType,
+                                    productId: data.userName),
+                              ];
+
+                              ProductDataProvider.addProductData(data, events, widget.productType);
+                            },
+                            child: Text("Add")),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              ProductDataProvider.removeProductData(currentUserName, widget.productType);
+                            },
+                            child: Text("delete")),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              ProductDataProvider.addProductEvent(
+                                currentUserName,
+                                ProductEvent(
+                                    eventId: const Uuid().v1(),
+                                    eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
+                                    price: 2000,
+                                    dateTime: DateTime.now(),
+                                    type: widget.productType,
+                                    productId: currentUserName),
+                              );
+                            },
+                            child: Text("add Event")),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              ProductDataProvider.deleteLastProductEvent(currentUserName, widget.productType);
+                            },
+                            child: Text("delete Event"))
+                      ],
+                    ))
+                  ],
+                ),
+              )
+            ],
+          );
+        },
+      ),
     );
   }
 
   _productListView() => ListView.builder(
       itemCount: products.length,
       itemBuilder: (context, index) {
+        ProductData currentProductData = products.values.toList()[index];
         return ProductTile(
-            productData: products[index],
-            isTileSelected: selectedIndex == index,
+            productData: currentProductData,
+            isTileSelected: currentUserName == currentProductData.userName,
             onClick: () {
-              if (selectedIndex == index) return;
+              if (currentUserName == currentProductData.userName) return;
               setState(() {
-                selectedIndex = index;
+                currentUserName = currentProductData.userName;
                 _isListeningToEvent = false;
+                (Router.of(context).routerDelegate as RouteDelegate)
+                    .navigateToCompany(widget.productType, products.values.toList(), currentUserName);
+                print("_ProductPageState _productListView: success for new model ");
+                (Router.of(context).routerDelegate as RouteDelegate)
+                    .navigateToCompany(widget.productType, products.values.toList(), currentUserName);
               });
             });
       });
@@ -249,10 +235,8 @@ class _ProductEventTile extends StatefulWidget {
   final int index;
   final ProductEvent event;
   final ProductData productData;
-  final Function(ProductType type, String companyUserName, ProductEvent event)? navigateToEventsPage;
 
-  const _ProductEventTile(
-      {Key? key, required this.index, required this.event, required this.productData, this.navigateToEventsPage})
+  const _ProductEventTile({Key? key, required this.index, required this.event, required this.productData})
       : super(key: key);
 
   @override
@@ -281,8 +265,8 @@ class _ProductEventTileState extends State<_ProductEventTile> {
             borderRadius: BorderRadius.circular(10),
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
-            onTap: () =>
-                widget.navigateToEventsPage?.call(widget.event.type, widget.productData.userName, widget.event),
+            onTap: () => (Router.of(context).routerDelegate as RouteDelegate)
+                .navigateToProductEventPage(widget.event.type, widget.productData.userName, widget.event),
             child: Container(
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: Center(child: Text(widget.event.eventName)),

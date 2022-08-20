@@ -13,7 +13,7 @@ class DataManager extends ChangeNotifier {
 
   factory DataManager() => _mInstance;
 
-  List<ProductData> products = [];
+  Map<String, ProductData> products = {};
   AdWiseUser? user;
   bool fetchingSigInDetails = false;
 
@@ -37,5 +37,5 @@ class DataManager extends ChangeNotifier {
     });
   }
 
-  ProductData getProductDataByType(ProductType type) => products.firstWhere((element) => element.type == type);
+  ProductData getProductDataByType(ProductType type) => products.values.firstWhere((element) => element.type == type);
 }

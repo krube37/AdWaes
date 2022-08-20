@@ -17,11 +17,11 @@ class ProductDataProvider extends ChangeNotifier {
   ProductDataProvider._internal()
       : dataManager = DataManager(),
         firestoreDatabase = FirestoreDatabase(),
-        _products = DataManager().products;
+        _products = DataManager().products.values.toList();
 
   factory ProductDataProvider() {
     if (_mInstance != null) {
-      _mInstance!._products.addAll(DataManager().products);
+      _mInstance!._products.addAll(DataManager().products.values);
       return _mInstance!;
     }
     return ProductDataProvider._internal();

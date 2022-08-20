@@ -30,12 +30,6 @@ class _SignInCardState extends State<SignInCard> {
   bool waitingForOTP = false;
 
   @override
-  void initState() {
-    print("_SignInCardState initState: checkzzz into sigincard ");
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     _provider = Provider.of<SignInProvider>(context);
     super.didChangeDependencies();

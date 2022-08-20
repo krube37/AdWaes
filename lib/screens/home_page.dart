@@ -15,9 +15,7 @@ class HomePage extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 
-  const HomePage({super.key, required this.navigateToProductPage});
-
-  final Function(ProductType productType) navigateToProductPage;
+  const HomePage({super.key});
 }
 
 class _HomePageState extends State<HomePage> {
@@ -83,7 +81,6 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       FloatingQuickAccessBar(
                         screenSize: screenSize,
-                        navigateToProductsPage: widget.navigateToProductPage,
                       ),
                       FeaturedHeading(screenSize: screenSize),
                       FeaturedTiles(screenSize: screenSize),

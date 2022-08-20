@@ -47,7 +47,9 @@ class FirestoreDatabase {
     for (QueryDocumentSnapshot<Map> value in productCollectionData.docs) {
       products.add(ProductData.fromFirestore(value.data()));
     }
-    dataManager.products = products;
+    for (var element in products) {
+      dataManager.products.update(element.userName, (value) => element, ifAbsent: ()=> element);
+    }
     return products;
   }
 
@@ -63,7 +65,9 @@ class FirestoreDatabase {
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         products.add(ProductData.fromFirestore(value.data()));
       }
-      dataManager.products = products;
+      for (var element in products) {
+        dataManager.products.update(element.userName, (value) => element, ifAbsent: ()=> element);
+      }
       onUpdate?.call(products);
     });
     return productDataStream!;

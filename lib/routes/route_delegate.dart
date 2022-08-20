@@ -1,10 +1,11 @@
 import 'package:ad/constants.dart';
+import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
+import 'package:ad/provider/data_manager.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/error_page.dart';
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/invalid_event_page.dart';
-import 'package:ad/screens/product_event_page.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -23,17 +24,15 @@ class RouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNavig
         if (_routes.isHomePage)
           MaterialPage(
             key: const ValueKey('Home'),
-            child: HomePage(
-              navigateToProductPage: _navigateToProductPage,
-            ),
+            child: HomePage(),
           ),
         if (_routes.isProductPage || _routes.isCompanyPage)
           MaterialPage(
             key: const ValueKey('Products'),
             child: ProductPage(
               productType: _routes.productType!,
-              navigateToProductEventPage: _navigateToProductEventPage,
-              navigateToCompany: _navigateToCompany,
+              currentUserName: _routes.companyUserName != null ? _routes.companyUserName! : '',
+              products: DataManager().products.values.toList(),
             ),
           ),
         if (_routes.isProductErrorPage)
@@ -41,11 +40,11 @@ class RouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNavig
             key: ValueKey('ProductsError'),
             child: ErrorPage(),
           ),
-        if (_routes.isProductEventPage)
-          MaterialPage(
-            key: const ValueKey('ProductEvent'),
-            child: ProductEventPage(event: _routes.event!),
-          ),
+        // if (_routes.isProductEventPage)
+        //   MaterialPage(
+        //     key: const ValueKey('ProductEvent'),
+        //     child: ProductEventPage(event: _routes.eventId!),
+        //   ),
         if (_routes.isProductEventErrorPage)
           const MaterialPage(
             key: ValueKey('ProductEventError'),
@@ -81,20 +80,15 @@ class RouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNavig
   @override
   GlobalKey<NavigatorState>? get navigatorKey => _key;
 
-  _navigateToProductPage(ProductType productType) {
-    _routes = Routes.product(productType);
+  navigateToProductEventPage(ProductType type, String productUserName, ProductEvent event) {
+    _routes = Routes.productEvent(type, productUserName, event.eventId);
     notifyListeners();
   }
 
-  _navigateToProductEventPage(ProductType type, String productUserName, ProductEvent event) {
-    _routes = Routes.productEvent(type, productUserName, event);
+  navigateToCompany(ProductType type,List<ProductData> products, String companyUserName) {
+    _routes = Routes.company(type,products, companyUserName);
     notifyListeners();
-  }
-
-  _navigateToCompany(ProductType type, String companyUserName) {
-    _routes = Routes.company(type, companyUserName);
-    //notifyListeners();
-    setNewRoutePath(_routes);
+    // setNewRoutePath(_routes);
     //RouteDelegate().setNewRoutePath(_routes);
   }
 
