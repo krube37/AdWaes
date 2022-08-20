@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 /// firebase signIn/signUp errors and success enum
 ///
 
@@ -44,6 +46,29 @@ extension ProductTypeExtention on ProductType {
       return ProductType.values.firstWhere((element) => element.name == name);
     } catch (e) {
       return null;
+    }
+  }
+
+  getIcon(){
+    switch (this) {
+      case ProductType.tvChannel:
+        return Icons.tv;
+      case ProductType.newsPaper:
+        return Icons.newspaper;
+      case ProductType.billBoard:
+        return Icons.post_add;
+      case ProductType.onlineGame:
+        return Icons.gamepad;
+      case ProductType.webpage:
+        return Icons.pageview;
+      case ProductType.youtube:
+        return Icons.play_arrow_rounded;
+      case ProductType.instagram:
+        return Icons.add_box_rounded;
+      case ProductType.fmRadio:
+        return Icons.radio;
+      case ProductType.sponsorship:
+        return Icons.grain;
     }
   }
 }
