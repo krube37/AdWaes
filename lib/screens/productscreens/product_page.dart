@@ -84,17 +84,7 @@ class _ProductPageState extends State<ProductPage> {
       appBar: getAppBar(MediaQuery.of(context).size),
       body: Consumer<ProductDataProvider>(
         builder: (context, productDataValue, _) {
-          productDataProvider = Provider.of<ProductDataProvider>(context);
-          for (var element in productDataProvider.products) {
-            products.update(element.userName, (value) => element, ifAbsent: () => element);
-          }
-          events = productDataProvider.productEvents;
-
-          if (!_isListeningToEvent && currentUserName.isNotEmpty) {
-            productDataProvider.listenToEvents(widget.productType, currentUserName);
-            productDataProvider.listenToProductData(widget.productType);
-            _isListeningToEvent = true;
-          }
+          _fetchData();
           return Column(
             children: [
               Center(
@@ -118,9 +108,7 @@ class _ProductPageState extends State<ProductPage> {
                     Expanded(
                       flex: 3,
                       child: products.isEmpty || currentUserName.isEmpty
-                          ? const Center(
-                              child: Text("there are no Events available or selected "),
-                            )
+                          ? const Center(child: Text("there are no Events available or selected "))
                           : events.isEmpty
                               //todo: do something here because if is empty, then will always show circular progress
                               ? const Center(child: CircularProgressIndicator())
@@ -139,66 +127,7 @@ class _ProductPageState extends State<ProductPage> {
                                   }),
                     ),
                     // todo: remove test code
-                    Expanded(
-                        child: Column(
-                      children: [
-                        ElevatedButton(
-                            onPressed: () {
-                              ProductData data = ProductData(
-                                  userName: 'username_${const Uuid().v1()}',
-                                  name: '${widget.productType.name} ${Random().nextInt(100)}',
-                                  totalEvents: 15,
-                                  description: 'this is product data description string ',
-                                  type: widget.productType);
-
-                              List<ProductEvent> events = [
-                                ProductEvent(
-                                    eventId: const Uuid().v1(),
-                                    eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
-                                    price: 2000,
-                                    dateTime: DateTime.now(),
-                                    type: widget.productType,
-                                    productId: data.userName),
-                              ];
-
-                              ProductDataProvider.addProductData(data, events, widget.productType);
-                            },
-                            child: Text("Add")),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {
-                              ProductDataProvider.removeProductData(currentUserName, widget.productType);
-                            },
-                            child: Text("delete")),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {
-                              ProductDataProvider.addProductEvent(
-                                currentUserName,
-                                ProductEvent(
-                                    eventId: const Uuid().v1(),
-                                    eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
-                                    price: 2000,
-                                    dateTime: DateTime.now(),
-                                    type: widget.productType,
-                                    productId: currentUserName),
-                              );
-                            },
-                            child: Text("add Event")),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                            onPressed: () {
-                              ProductDataProvider.deleteLastProductEvent(currentUserName, widget.productType);
-                            },
-                            child: Text("delete Event"))
-                      ],
-                    ))
+                    _testCode()
                   ],
                 ),
               )
@@ -221,14 +150,87 @@ class _ProductPageState extends State<ProductPage> {
               setState(() {
                 currentUserName = currentProductData.userName;
                 _isListeningToEvent = false;
-                (Router.of(context).routerDelegate as RouteDelegate)
-                    .navigateToCompany(widget.productType, products.values.toList(), currentUserName);
                 print("_ProductPageState _productListView: success for new model ");
-                (Router.of(context).routerDelegate as RouteDelegate)
+                MyRouteDelegate.of(context)
                     .navigateToCompany(widget.productType, products.values.toList(), currentUserName);
               });
             });
       });
+
+  _testCode() => Expanded(
+          child: Column(
+        children: [
+          ElevatedButton(
+              onPressed: () {
+                ProductData data = ProductData(
+                    userName: 'username_${const Uuid().v1()}',
+                    name: '${widget.productType.name} ${Random().nextInt(100)}',
+                    totalEvents: 15,
+                    description: 'this is product data description string ',
+                    type: widget.productType);
+
+                List<ProductEvent> events = [
+                  ProductEvent(
+                      eventId: const Uuid().v1(),
+                      eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
+                      price: 2000,
+                      dateTime: DateTime.now(),
+                      type: widget.productType,
+                      productId: data.userName),
+                ];
+
+                ProductDataProvider.addProductData(data, events, widget.productType);
+              },
+              child: Text("Add")),
+          const SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                ProductDataProvider.removeProductData(currentUserName, widget.productType);
+              },
+              child: Text("delete")),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                ProductDataProvider.addProductEvent(
+                  currentUserName,
+                  ProductEvent(
+                      eventId: const Uuid().v1(),
+                      eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
+                      price: 2000,
+                      dateTime: DateTime.now(),
+                      type: widget.productType,
+                      productId: currentUserName),
+                );
+              },
+              child: Text("add Event")),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                ProductDataProvider.deleteLastProductEvent(currentUserName, widget.productType);
+              },
+              child: Text("delete Event"))
+        ],
+      ));
+
+  void _fetchData() {
+    productDataProvider = Provider.of<ProductDataProvider>(context);
+    for (var element in productDataProvider.products) {
+      products.update(element.userName, (value) => element, ifAbsent: () => element);
+    }
+    events = productDataProvider.productEvents;
+
+    if (!_isListeningToEvent && currentUserName.isNotEmpty) {
+      productDataProvider.listenToEvents(widget.productType, currentUserName);
+      productDataProvider.listenToProductData(widget.productType);
+      _isListeningToEvent = true;
+    }
+  }
 }
 
 class _ProductEventTile extends StatefulWidget {
@@ -265,7 +267,7 @@ class _ProductEventTileState extends State<_ProductEventTile> {
             borderRadius: BorderRadius.circular(10),
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
-            onTap: () => (Router.of(context).routerDelegate as RouteDelegate)
+            onTap: () => MyRouteDelegate.of(context)
                 .navigateToProductEventPage(widget.event.type, widget.productData.userName, widget.event),
             child: Container(
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),

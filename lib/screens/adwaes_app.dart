@@ -25,7 +25,7 @@ class _AdWaesAppState extends State<AdWaesApp> {
       title: 'Adwisor',
       theme: defaultTheme,
       debugShowCheckedModeBanner: false,
-      routerDelegate: RouteDelegate(),
+      routerDelegate: MyRouteDelegate(),
       routeInformationParser: RouteParser(),
       builder: (context, child) => child!,
     );

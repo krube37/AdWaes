@@ -43,8 +43,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
         onTap: () async {
           List<ProductData> products = await FirestoreDatabase().getProductData(type: items[i]);
           if (mounted) {
-            (Router.of(context).routerDelegate as RouteDelegate)
-                .navigateToCompany(items[i], products, products.first.userName);
+            MyRouteDelegate.of(context).navigateToCompany(items[i], products, products.first.userName);
           }
         },
         child: Text(
@@ -114,7 +113,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                     List<ProductData> products =
                                         await FirestoreDatabase().getProductData(type: items[i]);
                                     if (mounted) {
-                                      (Router.of(context).routerDelegate as RouteDelegate)
+                                      MyRouteDelegate.of(context)
                                           .navigateToCompany(items[i], products, products.first.userName);
                                     }
                                   },
@@ -169,8 +168,8 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                         List<ProductData> products =
                                             await FirestoreDatabase().getProductData(type: items[i]);
                                         if (mounted) {
-                                          (Router.of(context).routerDelegate as RouteDelegate)
-                                              .navigateToCompany(items[i], products, products.first.userName);
+                                          MyRouteDelegate.of(context).navigateToCompany(
+                                              items[i], products, products.isNotEmpty ? products.first.userName : '');
                                         }
                                       },
                                       child: Text(

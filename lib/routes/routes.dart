@@ -17,7 +17,7 @@ class Routes {
   final String path;
   final RouteState state;
 
-  String? eventId;
+  ProductEvent? event;
   ProductType? productType;
   String? companyUserName;
   List<ProductData>? products;
@@ -34,8 +34,8 @@ class Routes {
       : path = '/p/404',
         state = RouteState.invalidProduct;
 
-  Routes.productEvent(this.productType, this.companyUserName, this.eventId)
-      : path = '/p/${productType!.name}/$companyUserName/$eventId',
+  Routes.productEvent(this.productType, this.companyUserName, this.event)
+      : path = '/p/${productType!.name}/$companyUserName/$event',
         state = RouteState.productEvent;
 
   Routes.invalidProductEvent(this.productType, this.companyUserName)
@@ -54,9 +54,9 @@ class Routes {
 
   bool get isProductErrorPage => (state == RouteState.product && productType == null);
 
-  bool get isProductEventPage => (state == RouteState.productEvent && eventId != null);
+  bool get isProductEventPage => (state == RouteState.productEvent && event != null);
 
-  bool get isProductEventErrorPage => (state == RouteState.productEvent && eventId == null);
+  bool get isProductEventErrorPage => (state == RouteState.productEvent && event == null);
 
   bool get isErrorPage => state == RouteState.error;
 }
