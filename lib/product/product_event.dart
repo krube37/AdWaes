@@ -42,6 +42,29 @@ class ProductEvent {
         bookedUserId: json['bookedUserId'],
       );
 
+  ProductEvent copyWith({
+    String? eventId,
+    String? eventName,
+    String? description,
+    int? price,
+    DateTime? dateTime,
+    ProductType? type,
+    int? productId,
+    bool? isBooked,
+    String? bookedUserId,
+  }) =>
+      ProductEvent(
+        eventId: eventId ?? this.eventId,
+        eventName: eventName ?? this.eventName,
+        description: description ?? this.description,
+        price: price ?? this.price,
+        dateTime: dateTime ?? this.dateTime,
+        type: type ?? this.type,
+        productId: productId ?? this.productId,
+        isBooked: isBooked ?? this.isBooked,
+        bookedUserId: bookedUserId ?? this.bookedUserId,
+      );
+
   String get eventId => _eventId;
 
   String get eventName => _eventName;

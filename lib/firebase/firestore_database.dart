@@ -7,6 +7,7 @@ import 'package:ad/provider/data_manager.dart';
 import 'package:ad/provider/product_data_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../constants.dart';
 
@@ -48,7 +49,7 @@ class FirestoreDatabase {
       products.add(ProductData.fromFirestore(value.data()));
     }
     for (var element in products) {
-      dataManager.products.update(element.userName, (value) => element, ifAbsent: ()=> element);
+      dataManager.products.update(element.userName, (value) => element, ifAbsent: () => element);
     }
     return products;
   }
@@ -66,7 +67,7 @@ class FirestoreDatabase {
         products.add(ProductData.fromFirestore(value.data()));
       }
       for (var element in products) {
-        dataManager.products.update(element.userName, (value) => element, ifAbsent: ()=> element);
+        dataManager.products.update(element.userName, (value) => element, ifAbsent: () => element);
       }
       onUpdate?.call(products);
     });
@@ -82,7 +83,10 @@ class FirestoreDatabase {
       eventsStream!.cancel();
       eventsStream = null;
     }
-    eventsStream = getEventCollectionRef(type, companyUserName).snapshots().listen((QuerySnapshot<Map> event) {
+    eventsStream = getEventCollectionRef(type, companyUserName)
+        .where('isBooked', isEqualTo: false)
+        .snapshots()
+        .listen((QuerySnapshot<Map> event) {
       List<ProductEvent> productEvents = [];
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         productEvents.add(ProductEvent.fromFirestore(value.data()));
@@ -92,42 +96,43 @@ class FirestoreDatabase {
     return eventsStream!;
   }
 
-  Future<ProductEvent?> getEventById(ProductType type,String companyUserName, String eventId) async {
+  Future<ProductEvent?> getEventById(ProductType type, String companyUserName, String eventId) async {
     try {
-       DocumentSnapshot<Map> data = await getEventCollectionRef(type, companyUserName).doc(eventId).get();
-       if(data.data() != null){
-         return ProductEvent.fromFirestore(data.data()!);
-       }
+      DocumentSnapshot<Map> data = await getEventCollectionRef(type, companyUserName).doc(eventId).get();
+      if (data.data() != null) {
+        ProductEvent event = ProductEvent.fromFirestore(data.data()!);
+        if (!event.isBooked) return event;
+      }
     } catch (e) {
-      print("FirestoreDatabase getEventById: error fetching event $eventId, error $e");
+      debugPrint("FirestoreDatabase getEventById: error fetching event $eventId, error $e");
       return null;
     }
     return null;
   }
 
   /// first creates same [event] in user bookedEvents location (users/userId/bookedEvents/eventsId)
-  /// if success, then deleted the [event] from (productName/productCompanyId/events/eventId)
+  /// if success, then updates the [event] at (productName/productCompanyId/events/eventId)
   Future<bool> bookEvent(ProductEvent event) async {
     try {
+      ProductEvent newEvent = event.copyWith(isBooked: true, bookedUserId: FirebaseAuth.instance.currentUser!.uid);
       // creating event
       await _mInstance
           .collection(usersCollectionName)
           .doc(_dataManager.user!.userId)
           .collection(bookedEventsCollectionName)
           .doc(event.eventId)
-          .set(event.map);
+          .set(newEvent.map);
 
-      // deleting event
+      // updating event
       await _mInstance
           .collection(event.type.name)
           .doc(event.productId)
           .collection(eventsCollectionName)
           .doc(event.eventId)
-          .delete();
-      // ProductDataProvider.notify();
+          .update(newEvent.map);
       return true;
     } catch (e, stack) {
-      print("FirestoreDatabase updateBookingDetails: error booking event $e\n$stack");
+      debugPrint("FirestoreDatabase updateBookingDetails: error booking event $e\n$stack");
       return false;
     }
   }

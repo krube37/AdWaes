@@ -98,40 +98,9 @@ class ProductEventPage extends StatelessWidget {
                           decoration: const BoxDecoration(
                             color: Colors.white,
                           ),
-                          child: StatefulBuilder(builder: (context, setState) {
-                            return IgnorePointer(
-                              ignoring: isBookingBtnLoading,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (FirebaseAuth.instance.currentUser == null) {
-                                    setState(() {
-                                      isBookingBtnLoading = true;
-                                    });
-                                    AdWiseUser? user = await SignInManager().showSignInDialog(context);
-                                    if (user == null) {
-                                      setState(() {
-                                        isBookingBtnLoading = false;
-                                      });
-                                      return;
-                                    }
-                                  }
-                                  // todo: book event
-                                  print("ProductEventPage build: booking implementation yet to be completed ");
-                                  bool isBookingSuccess = await FirestoreDatabase().bookEvent(_event);
-                                  print("ProductEventPage build: booking success ${isBookingSuccess}");
-
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: isBookingBtnLoading
-                                      ? const CircularProgressIndicator(
-                                          color: Colors.white,
-                                        )
-                                      : const Text('Book'),
-                                ),
-                              ),
-                            );
-                          }),
+                          child: _BookButton(
+                            event: _event,
+                          ),
                         ),
                       ],
                     ),
@@ -172,11 +141,66 @@ class ProductEventPage extends StatelessWidget {
   }
 }
 
-class _CustomCard extends StatelessWidget {
-  const _CustomCard({Key? key}) : super(key: key);
+class _BookButton extends StatefulWidget {
+  final ProductEvent event;
+
+  const _BookButton({Key? key, required this.event}) : super(key: key);
+
+  @override
+  State<_BookButton> createState() => _BookButtonState();
+}
+
+class _BookButtonState extends State<_BookButton> {
+  bool isBookingBtnLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return IgnorePointer(
+      ignoring: isBookingBtnLoading,
+      child: ElevatedButton(
+        onPressed: _onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: isBookingBtnLoading
+              ? const CircularProgressIndicator(
+                  color: Colors.white,
+                )
+              : const Text('Book'),
+        ),
+      ),
+    );
+  }
+
+  _onPressed() async {
+    if (FirebaseAuth.instance.currentUser == null) {
+      setState(() {
+        isBookingBtnLoading = true;
+      });
+      AdWiseUser? user = await SignInManager().showSignInDialog(context);
+      if (user == null) {
+        setState(() {
+          isBookingBtnLoading = false;
+        });
+        return;
+      }
+    }
+    setState(() {
+      isBookingBtnLoading = true;
+    });
+    // todo: book event
+    debugPrint("ProductEventPage build: booking implementation yet to be completed ");
+    bool isBookingSuccess = await FirestoreDatabase().bookEvent(widget.event);
+    SnackBar snackBar = const SnackBar(
+      content: Text('Successfully logged in'),
+      behavior: SnackBarBehavior.floating,
+      width: 500.0,
+    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+    debugPrint("ProductEventPage build: booking success $isBookingSuccess");
+    setState(() {
+      isBookingBtnLoading = false;
+    });
   }
 }
