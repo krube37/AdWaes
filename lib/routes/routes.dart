@@ -34,12 +34,12 @@ class Routes {
       : path = '/p/404',
         state = RouteState.invalidProduct;
 
-  Routes.productEvent(this.productType, this.companyUserName, this.event)
-      : path = '/p/${productType!.name}/$companyUserName/$event',
+  Routes.productEvent(this.productType, this.companyUserName, ProductEvent this.event)
+      : path = '/p/${productType!.name}/$companyUserName/event/${event.eventId}',
         state = RouteState.productEvent;
 
   Routes.invalidProductEvent(this.productType, this.companyUserName)
-      : path = '/p/${productType!.name}/$companyUserName/404',
+      : path = '/p/${productType!.name}/$companyUserName/event/404',
         state = RouteState.invalidProductEvent;
 
   Routes.unknown()

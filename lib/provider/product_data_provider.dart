@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/product/product_data.dart';
@@ -38,13 +40,18 @@ class ProductDataProvider extends ChangeNotifier {
         notifyListeners();
       });
 
-  listenToEvents(ProductType type, String productDataId) =>
-      firestoreDatabase.listenToEvents(type, productDataId, (productEvents) {
+
+  Stream<List<ProductEvent>> listenToEvents(ProductType type, String productDataId) {
+    StreamController<List<ProductEvent>> controller = StreamController();
+    controller = StreamController();
+     firestoreDatabase.listenToEvents(type, productDataId, (productEvents) {
+        controller.add(productEvents);
         _productEvents
           ..clear()
           ..addAll(productEvents);
-        notifyListeners();
       });
+     return controller.stream;
+  }
 
   // todo remove test code.
   static addProductData(ProductData product, List<ProductEvent> events, ProductType type) async {

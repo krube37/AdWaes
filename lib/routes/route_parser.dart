@@ -45,7 +45,7 @@ class RouteParser extends RouteInformationParser<Routes> {
     String companyUserName = pathSegments[2];
     String eventId = pathSegments[4];
     if (productType != null) {
-      ProductEvent? event = await FirestoreDatabase().getEventById(productType, eventId);
+      ProductEvent? event = await FirestoreDatabase().getEventById(productType,companyUserName, eventId);
       if(event != null) {
         return Routes.productEvent(productType, companyUserName, event);
       }

@@ -63,15 +63,14 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
 
   @override
   Widget build(BuildContext context) {
-    print("RouteDelegate build: ${_pageStack.length} and ${_routes.state}");
+    List<Page> pages = _pageStack;
+    print("RouteDelegate build: ${pages.length} and ${_routes.state}");
 
-    if (_pageStack.isEmpty) {
-      _routes = Routes.home();
-    }
+    if (pages.isEmpty) _routes = Routes.home();
 
     return Navigator(
       key: navigatorKey,
-      pages: _pageStack,
+      pages: pages,
       onPopPage: _onPopPage,
     );
   }

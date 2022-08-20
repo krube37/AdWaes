@@ -73,16 +73,16 @@ class FirestoreDatabase {
     return productDataStream!;
   }
 
-  CollectionReference<Map> getEventCollectionRef(ProductType type, String productDataId) =>
-      _mInstance.collection(type.name).doc(productDataId).collection(eventsCollectionName);
+  CollectionReference<Map> getEventCollectionRef(ProductType type, String companyUserName) =>
+      _mInstance.collection(type.name).doc(companyUserName).collection(eventsCollectionName);
 
   StreamSubscription<QuerySnapshot> listenToEvents(
-      ProductType type, String productDataId, Function(List<ProductEvent> productEvent)? onUpdate) {
+      ProductType type, String companyUserName, Function(List<ProductEvent> productEvent)? onUpdate) {
     if (eventsStream != null) {
       eventsStream!.cancel();
       eventsStream = null;
     }
-    eventsStream = getEventCollectionRef(type, productDataId).snapshots().listen((QuerySnapshot<Map> event) {
+    eventsStream = getEventCollectionRef(type, companyUserName).snapshots().listen((QuerySnapshot<Map> event) {
       List<ProductEvent> productEvents = [];
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         productEvents.add(ProductEvent.fromFirestore(value.data()));
@@ -92,13 +92,17 @@ class FirestoreDatabase {
     return eventsStream!;
   }
 
-  Future<ProductEvent?> getEventById(ProductType type, String eventId) async {
+  Future<ProductEvent?> getEventById(ProductType type,String companyUserName, String eventId) async {
     try {
-      // getEventCollectionRef(type, productDataId)
+       DocumentSnapshot<Map> data = await getEventCollectionRef(type, companyUserName).doc(eventId).get();
+       if(data.data() != null){
+         return ProductEvent.fromFirestore(data.data()!);
+       }
     } catch (e) {
-      print("FirestoreDatabase getEventById: error fetching event $eventId, erro $e");
+      print("FirestoreDatabase getEventById: error fetching event $eventId, error $e");
       return null;
     }
+    return null;
   }
 
   /// first creates same [event] in user bookedEvents location (users/userId/bookedEvents/eventsId)
