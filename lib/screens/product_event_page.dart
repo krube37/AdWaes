@@ -2,6 +2,7 @@ import 'package:ad/AdWiseUser.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_event.dart';
+import 'package:ad/screens/home/custom_app_bar.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class ProductEventPage extends StatelessWidget {
     bool isBookingBtnLoading = false;
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: getAppBar(screenSize),
+      appBar: const MyAppBar(),
       body: SingleChildScrollView(
         child: Container(
           color: Colors.grey.shade200,

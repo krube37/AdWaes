@@ -2,7 +2,7 @@ import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/main.dart';
 import 'package:ad/product/product_data.dart';
-import 'package:ad/routes/route_delegate.dart';
+import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/home_page.dart';
 import 'package:ad/screens/second_page.dart';

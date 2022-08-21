@@ -1,5 +1,6 @@
 import 'package:ad/AdWiseUser.dart';
 import 'package:ad/globals.dart';
+import 'package:ad/screens/home/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class AccountPage extends StatelessWidget {
@@ -11,7 +12,7 @@ class AccountPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: getAppBar(screenSize),
+      appBar: const MyAppBar(),
       body: Column(
         children: [
           Text('user Id : ${user.userId}'),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
-
 /// THEME DETAILS
 /// ===========================================
 
@@ -14,56 +13,17 @@ final ThemeData defaultTheme = ThemeData(
   visualDensity: VisualDensity.adaptivePlatformDensity,
 );
 
-PreferredSizeWidget getAppBar(Size screenSize) {
-  DeviceScreenType screenType = getDeviceType(screenSize);
-  bool isDesktopView = screenType == DeviceScreenType.desktop;
-
-  return isDesktopView
-      ? PreferredSize(
-          preferredSize: Size(screenSize.width, 100),
-          child: Container(
-            padding: const EdgeInsets.all(15),
-            color: const Color.fromARGB(255, 0, 0, 0),
-            child: const Text(
-              'Adwisor',
-              style: TextStyle(
-                color: Color.fromARGB(255, 255, 255, 255),
-                fontSize: 48,
-                fontFamily: 'Ubuntu',
-                fontWeight: FontWeight.bold,
-                //letterSpacing: 3,
-              ),
-            ),
-          ),
-        )
-      : AppBar(
-          iconTheme: const IconThemeData(color: Colors.white),
-          elevation: 0,
-          backgroundColor: const Color.fromARGB(255, 0, 0, 0).withOpacity(1),
-          title: const Text(
-            'Adwisor',
-            style: TextStyle(
-              color: Color.fromARGB(255, 255, 255, 255),
-              fontSize: 24,
-              fontFamily: 'Raleway',
-              fontWeight: FontWeight.bold,
-              //letterSpacing: 3,
-            ),
-          ),
-        );
-}
-
-bool isDesktopView(Size screenSize){
+bool isDesktopView(Size screenSize) {
   DeviceScreenType screenType = getDeviceType(screenSize);
   return screenType == DeviceScreenType.desktop;
 }
 
-bool isMobileView(Size screenSize){
+bool isMobileView(Size screenSize) {
   DeviceScreenType screenType = getDeviceType(screenSize);
   return screenType == DeviceScreenType.mobile;
 }
 
-bool isTabletView(Size screenSize){
+bool isTabletView(Size screenSize) {
   DeviceScreenType screenType = getDeviceType(screenSize);
   return screenType == DeviceScreenType.tablet;
 }

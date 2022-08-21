@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:ad/constants.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_data.dart';
-import 'package:ad/routes/route_delegate.dart';
+import 'package:ad/routes/my_route_delegate.dart';
+import 'package:ad/screens/home/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -91,7 +92,7 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     return Scaffold(
-      appBar: getAppBar(MediaQuery.of(context).size),
+      appBar: const MyAppBar(),
       body: Consumer<ProductDataProvider>(
         builder: (context, productDataValue, _) {
           _fetchData();
