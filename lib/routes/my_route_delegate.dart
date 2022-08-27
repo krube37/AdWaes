@@ -1,8 +1,10 @@
+import 'package:ad/AdWiseUser.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/routes/routes.dart';
+import 'package:ad/screens/account_page.dart';
 import 'package:ad/screens/error_page.dart';
 import 'package:ad/screens/invalid_event_page.dart';
 import 'package:ad/screens/home/my_home_page.dart';
@@ -24,6 +26,11 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
           const MaterialPage(
             key: ValueKey('Home'),
             child: MyHomePage(),
+          ),
+        if (_routes.isAccountPage)
+          MaterialPage(
+            key: const ValueKey('Account'),
+            child: AccountPage(user: _routes.user!),
           ),
         if (_routes.isProductPage || _routes.isCompanyPage)
           MaterialPage(
@@ -88,8 +95,13 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
     notifyListeners();
   }
 
-  navigateToHome(){
+  navigateToHome() {
     _routes = Routes.home();
+    notifyListeners();
+  }
+
+  navigateToAccount(AdWiseUser user){
+    _routes = Routes.account(user);
     notifyListeners();
   }
 

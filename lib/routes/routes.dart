@@ -1,3 +1,4 @@
+import 'package:ad/AdWiseUser.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/product/product_event.dart';
 
@@ -5,6 +6,7 @@ import '../product/product_data.dart';
 
 enum RouteState {
   home,
+  account,
   product,
   company,
   invalidProduct,
@@ -21,10 +23,15 @@ class Routes {
   ProductType? productType;
   String? companyUserName;
   List<ProductData>? products;
+  AdWiseUser? user;
 
   Routes.home()
       : path = '/',
         state = RouteState.home;
+
+  Routes.account(this.user)
+      : path = '/account/${user!.userId}',
+        state = RouteState.account;
 
   Routes.company(this.productType, this.products, this.companyUserName)
       : path = '/p/${productType!.name}/$companyUserName',
@@ -59,4 +66,6 @@ class Routes {
   bool get isProductEventErrorPage => (state == RouteState.productEvent && event == null);
 
   bool get isErrorPage => state == RouteState.error;
+
+  bool get isAccountPage => state == RouteState.account && user != null;
 }

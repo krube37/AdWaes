@@ -1,8 +1,11 @@
+import 'package:ad/AdWiseUser.dart';
+import 'package:ad/provider/data_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../globals.dart';
 import '../../routes/my_route_delegate.dart';
+import '../sign_in/sign_in_card.dart';
 
 /// default height of app bar is 56.0...
 /// but we are using custom height in Appbar ([toolbarHeight]) as 75.0
@@ -30,9 +33,7 @@ class _MyAppBarState extends State<MyAppBar> {
         padding: const EdgeInsets.only(left: 30.0),
         child: Center(
           child: InkWell(
-            onTap: () {
-              MyRouteDelegate.of(context).navigateToHome();
-            },
+            onTap: () => MyRouteDelegate.of(context).navigateToHome(),
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -75,7 +76,7 @@ class _MyAppBarState extends State<MyAppBar> {
               Row(
                 children: [
                   InkWell(
-                    onTap: () {},
+                    onTap: _navigateToAccountsPage,
                     borderRadius: BorderRadius.circular(18.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.grey.shade400,
@@ -103,10 +104,13 @@ class _MyAppBarState extends State<MyAppBar> {
               ),
             ]
           : [
-              const Center(
+              Center(
                 child: InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
                   onTap: _signIn,
-                  child: Text(
+                  child: const Text(
                     'Log In',
                     style: TextStyle(
                       color: Colors.black,
@@ -122,9 +126,17 @@ class _MyAppBarState extends State<MyAppBar> {
       backgroundColor: Colors.white,
     );
   }
-}
 
-_signIn() async {}
+  _signIn() async {
+    await SignInManager().showSignInDialog(context);
+  }
+  _navigateToAccountsPage(){
+    AdWiseUser? user = DataManager().user;
+    if(user != null){
+      MyRouteDelegate.of(context).navigateToAccount(user);
+    }
+  }
+}
 
 class _SearchBar extends StatefulWidget {
   const _SearchBar({Key? key}) : super(key: key);
@@ -158,7 +170,7 @@ class _SearchBarState extends State<_SearchBar> {
         prefixIcon: const Icon(Icons.search),
         hintText: 'search for products',
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25.0),
+          borderRadius: BorderRadius.circular(10.0),
           borderSide: const BorderSide(
             color: Colors.black54,
             width: 0.5,

@@ -1,7 +1,9 @@
+import 'package:ad/AdWiseUser.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
+import 'package:ad/provider/data_manager.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +19,8 @@ class RouteParser extends RouteInformationParser<Routes> {
       case 0:
       case 1:
         return Routes.home();
+      case 2:
+        return _getAccountRoute(pathSegments);
       case 3:
         return await _getProductsRoute(pathSegments);
       case 5:
@@ -51,5 +55,14 @@ class RouteParser extends RouteInformationParser<Routes> {
       }
     }
     return Routes.invalidProductEvent(productType, companyUserName);
+  }
+
+  _getAccountRoute(List<String> pathSegments){
+    AdWiseUser? user = DataManager().user;
+    if(user != null){
+      return Routes.account(user);
+    } else{
+      return Routes.home();
+    }
   }
 }
