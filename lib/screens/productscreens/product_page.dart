@@ -92,19 +92,21 @@ class _ProductPageState extends State<ProductPage> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const MyAppBar(),
       body: Consumer<ProductDataProvider>(
         builder: (context, productDataValue, _) {
           _fetchData();
           return Column(
             children: [
-              Center(
-                child: Card(
+              Container(
+                color: Colors.white,
+                child: Center(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(15.0),
                     child: Text(
                       widget.productType.getDisplayName(),
-                      style: const TextStyle(fontSize: 18.0),
+                      style: const TextStyle(fontSize: 30.0),
                     ),
                   ),
                 ),
@@ -115,6 +117,11 @@ class _ProductPageState extends State<ProductPage> {
                     Expanded(
                       flex: 1,
                       child: _productListView(),
+                    ),
+                    const Divider(
+                      color: Colors.black45,
+                      thickness: 1.0,
+                      height: 100,
                     ),
                     Expanded(
                       flex: 3,
@@ -133,8 +140,8 @@ class _ProductPageState extends State<ProductPage> {
                                 events = snapshot.data!;
                                 return GridView.builder(
                                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: isDesktopView(screenSize) ? 2 : 1,
-                                      childAspectRatio: isDesktopView(screenSize) ? 3 / 2 : 6,
+                                      crossAxisCount: isDesktopView(screenSize) ? 3 : 1,
+                                      childAspectRatio: isDesktopView(screenSize) ? 3 / 4 : 6,
                                     ),
                                     itemCount: events.length,
                                     itemBuilder: (context, index) {
@@ -147,7 +154,7 @@ class _ProductPageState extends State<ProductPage> {
                               }),
                     ),
                     // todo: remove test code
-                    _testCode()
+                    // _testCode()
                   ],
                 ),
               )
@@ -253,34 +260,91 @@ class _ProductEventTile extends StatefulWidget {
 
 class _ProductEventTileState extends State<_ProductEventTile> {
   int cursorIndex = -1;
+  Widget image = getRandomTestImage();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(3.0),
-      child: MouseRegion(
-        onEnter: (_) => setState(() => cursorIndex = widget.index),
-        onExit: (_) => setState(() => cursorIndex = -1),
-        child: Card(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: BorderSide(
-                color: Colors.grey.shade400,
-                width: 0.5,
-              )),
-          elevation: cursorIndex == widget.index ? 10 : 0,
-          child: InkWell(
+    return MouseRegion(
+      onEnter: (_) => setState(() => cursorIndex = widget.index),
+      onExit: (_) => setState(() => cursorIndex = -1),
+      child: Card(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+            side: BorderSide(
+              color: Colors.grey.shade400,
+              width: 0.2,
+            )),
+        elevation: cursorIndex == widget.index ? 10 : 0,
+        child: InkWell(
             borderRadius: BorderRadius.circular(10),
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
             onTap: () => MyRouteDelegate.of(context)
                 .navigateToProductEventPage(widget.event.type, widget.productData.userName, widget.event),
-            child: Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-              child: Center(child: Text(widget.event.eventName)),
-            ),
-          ),
-        ),
+            child: Stack(
+              children: [
+                Center(child: Text(widget.event.eventName)),
+                LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    return SizedBox(
+                      width: constraints.maxWidth,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              flex: 5,
+                              child: Center(
+                                child: image
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10.0,
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    widget.event.eventName,
+                                    style: const TextStyle(fontSize: 20.0),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text("\u20B9${widget.event.price}"),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text('date posted: ${widget.event.dateTime}'),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                Positioned(
+                  right: 10,
+                  top: 10,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () {},
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.circle_outlined,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )),
       ),
     );
   }

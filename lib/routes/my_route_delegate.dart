@@ -38,7 +38,7 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
             child: ProductPage(
               productType: _routes.productType!,
               currentUserName: _routes.companyUserName != null ? _routes.companyUserName! : '',
-              products: DataManager().products.values.toList(),
+              products: _routes.products??[],
             ),
           ),
         if (_routes.isProductErrorPage)

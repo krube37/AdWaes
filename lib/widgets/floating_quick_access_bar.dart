@@ -41,7 +41,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
           });
         },
         onTap: () async {
-          List<ProductData> products = await FirestoreDatabase().getProductData(type: items[i]);
+          List<ProductData> products = await FirestoreDatabase().getProductsOfType(type: items[i]);
           if (mounted) {
             MyRouteDelegate.of(context).navigateToCompany(items[i], products, products.first.userName);
           }
@@ -111,7 +111,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                   },
                                   onTap: () async {
                                     List<ProductData> products =
-                                        await FirestoreDatabase().getProductData(type: items[i]);
+                                        await FirestoreDatabase().getProductsOfType(type: items[i]);
                                     if (mounted) {
                                       MyRouteDelegate.of(context)
                                           .navigateToCompany(items[i], products, products.first.userName);
@@ -166,7 +166,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                       },
                                       onTap: () async {
                                         List<ProductData> products =
-                                            await FirestoreDatabase().getProductData(type: items[i]);
+                                            await FirestoreDatabase().getProductsOfType(type: items[i]);
                                         if (mounted) {
                                           MyRouteDelegate.of(context).navigateToCompany(
                                               items[i], products, products.isNotEmpty ? products.first.userName : '');

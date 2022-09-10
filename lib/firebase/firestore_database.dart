@@ -20,6 +20,7 @@ class FirestoreDatabase {
   static const usersCollectionName = "users";
   static const eventsCollectionName = "events";
   static const bookedEventsCollectionName = "bookedEvents";
+  static const favouriteEventsCollectionName = "favouriteEvents";
 
   FirestoreDatabase()
       : _mInstance = FirebaseFirestore.instance,
@@ -40,7 +41,7 @@ class FirestoreDatabase {
 
   Future<bool> updateNewUserDetails(AdWiseUser user) async => await updateUserDetails(user);
 
-  Future<List<ProductData>> getProductData({required ProductType type}) async {
+  Future<List<ProductData>> getProductsOfType({required ProductType type}) async {
     final CollectionReference<Map> collectionRef = _mInstance.collection(type.name);
     final DataManager dataManager = DataManager();
     QuerySnapshot<Map> productCollectionData = await collectionRef.get();
@@ -49,7 +50,8 @@ class FirestoreDatabase {
       products.add(ProductData.fromFirestore(value.data()));
     }
     for (var element in products) {
-      dataManager.products.update(element.userName, (value) => element, ifAbsent: () => element);
+      dataManager.products.clear();
+      dataManager.products.putIfAbsent(element.userName, ()=> element);
     }
     return products;
   }
@@ -74,17 +76,16 @@ class FirestoreDatabase {
     return productDataStream!;
   }
 
-  CollectionReference<Map> getEventCollectionRef(ProductType type, String companyUserName) =>
-      _mInstance.collection(type.name).doc(companyUserName).collection(eventsCollectionName);
-
   StreamSubscription<QuerySnapshot> listenToEvents(
       ProductType type, String companyUserName, Function(List<ProductEvent> productEvent)? onUpdate) {
     if (eventsStream != null) {
       eventsStream!.cancel();
       eventsStream = null;
     }
-    eventsStream = getEventCollectionRef(type, companyUserName)
+    eventsStream = _mInstance
+        .collection(eventsCollectionName)
         .where('isBooked', isEqualTo: false)
+        .where('productId', isEqualTo: companyUserName)
         .snapshots()
         .listen((QuerySnapshot<Map> event) {
       List<ProductEvent> productEvents = [];
@@ -98,7 +99,7 @@ class FirestoreDatabase {
 
   Future<ProductEvent?> getEventById(ProductType type, String companyUserName, String eventId) async {
     try {
-      DocumentSnapshot<Map> data = await getEventCollectionRef(type, companyUserName).doc(eventId).get();
+      DocumentSnapshot<Map> data = await _mInstance.collection(type.name).doc(eventId).get();
       if (data.data() != null) {
         ProductEvent event = ProductEvent.fromFirestore(data.data()!);
         if (!event.isBooked) return event;
@@ -124,16 +125,66 @@ class FirestoreDatabase {
           .set(newEvent.map);
 
       // updating event
-      await _mInstance
-          .collection(event.type.name)
-          .doc(event.productId)
-          .collection(eventsCollectionName)
-          .doc(event.eventId)
-          .update(newEvent.map);
+      await _mInstance.collection(eventsCollectionName).doc(event.eventId).update(newEvent.map);
       return true;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase updateBookingDetails: error booking event $e\n$stack");
       return false;
     }
+  }
+
+  Future<bool> addToFavourite(String eventId) async {
+    try {
+      // creating event
+      await _mInstance
+          .collection(usersCollectionName)
+          .doc(_dataManager.user!.userId)
+          .collection(favouriteEventsCollectionName)
+          .doc(eventId)
+          .set({'eventId': eventId});
+      return true;
+    } catch (e, stack) {
+      debugPrint("FirestoreDatabase addToFavourite: error in adding to favourite $e\n$stack");
+      return false;
+    }
+  }
+
+  Future<bool> removeFromFavourite(String eventId) async {
+    try {
+      // creating event
+      await _mInstance
+          .collection(usersCollectionName)
+          .doc(_dataManager.user!.userId)
+          .collection(favouriteEventsCollectionName)
+          .doc(eventId)
+          .delete();
+      return true;
+    } catch (e, stack) {
+      debugPrint("FirestoreDatabase addToFavourite: error in adding to favourite $e\n$stack");
+      return false;
+    }
+  }
+
+  Future<List<ProductEvent>> getAllFavouriteEvents() async {
+    List<ProductEvent> productEvents = [];
+    List<String> eventIds = [];
+    try {
+      QuerySnapshot snapshot = await _mInstance
+          .collection(usersCollectionName)
+          .doc(_dataManager.user!.userId)
+          .collection(favouriteEventsCollectionName)
+          .get();
+
+      eventIds.addAll(snapshot.docs.map((e) => e.id));
+
+      QuerySnapshot<Map> eventSnapshot =
+          await _mInstance.collection(eventsCollectionName).where('eventId', whereIn: eventIds).get();
+      for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
+        productEvents.add(ProductEvent.fromFirestore(doc.data()));
+      }
+    } catch (e, stack) {
+      debugPrint("FirestoreDatabase getAllFavouriteEvents: error in getting the favourite events $e\n$stack");
+    }
+    return productEvents;
   }
 }

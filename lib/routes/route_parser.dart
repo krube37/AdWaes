@@ -38,7 +38,7 @@ class RouteParser extends RouteInformationParser<Routes> {
     ProductType? productType = ProductTypeExtention.getTypeByName(pathSegments[1]);
     String companyUserName = pathSegments[2];
     if (productType != null) {
-      List<ProductData> products = await FirestoreDatabase().getProductData(type: productType);
+      List<ProductData> products = await FirestoreDatabase().getProductsOfType(type: productType);
       return Routes.company(productType, products, companyUserName);
     }
     return Routes.invalidProduct();

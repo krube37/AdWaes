@@ -58,7 +58,7 @@ class ProductEventPage extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
-                        child: Image.asset('../assets/images/sample3.jpg'),
+                        child: Image.asset('../assets/images/event.jpg'),
                       ),
                     ),
                   ),

@@ -40,40 +40,46 @@ class ProductDataProvider extends ChangeNotifier {
         notifyListeners();
       });
 
-
   Stream<List<ProductEvent>> listenToEvents(ProductType type, String productDataId) {
     StreamController<List<ProductEvent>> controller = StreamController();
     controller = StreamController();
-     firestoreDatabase.listenToEvents(type, productDataId, (productEvents) {
-        controller.add(productEvents);
-        _productEvents
-          ..clear()
-          ..addAll(productEvents);
-      });
-     return controller.stream;
+    firestoreDatabase.listenToEvents(type, productDataId, (productEvents) {
+      controller.add(productEvents);
+      _productEvents
+        ..clear()
+        ..addAll(productEvents);
+    });
+    return controller.stream;
   }
 
   // todo remove test code.
   static addProductData(ProductData product, List<ProductEvent> events, ProductType type) async {
     DocumentReference ref = FirebaseFirestore.instance.collection(type.name).doc(product.userName);
     await ref.set(product.map);
-    CollectionReference eventsRef = ref.collection('events');
+    CollectionReference eventsRef = FirebaseFirestore.instance.collection('events');
     for (ProductEvent event in events) {
       await eventsRef.doc(event.eventId).set(event.map);
     }
   }
 
-  static removeProductData(String productId, ProductType type) async =>
-      await FirebaseFirestore.instance.collection(type.name).doc(productId).delete();
+  static removeProductData(String productId, ProductType type) async {
+    await FirebaseFirestore.instance.collection(type.name).doc(productId).delete();
+    Query<Map<String, dynamic>> query =
+        FirebaseFirestore.instance.collection('events').where('productId', isEqualTo: productId);
+    QuerySnapshot snapshot = await query.get();
+    for(QueryDocumentSnapshot ref in snapshot.docs){
+      ref.reference.delete();
+    }
+  }
 
   static addProductEvent(String productId, ProductEvent event) async {
-    DocumentReference ref = FirebaseFirestore.instance.collection(event.type.name).doc(productId);
-    await ref.collection('events').doc(event.eventId).set(event.map);
+    DocumentReference ref = FirebaseFirestore.instance.collection('events').doc(event.eventId);
+    await ref.set(event.map);
   }
 
   static deleteLastProductEvent(String productId, ProductType type) async {
-    CollectionReference ref = FirebaseFirestore.instance.collection(type.name).doc(productId).collection('events');
-    QuerySnapshot events = await ref.get();
+    CollectionReference ref = FirebaseFirestore.instance.collection('events');
+    QuerySnapshot events = await ref.where(productId, isEqualTo: productId).get();
 
     if (events.docs.isNotEmpty) {
       events.docs.last.reference.delete();

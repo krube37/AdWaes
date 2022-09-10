@@ -189,7 +189,7 @@ class _ProductListViewTileState extends State<_ProductListViewTile> {
   }
 
   _onItemClicked() async {
-    List<ProductData> products = await FirestoreDatabase().getProductData(type: widget.type);
+    List<ProductData> products = await FirestoreDatabase().getProductsOfType(type: widget.type);
     if (mounted) {
       MyRouteDelegate.of(context)
           .navigateToCompany(widget.type, products, products.isNotEmpty ? products.first.userName : '');
