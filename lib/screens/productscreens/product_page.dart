@@ -99,18 +99,19 @@ class _ProductPageState extends State<ProductPage> {
           _fetchData();
           return Column(
             children: [
-              Container(
-                color: Colors.white,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      widget.productType.getDisplayName(),
-                      style: const TextStyle(fontSize: 30.0),
-                    ),
-                  ),
-                ),
-              ),
+              // Container(
+              //   color: Colors.white,
+              //   child: Center(
+              //     child: Padding(
+              //       padding: const EdgeInsets.all(15.0),
+              //       child: Text(
+              //         widget.productType.getDisplayName(),
+              //         style: const TextStyle(fontSize: 30.0),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              const SizedBox(height: 10.0,),
               Expanded(
                 child: Row(
                   children: [
@@ -140,8 +141,8 @@ class _ProductPageState extends State<ProductPage> {
                                 events = snapshot.data!;
                                 return GridView.builder(
                                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: isDesktopView(screenSize) ? 3 : 1,
-                                      childAspectRatio: isDesktopView(screenSize) ? 3 / 4 : 6,
+                                      crossAxisCount: isDesktopView(screenSize) ? 3 : 2,
+                                      childAspectRatio: isDesktopView(screenSize) ? 3 / 4 : 3/4,
                                     ),
                                     itemCount: events.length,
                                     itemBuilder: (context, index) {
@@ -295,9 +296,7 @@ class _ProductEventTileState extends State<_ProductEventTile> {
                           children: [
                             Expanded(
                               flex: 5,
-                              child: Center(
-                                child: image
-                              ),
+                              child: Center(child: image),
                             ),
                             const SizedBox(
                               height: 10.0,
@@ -309,7 +308,7 @@ class _ProductEventTileState extends State<_ProductEventTile> {
                                 children: [
                                   Text(
                                     widget.event.eventName,
-                                    style: const TextStyle(fontSize: 20.0),
+                                    style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
                                   ),
                                   const SizedBox(
                                     height: 10,
@@ -318,7 +317,10 @@ class _ProductEventTileState extends State<_ProductEventTile> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Text('date posted: ${widget.event.dateTime}'),
+                                  Text(
+                                    'date posted: ${widget.event.dateTime}',
+                                    style: const TextStyle(overflow: TextOverflow.ellipsis),
+                                  ),
                                 ],
                               ),
                             ),

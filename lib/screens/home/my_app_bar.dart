@@ -66,7 +66,7 @@ class _MyAppBarState extends State<MyAppBar> {
                   onTap: () {},
                   child: const Icon(
                     Icons.notifications,
-                    color: primaryColor,
+                    color: Colors.black,
                   ),
                 ),
               ),

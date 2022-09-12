@@ -22,7 +22,6 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => dataManager),
-        ChangeNotifierProvider<ProductDataProvider>(create: (_) => ProductDataProvider()),
       ],
       child: Consumer<DataManager>(
         builder: (_, dataManagerValue, __) {

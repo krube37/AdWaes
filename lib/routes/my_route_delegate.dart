@@ -2,7 +2,6 @@ import 'package:ad/AdWiseUser.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
-import 'package:ad/provider/data_manager.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/account_page.dart';
 import 'package:ad/screens/error_page.dart';
@@ -10,7 +9,9 @@ import 'package:ad/screens/invalid_event_page.dart';
 import 'package:ad/screens/home/my_home_page.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/product_data_provider.dart';
 import '../screens/product_event_page.dart';
 
 class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNavigatorRouterDelegateMixin<Routes> {
@@ -35,10 +36,13 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
         if (_routes.isProductPage || _routes.isCompanyPage)
           MaterialPage(
             key: const ValueKey('Products'),
-            child: ProductPage(
-              productType: _routes.productType!,
-              currentUserName: _routes.companyUserName != null ? _routes.companyUserName! : '',
-              products: _routes.products??[],
+            child: ChangeNotifierProvider<ProductDataProvider>(
+              create: (_) => ProductDataProvider(),
+              child: ProductPage(
+                productType: _routes.productType!,
+                currentUserName: _routes.companyUserName != null ? _routes.companyUserName! : '',
+                products: _routes.products ?? [],
+              ),
             ),
           ),
         if (_routes.isProductErrorPage)
@@ -100,7 +104,7 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
     notifyListeners();
   }
 
-  navigateToAccount(AdWiseUser user){
+  navigateToAccount(AdWiseUser user) {
     _routes = Routes.account(user);
     notifyListeners();
   }

@@ -3,6 +3,7 @@ library home_page;
 import 'package:ad/constants.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
+import 'package:ad/screens/product_widgets/bottombar.dart';
 import 'package:flutter/material.dart';
 
 import '../../firebase/firestore_database.dart';
@@ -21,10 +22,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
-      appBar: MyAppBar(),
-      body: _ProductsMenu(),
+      appBar: const MyAppBar(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: const [
+            _ProductsMenu(),
+            SizedBox(height: 400.0,),
+            BottomBar(),
+          ],
+        ),
+      ),
     );
   }
 }
