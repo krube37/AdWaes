@@ -149,7 +149,7 @@ class _TopBarContentsState extends State<TopBarContents> {
                           onTap: () {
                             // Navigator.of(context).pushNamed(Routes.ACCOUNT_PAGE, arguments: DataManager().user);
                           },
-                          onDoubleTap: () => _authManager.signOut(),
+                          onDoubleTap: () => _authManager.signOut(context),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [

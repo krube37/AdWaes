@@ -108,10 +108,12 @@ class _HeartIconState extends State<_HeartIcon> {
   double iconSize = 25.0;
   bool isHovering = false;
   bool isLoading = false;
+  late DataManager dataManager;
 
   @override
   Widget build(BuildContext context) {
-    bool isFavourite = DataManager().isFavouriteId(widget.eventId);
+    dataManager = Provider.of<DataManager>(context);
+    bool isFavourite = dataManager.isFavouriteId(widget.eventId);
     return IgnorePointer(
       ignoring: isLoading,
       child: MouseRegion(
@@ -123,6 +125,31 @@ class _HeartIconState extends State<_HeartIcon> {
           highlightColor: Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           onTap: () async {
+            if (dataManager.user == null) {
+              AdWiseUser? user = await SignInManager().showSignInDialog(context);
+
+              if (user == null) {
+                SnackBar snackBar = const SnackBar(
+                  content: Text('Login Failed!'),
+                  behavior: SnackBarBehavior.floating,
+                  width: 500.0,
+                );
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+                return;
+              }
+              await dataManager.initialiseUserCreds(user);
+              SnackBar snackBar = const SnackBar(
+                content: Text('Successfully logged in'),
+                behavior: SnackBarBehavior.floating,
+                width: 500.0,
+              );
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
+            }
+
             setState(() {
               isLoading = true;
             });

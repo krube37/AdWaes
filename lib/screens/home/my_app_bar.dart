@@ -68,7 +68,7 @@ class _MyAppBarState extends State<MyAppBar> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25.0),
                   onTap: () {
-                    AuthManager.mInstance.signOut();
+                    AuthManager.mInstance.signOut(context);
                   },
                   child: const Icon(
                     CustomIcons.heart_svgrepo_com,

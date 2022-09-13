@@ -2,6 +2,7 @@ library product_page;
 
 import 'dart:math';
 
+import 'package:ad/AdWiseUser.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
@@ -10,6 +11,7 @@ import 'package:ad/product/product_data.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
+import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';

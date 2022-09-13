@@ -137,7 +137,7 @@ class _SignInCardState extends State<SignInCard> {
         } else {
           adWiseUser = await FirestoreDatabase().getCurrentUserDetails(userCreds.user!.uid);
         }
-        DataManager().user = adWiseUser;
+        await DataManager().initialiseUserCreds(adWiseUser);
         SnackBar snackBar = const SnackBar(
           content: Text('Successfully logged in'),
           behavior: SnackBarBehavior.floating,

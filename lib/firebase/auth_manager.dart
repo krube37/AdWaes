@@ -3,6 +3,7 @@ import 'package:ad/firebase_options.dart';
 import 'package:ad/provider/firebase_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_firebase_recaptcha/firebase_recaptcha_verifier_modal.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -84,9 +85,9 @@ class AuthManager {
     return auth.signInWithPhoneNumber(phoneNumber);
   }
 
-  Future<bool> signOut() async {
+  Future<bool> signOut(BuildContext context) async {
     try {
-      await auth.signOut().then((value) => DataManager().user = null);
+      await auth.signOut().then((value) => DataManager().removeUserBelongings(context));
       print("AuthManager signOut: sigined out successfully ");
       return true;
     } catch (e) {

@@ -48,4 +48,16 @@ class DataManager extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  initialiseUserCreds(AdWiseUser adWiseUser) async {
+    user = adWiseUser;
+    _favouriteEventIds.addAll(await FirestoreDatabase().getAllFavouriteEventIds());
+    notifyListeners();
+  }
+
+  removeUserBelongings(BuildContext context) {
+    user = null;
+    _favouriteEventIds.clear();
+    notifyListeners();
+  }
 }
