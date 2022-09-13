@@ -83,10 +83,10 @@ class _ProductEventTileState extends State<_ProductEventTile> {
                     );
                   },
                 ),
-                const Positioned(
+                Positioned(
                   right: 10,
                   top: 10,
-                  child: _HeartIcon(),
+                  child: _HeartIcon(eventId: widget.event.eventId),
                 ),
               ],
             )),
@@ -96,7 +96,9 @@ class _ProductEventTileState extends State<_ProductEventTile> {
 }
 
 class _HeartIcon extends StatefulWidget {
-  const _HeartIcon({Key? key}) : super(key: key);
+  final String eventId;
+
+  const _HeartIcon({Key? key, required this.eventId}) : super(key: key);
 
   @override
   State<_HeartIcon> createState() => _HeartIconState();
@@ -104,32 +106,54 @@ class _HeartIcon extends StatefulWidget {
 
 class _HeartIconState extends State<_HeartIcon> {
   double iconSize = 25.0;
-  bool isFavourite = false, isHovering = false;
+  bool isHovering = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => iconSize = 27.0),
-      onExit: (_) => setState(() => iconSize = 25.0),
-      child: InkWell(
-        splashColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-        onTap: () {
-          setState(() {
-            isFavourite = !isFavourite;
-          });
-        },
-        child: Container(
-          width: 50,
-          height: 50,
-          padding: const EdgeInsets.all(8.0),
-          child: Center(
-            child: Icon(
-              isFavourite ? CustomIcons.heart : CustomIcons.heart_svgrepo_com,
-              color: isFavourite ? Colors.red : Colors.grey,
-              size: iconSize,
+    bool isFavourite = DataManager().isFavouriteId(widget.eventId);
+    return IgnorePointer(
+      ignoring: isLoading,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => iconSize = 27.0),
+        onExit: (_) => setState(() => iconSize = 25.0),
+        child: InkWell(
+          splashColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          onTap: () async {
+            setState(() {
+              isLoading = true;
+            });
+            if (isFavourite) {
+              if (await FirestoreDatabase().removeFromFavourite(widget.eventId)) isFavourite = !isFavourite;
+            } else {
+              if (await FirestoreDatabase().addToFavourite(widget.eventId)) isFavourite = !isFavourite;
+            }
+            debugPrint("_HeartIconState build: isFavourite now $isFavourite");
+            setState(() {
+              isLoading = false;
+            });
+          },
+          child: Container(
+            width: 50,
+            height: 50,
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: isLoading
+                  ? const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                        color: Colors.grey,
+                      ),
+                    )
+                  : Icon(
+                      isFavourite ? CustomIcons.heart : CustomIcons.heart_svgrepo_com,
+                      color: isFavourite ? Colors.red : Colors.grey,
+                      size: iconSize,
+                    ),
             ),
           ),
         ),

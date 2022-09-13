@@ -133,6 +133,8 @@ class FirestoreDatabase {
           .collection(favouriteEventsCollectionName)
           .doc(eventId)
           .set({'eventId': eventId});
+
+      _dataManager.addFavouriteEventIds([eventId]);
       return true;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase addToFavourite: error in adding to favourite $e\n$stack");
@@ -149,6 +151,7 @@ class FirestoreDatabase {
           .collection(favouriteEventsCollectionName)
           .doc(eventId)
           .delete();
+      _dataManager.removeFavouriteIds([eventId]);
       return true;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase addToFavourite: error in adding to favourite $e\n$stack");
@@ -156,18 +159,26 @@ class FirestoreDatabase {
     }
   }
 
-  Future<List<ProductEvent>> getAllFavouriteEvents() async {
-    List<ProductEvent> productEvents = [];
-    List<String> eventIds = [];
-    try {
+  Future<Iterable<String>> getAllFavouriteEventIds() async {
+    try{
       QuerySnapshot snapshot = await _mInstance
           .collection(usersCollectionName)
           .doc(_dataManager.user!.userId)
           .collection(favouriteEventsCollectionName)
           .get();
 
-      eventIds.addAll(snapshot.docs.map((e) => e.id));
+      return snapshot.docs.map((e) => e.id);
+    }catch(e){
+      debugPrint("FirestoreDatabase getAllFavouriteEventIds: Exception in fetching favourite Ids $e");
+    }
+    return [];
+  }
 
+  Future<List<ProductEvent>> getAllFavouriteEvents() async {
+    List<ProductEvent> productEvents = [];
+    List<String> eventIds = List.from(await getAllFavouriteEventIds());
+
+    try {
       QuerySnapshot<Map> eventSnapshot =
           await _mInstance.collection(eventsCollectionName).where('eventId', whereIn: eventIds).get();
       for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
