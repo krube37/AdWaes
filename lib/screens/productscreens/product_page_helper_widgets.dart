@@ -109,11 +109,12 @@ class _HeartIconState extends State<_HeartIcon> {
   bool isHovering = false;
   bool isLoading = false;
   late DataManager dataManager;
+  bool isFavourite = false;
 
   @override
   Widget build(BuildContext context) {
     dataManager = Provider.of<DataManager>(context);
-    bool isFavourite = dataManager.isFavouriteId(widget.eventId);
+    isFavourite = dataManager.isFavouriteId(widget.eventId);
     return IgnorePointer(
       ignoring: isLoading,
       child: MouseRegion(
@@ -124,45 +125,7 @@ class _HeartIconState extends State<_HeartIcon> {
           hoverColor: Colors.transparent,
           highlightColor: Colors.transparent,
           borderRadius: BorderRadius.circular(20),
-          onTap: () async {
-            if (dataManager.user == null) {
-              AdWiseUser? user = await SignInManager().showSignInDialog(context);
-
-              if (user == null) {
-                SnackBar snackBar = const SnackBar(
-                  content: Text('Login Failed!'),
-                  behavior: SnackBarBehavior.floating,
-                  width: 500.0,
-                );
-                if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                }
-                return;
-              }
-              await dataManager.initialiseUserCreds(user);
-              SnackBar snackBar = const SnackBar(
-                content: Text('Successfully logged in'),
-                behavior: SnackBarBehavior.floating,
-                width: 500.0,
-              );
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              }
-            }
-
-            setState(() {
-              isLoading = true;
-            });
-            if (isFavourite) {
-              if (await FirestoreDatabase().removeFromFavourite(widget.eventId)) isFavourite = !isFavourite;
-            } else {
-              if (await FirestoreDatabase().addToFavourite(widget.eventId)) isFavourite = !isFavourite;
-            }
-            debugPrint("_HeartIconState build: isFavourite now $isFavourite");
-            setState(() {
-              isLoading = false;
-            });
-          },
+          onTap: _toggleFavourite,
           child: Container(
             width: 50,
             height: 50,
@@ -186,5 +149,28 @@ class _HeartIconState extends State<_HeartIcon> {
         ),
       ),
     );
+  }
+
+  _toggleFavourite() async {
+    if (dataManager.user == null) {
+      AdWiseUser? user = await SignInManager().showSignInDialog(context, showToast: (snackBar) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      });
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+    if (isFavourite) {
+      if (await FirestoreDatabase().removeFromFavourite(widget.eventId)) isFavourite = !isFavourite;
+    } else {
+      if (await FirestoreDatabase().addToFavourite(widget.eventId)) isFavourite = !isFavourite;
+    }
+    debugPrint("_HeartIconState build: isFavourite now $isFavourite");
+    setState(() {
+      isLoading = false;
+    });
   }
 }

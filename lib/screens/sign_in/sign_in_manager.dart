@@ -3,8 +3,8 @@ part of sign_in;
 
 
 class SignInManager {
-  Future<AdWiseUser?> showSignInDialog(BuildContext context) async {
-    return await showDialog<AdWiseUser?>(
+  Future<AdWiseUser?> showSignInDialog(BuildContext context, {Function(SnackBar snackBar)? showToast}) async {
+    AdWiseUser? user = await showDialog<AdWiseUser?>(
         context: context,
         builder: (context) {
           return ChangeNotifierProvider(
@@ -13,6 +13,24 @@ class SignInManager {
                 const SignInCard(),
           );
         });
+
+    if (user == null) {
+      SnackBar snackBar = const SnackBar(
+        content: Text('Login Failed!'),
+        behavior: SnackBarBehavior.floating,
+        width: 500.0,
+      );
+      showToast?.call(snackBar);
+      return null;
+    }
+    await DataManager().initialiseUserCreds(user);
+    SnackBar snackBar = const SnackBar(
+      content: Text('Successfully logged in'),
+      behavior: SnackBarBehavior.floating,
+      width: 500.0,
+    );
+   showToast?.call(snackBar);
+   return user;
   }
 }
 

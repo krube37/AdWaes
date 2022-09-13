@@ -191,14 +191,6 @@ class _BookButtonState extends State<_BookButton> {
     // todo: book event
     debugPrint("ProductEventPage build: booking implementation yet to be completed ");
     bool isBookingSuccess = await FirestoreDatabase().bookEvent(widget.event);
-    SnackBar snackBar = const SnackBar(
-      content: Text('Successfully logged in'),
-      behavior: SnackBarBehavior.floating,
-      width: 500.0,
-    );
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
     debugPrint("ProductEventPage build: booking success $isBookingSuccess");
     setState(() {
       isBookingBtnLoading = false;
