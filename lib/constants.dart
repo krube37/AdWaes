@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:ad/helper/custom_icons.dart';
 import 'package:flutter/material.dart';
 
 /// firebase signIn/signUp errors and success enum
@@ -18,7 +19,6 @@ enum ProductType {
   fmRadio,
   sponsorship,
 }
-
 
 // todo: remove test code
 getRandomTestImage() {
@@ -83,7 +83,7 @@ extension ProductTypeExtention on ProductType {
       case ProductType.tvChannel:
         return Icons.tv;
       case ProductType.newsPaper:
-        return Icons.newspaper;
+        return CustomIcons.newspaper_2;
       case ProductType.billBoard:
         return Icons.post_add;
       case ProductType.onlineGame:
@@ -91,11 +91,11 @@ extension ProductTypeExtention on ProductType {
       case ProductType.webpage:
         return Icons.pageview;
       case ProductType.youtube:
-        return Icons.play_arrow_rounded;
+        return CustomIcons.youtube_1;
       case ProductType.instagram:
-        return Icons.add_box_rounded;
+        return CustomIcons.instagram;
       case ProductType.fmRadio:
-        return Icons.radio;
+        return CustomIcons.radio_tower;
       case ProductType.sponsorship:
         return Icons.grain;
     }

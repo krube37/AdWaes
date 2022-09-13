@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'data_manager.dart';
 
 class ProductDataProvider extends ChangeNotifier {
-  final List<ProductData> _products;
+  final List<ProductData> _products = [];
   final List<ProductEvent> _productEvents = [];
   late DataManager dataManager;
   late FirestoreDatabase firestoreDatabase;
@@ -18,16 +18,9 @@ class ProductDataProvider extends ChangeNotifier {
 
   ProductDataProvider._internal()
       : dataManager = DataManager(),
-        firestoreDatabase = FirestoreDatabase(),
-        _products = DataManager().products.values.toList();
+        firestoreDatabase = FirestoreDatabase();
 
-  factory ProductDataProvider() {
-    if (_mInstance != null) {
-      _mInstance!._products.addAll(DataManager().products.values);
-      return _mInstance!;
-    }
-    return ProductDataProvider._internal();
-  }
+  factory ProductDataProvider() => _mInstance ?? ProductDataProvider._internal();
 
   List<ProductData> get products => _products;
 
@@ -67,7 +60,7 @@ class ProductDataProvider extends ChangeNotifier {
     Query<Map<String, dynamic>> query =
         FirebaseFirestore.instance.collection('events').where('productId', isEqualTo: productId);
     QuerySnapshot snapshot = await query.get();
-    for(QueryDocumentSnapshot ref in snapshot.docs){
+    for (QueryDocumentSnapshot ref in snapshot.docs) {
       ref.reference.delete();
     }
   }

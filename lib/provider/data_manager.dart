@@ -1,7 +1,5 @@
 import 'package:ad/AdWiseUser.dart';
-import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_database.dart';
-import 'package:ad/product/product_data.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -13,7 +11,9 @@ class DataManager extends ChangeNotifier {
 
   factory DataManager() => _mInstance;
 
-  Map<String, ProductData> products = {};
+  /// notifies the listening widgets
+  static notify() => _mInstance.notifyListeners();
+
   AdWiseUser? user;
   bool fetchingSigInDetails = false;
 
@@ -36,6 +36,4 @@ class DataManager extends ChangeNotifier {
       notifyListeners();
     });
   }
-
-  ProductData getProductDataByType(ProductType type) => products.values.firstWhere((element) => element.type == type);
 }

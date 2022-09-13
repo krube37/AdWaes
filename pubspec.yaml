@@ -96,6 +96,11 @@ flutter:
 
 
   fonts:
+    - family: CustomIcons
+      fonts:
+        - asset: assets/fonts/CustomIcons.ttf
+          weight: 500
+
     - family: Ubuntu
       fonts:
         - asset: assets/fonts/Ubuntu/Ubuntu-light-w300.ttf

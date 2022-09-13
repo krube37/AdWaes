@@ -108,7 +108,7 @@ class _SignInCardState extends State<SignInCard> {
     try {
       _otpSentResult = await AuthManager().signInWithPhoneNumber(_provider.phoneNumberTextController.text.trim());
     } catch (e, stact) {
-      print("_SignInCardState _onContinueButtonClicked: error in sending OTP $e\n$stact");
+      debugPrint("_SignInCardState _onContinueButtonClicked: error in sending OTP $e\n$stact");
     }
 
     setState(() {
@@ -138,14 +138,13 @@ class _SignInCardState extends State<SignInCard> {
           adWiseUser = await FirestoreDatabase().getCurrentUserDetails(userCreds.user!.uid);
         }
         DataManager().user = adWiseUser;
-
-        _provider.setIdleState();
         SnackBar snackBar = const SnackBar(
           content: Text('Successfully logged in'),
           behavior: SnackBarBehavior.floating,
           width: 500.0,
         );
         if (mounted) {
+          _provider.setIdleState();
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           Navigator.pop(context, adWiseUser);
         }
@@ -153,8 +152,8 @@ class _SignInCardState extends State<SignInCard> {
         _provider.setIdleState(otpErrorMessage: 'Error signing in. Please try after sometime');
       }
     } catch (e, stack) {
-      _provider.setIdleState(otpErrorMessage: 'Incorrect OTP entered. Please try again.');
       print("_SignInCardState _onSigInButtonClicked: wrong otp, $e\n$stack");
+      _provider.setIdleState(otpErrorMessage: 'Incorrect OTP entered. Please try again.');
     }
   }
 

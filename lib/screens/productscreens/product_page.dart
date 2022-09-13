@@ -1,7 +1,10 @@
+library product_page;
+
 import 'dart:math';
 
 import 'package:ad/constants.dart';
 import 'package:ad/globals.dart';
+import 'package:ad/helper/custom_icons.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
@@ -12,6 +15,8 @@ import 'package:uuid/uuid.dart';
 import '../../product/product_event.dart';
 import '../../product/product_tile.dart';
 import '../../provider/product_data_provider.dart';
+
+part 'product_page_helper_widgets.dart';
 
 class ProductPage extends StatefulWidget {
   final ProductType productType;
@@ -245,109 +250,4 @@ class _ProductPageState extends State<ProductPage> {
               child: const Text("delete Event"))
         ],
       ));
-}
-
-class _ProductEventTile extends StatefulWidget {
-  final int index;
-  final ProductEvent event;
-  final ProductData productData;
-
-  const _ProductEventTile({Key? key, required this.index, required this.event, required this.productData})
-      : super(key: key);
-
-  @override
-  State<_ProductEventTile> createState() => _ProductEventTileState();
-}
-
-class _ProductEventTileState extends State<_ProductEventTile> {
-  int cursorIndex = -1;
-  Widget image = getRandomTestImage();
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => cursorIndex = widget.index),
-      onExit: (_) => setState(() => cursorIndex = -1),
-      child: Card(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-            side: BorderSide(
-              color: Colors.grey.shade400,
-              width: 0.2,
-            )),
-        elevation: cursorIndex == widget.index ? 10 : 0,
-        child: InkWell(
-            borderRadius: BorderRadius.circular(10),
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            onTap: () => MyRouteDelegate.of(context)
-                .navigateToProductEventPage(widget.event.type, widget.productData.userName, widget.event),
-            child: Stack(
-              children: [
-                Center(child: Text(widget.event.eventName)),
-                LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    return SizedBox(
-                      width: constraints.maxWidth,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Center(child: image),
-                            ),
-                            const SizedBox(
-                              height: 10.0,
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.event.eventName,
-                                    style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text("\u20B9${widget.event.price}"),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'date posted: ${widget.event.dateTime}',
-                                    style: const TextStyle(overflow: TextOverflow.ellipsis),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                Positioned(
-                  right: 10,
-                  top: 10,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(20),
-                    onTap: () {},
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.circle_outlined,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )),
-      ),
-    );
-  }
 }

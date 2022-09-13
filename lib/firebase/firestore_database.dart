@@ -43,22 +43,16 @@ class FirestoreDatabase {
 
   Future<List<ProductData>> getProductsOfType({required ProductType type}) async {
     final CollectionReference<Map> collectionRef = _mInstance.collection(type.name);
-    final DataManager dataManager = DataManager();
     QuerySnapshot<Map> productCollectionData = await collectionRef.get();
     List<ProductData> products = [];
     for (QueryDocumentSnapshot<Map> value in productCollectionData.docs) {
       products.add(ProductData.fromFirestore(value.data()));
-    }
-    for (var element in products) {
-      dataManager.products.clear();
-      dataManager.products.putIfAbsent(element.userName, ()=> element);
     }
     return products;
   }
 
   StreamSubscription<QuerySnapshot> listenToProductData(
       ProductType productType, Function(List<ProductData> productData)? onUpdate) {
-    DataManager dataManager = DataManager();
     if (productDataStream != null) {
       productDataStream!.cancel();
       productDataStream = null;
@@ -67,9 +61,6 @@ class FirestoreDatabase {
       List<ProductData> products = [];
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         products.add(ProductData.fromFirestore(value.data()));
-      }
-      for (var element in products) {
-        dataManager.products.update(element.userName, (value) => element, ifAbsent: () => element);
       }
       onUpdate?.call(products);
     });
