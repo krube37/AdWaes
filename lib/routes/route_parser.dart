@@ -1,4 +1,4 @@
-import 'package:ad/AdWiseUser.dart';
+import 'package:ad/adwise_user.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/product/product_data.dart';

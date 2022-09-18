@@ -1,5 +1,6 @@
-import 'package:ad/AdWiseUser.dart';
+import 'package:ad/adwise_user.dart';
 import 'package:ad/firebase/auth_manager.dart';
+import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/helper/custom_icons.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,8 +68,8 @@ class _MyAppBarState extends State<MyAppBar> {
                 width: 50.0,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25.0),
-                  onTap: () {
-                    AuthManager.mInstance.signOut(context);
+                  onTap: () async {
+                    await SignInManager().showNewUserFields(context, DataManager().user!);
                   },
                   child: const Icon(
                     CustomIcons.heart_svgrepo_com,
@@ -83,6 +84,7 @@ class _MyAppBarState extends State<MyAppBar> {
                 children: [
                   InkWell(
                     onTap: _navigateToAccountsPage,
+                    onDoubleTap: () => AuthManager().signOut(context),
                     borderRadius: BorderRadius.circular(18.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.grey.shade400,

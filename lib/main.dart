@@ -13,7 +13,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print(" main: current user ${FirebaseAuth.instance.currentUser?.uid}");
+  debugPrint(" main: current user ${FirebaseAuth.instance.currentUser?.uid}");
   DataManager dataManager = DataManager();
   await dataManager.initialize();
 
@@ -24,7 +24,7 @@ void main() async {
       ],
       child: Consumer<DataManager>(
         builder: (_, dataManagerValue, __) {
-          print("_AdWaesAppState build: user ${dataManagerValue.user}");
+          debugPrint("_AdWaesAppState build: user ${dataManagerValue.user}");
           return const AdWaesApp();
         },
       ),

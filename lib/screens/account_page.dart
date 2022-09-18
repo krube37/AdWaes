@@ -1,4 +1,4 @@
-import 'package:ad/AdWiseUser.dart';
+import 'package:ad/adwise_user.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:flutter/material.dart';

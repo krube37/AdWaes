@@ -1,4 +1,4 @@
-import 'package:ad/AdWiseUser.dart';
+import 'package:ad/adwise_user.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +15,7 @@ class DataManager extends ChangeNotifier {
   static notify() => _mInstance.notifyListeners();
 
   AdWiseUser? user;
+  bool isNewUser = false;
   bool fetchingSigInDetails = false;
 
   /// favourite event ids of current user
@@ -30,7 +31,7 @@ class DataManager extends ChangeNotifier {
 
   initialize() async {
     if (FirebaseAuth.instance.currentUser != null) {
-      user = await FirestoreDatabase().getCurrentUserDetails(FirebaseAuth.instance.currentUser!.uid);
+      user = await FirestoreDatabase().getCurrentUserDetails(FirebaseAuth.instance.currentUser!);
     }
     _favouriteEventIds.addAll(await FirestoreDatabase().getAllFavouriteEventIds());
     _listenToUser();
@@ -42,7 +43,7 @@ class DataManager extends ChangeNotifier {
       if (user != null) {
         fetchingSigInDetails = true;
         notifyListeners();
-        this.user = await FirestoreDatabase().getCurrentUserDetails(user.uid);
+        this.user = await FirestoreDatabase().getCurrentUserDetails(user);
         fetchingSigInDetails = false;
       }
       notifyListeners();

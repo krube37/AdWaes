@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:ad/AdWiseUser.dart';
+import 'package:ad/adwise_user.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/provider/data_manager.dart';
@@ -26,16 +26,25 @@ class FirestoreDatabase {
       : _mInstance = FirebaseFirestore.instance,
         _dataManager = DataManager();
 
-  Future<AdWiseUser> getCurrentUserDetails(String userId) async {
+  Future<AdWiseUser> getCurrentUserDetails(User user) async {
     DocumentReference<Map<String, dynamic>> ref =
-        FirebaseFirestore.instance.collection(usersCollectionName).doc(userId);
+        FirebaseFirestore.instance.collection(usersCollectionName).doc(user.uid);
     DocumentSnapshot<Map<String, dynamic>> snapshot = await ref.get();
+    if (snapshot.data() == null) {
+      AdWiseUser newUser = AdWiseUser.newUser(user);
+      await updateUserDetails(newUser);
+      return newUser;
+    }
     return AdWiseUser.fromFirestoreDB(snapshot.data()!);
   }
 
   Future<bool> updateUserDetails(AdWiseUser user) async {
     DocumentReference<Map> ref = FirebaseFirestore.instance.collection(usersCollectionName).doc(user.userId);
-    await ref.set(user.map);
+    try {
+      await ref.set(user.map);
+    } catch (e) {
+      return false;
+    }
     return true;
   }
 
@@ -160,7 +169,7 @@ class FirestoreDatabase {
   }
 
   Future<Iterable<String>> getAllFavouriteEventIds() async {
-    try{
+    try {
       QuerySnapshot snapshot = await _mInstance
           .collection(usersCollectionName)
           .doc(_dataManager.user!.userId)
@@ -168,7 +177,7 @@ class FirestoreDatabase {
           .get();
 
       return snapshot.docs.map((e) => e.id);
-    }catch(e){
+    } catch (e) {
       debugPrint("FirestoreDatabase getAllFavouriteEventIds: Exception in fetching favourite Ids $e");
     }
     return [];

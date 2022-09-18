@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 class SignInProvider extends ChangeNotifier {
   static SignInProvider? _mInstance;
 
-  TextEditingController? _phoneNumberTextController, _otpTextController;
+  static TextEditingController? _phoneNumberTextController, _otpTextController;
 
   SignInProvider() {
     _phoneNumberTextController ??= TextEditingController(text: '+919876543210');

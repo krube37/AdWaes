@@ -7,14 +7,14 @@ class SignUpCard extends StatefulWidget {
       passwordTextController,
       confirmPassTextController;
 
-  const SignUpCard(
-      {Key? key,
-      required this.firstNameTextController,
-      required this.lastNameTextController,
-      required this.emailTextController,
-      required this.passwordTextController,
-      required this.confirmPassTextController,})
-      : super(key: key);
+  const SignUpCard({
+    Key? key,
+    required this.firstNameTextController,
+    required this.lastNameTextController,
+    required this.emailTextController,
+    required this.passwordTextController,
+    required this.confirmPassTextController,
+  }) : super(key: key);
 
   @override
   State<SignUpCard> createState() => _SignUpCardState();
@@ -23,7 +23,6 @@ class SignUpCard extends StatefulWidget {
 class _SignUpCardState extends State<SignUpCard> {
   String? _firstNameErrorText, _emailErrorText, _passwordErrorText, _confirmPassErrorText;
   late SignInProvider _provider;
-
 
   @override
   void initState() {
@@ -48,27 +47,30 @@ class _SignUpCardState extends State<SignUpCard> {
             padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 30),
             child: Column(
               children: [
-                _CustomTextField(
+                _CustomSignInTextField(
                   'Your First Name',
                   labelText: 'First Name',
                   controller: widget.firstNameTextController,
                   errorText: _firstNameErrorText,
                 ),
-                _CustomTextField('Your Last Name',
-                    labelText: 'Last Name (optional)', controller: widget.lastNameTextController),
-                _CustomTextField(
+                _CustomSignInTextField(
+                  'Your Last Name',
+                  labelText: 'Last Name (optional)',
+                  controller: widget.lastNameTextController,
+                ),
+                _CustomSignInTextField(
                   'Your Email Address',
                   labelText: 'Email Address',
                   controller: widget.emailTextController,
                   errorText: _emailErrorText,
                 ),
-                _CustomTextField(
+                _CustomSignInTextField(
                   'Your Password',
                   labelText: 'Password',
                   controller: widget.passwordTextController,
                   errorText: _passwordErrorText,
                 ),
-                _CustomTextField(
+                _CustomSignInTextField(
                   'Confirm Your Password',
                   labelText: 'Confirm Password',
                   controller: widget.confirmPassTextController,

@@ -1,19 +1,25 @@
 library sign_in;
 
+import 'package:ad/firebase/api_response.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/provider/data_manager.dart';
+import 'package:ad/provider/update_user_details_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import '../../AdWiseUser.dart';
+import '../../adwise_user.dart';
 import '../../firebase/auth_manager.dart';
+import '../../helper/custom_text_field.dart';
 import '../../provider/sign_in_provider.dart';
 
 part 'sign_up_card.dart';
 
 part 'sign_in_manager.dart';
+
+part 'new_user_fields_card.dart';
 
 class SignInCard extends StatefulWidget {
   const SignInCard({Key? key}) : super(key: key);
@@ -25,7 +31,7 @@ class SignInCard extends StatefulWidget {
 class _SignInCardState extends State<SignInCard> {
   String? _phoneNumberErrorText, _otpErrorText;
   late SignInProvider _provider;
-  ConfirmationResult? _otpSentResult;
+  ConfirmationResult? _otpConfirmationResult;
   String? phoneNumber;
   bool waitingForOTP = false;
 
@@ -96,23 +102,21 @@ class _SignInCardState extends State<SignInCard> {
 
   _onContinueButtonClicked() async {
     String email = _provider.phoneNumberTextController.text.trim();
-    bool isValid = _validateFilledFields(email);
 
-    if (!isValid) {
+    if (!_validateFilledFields(email)) {
       setState(() {});
       return;
     }
 
     _provider.setSendingOtpState();
 
-    try {
-      _otpSentResult = await AuthManager().signInWithPhoneNumber(_provider.phoneNumberTextController.text.trim());
-    } catch (e, stact) {
-      debugPrint("_SignInCardState _onContinueButtonClicked: error in sending OTP $e\n$stact");
+    ApiResponse response = await AuthManager().signInWithPhoneNumber(_provider.phoneNumberTextController.text.trim());
+    if (response.status) {
+      _otpConfirmationResult = response.data;
     }
 
     setState(() {
-      if (_otpSentResult != null) {
+      if (_otpConfirmationResult != null) {
         waitingForOTP = true;
         phoneNumber = _provider.phoneNumberTextController.text.trim();
         _provider.setIdleState();
@@ -125,7 +129,7 @@ class _SignInCardState extends State<SignInCard> {
   _onSigInButtonClicked() async {
     try {
       _provider.setVerifyingOtpState();
-      UserCredential userCreds = await _otpSentResult!.confirm(_provider.otpTextController.text.trim());
+      UserCredential userCreds = await _otpConfirmationResult!.confirm(_provider.otpTextController.text.trim());
 
       if (userCreds.user != null) {
         bool isNewUser = userCreds.additionalUserInfo?.isNewUser ?? false;
@@ -134,8 +138,11 @@ class _SignInCardState extends State<SignInCard> {
         if (isNewUser) {
           adWiseUser = AdWiseUser.newUser(userCreds.user!);
           await FirestoreDatabase().updateNewUserDetails(adWiseUser);
+          if (mounted) {
+            adWiseUser = await SignInManager().showNewUserFields(context, adWiseUser);
+          }
         } else {
-          adWiseUser = await FirestoreDatabase().getCurrentUserDetails(userCreds.user!.uid);
+          adWiseUser = await FirestoreDatabase().getCurrentUserDetails(userCreds.user!);
         }
         await DataManager().initialiseUserCreds(adWiseUser);
         SnackBar snackBar = const SnackBar(
@@ -161,7 +168,7 @@ class _SignInCardState extends State<SignInCard> {
     print("_SignInCardState _onBackPressed: $waitingForOTP");
     if (waitingForOTP) {
       setState(() {
-        _otpSentResult = null;
+        _otpConfirmationResult = null;
         waitingForOTP = false;
       });
     } else {
@@ -173,12 +180,13 @@ class _SignInCardState extends State<SignInCard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _CustomTextField(
+            _CustomSignInTextField(
               'Your Mobile Number',
               labelText: 'Mobile Number',
               controller: _provider.phoneNumberTextController,
               errorText: _phoneNumberErrorText,
               onFieldSubmitted: (_) => _onContinueButtonClicked,
+              keyboardType: TextInputType.phone,
             ),
             const SizedBox(
               height: 20,
@@ -198,12 +206,13 @@ class _SignInCardState extends State<SignInCard> {
             const SizedBox(
               height: 10,
             ),
-            _CustomTextField(
+            _CustomSignInTextField(
               'Enter OTP',
               labelText: 'Enter OTP',
               controller: _provider.otpTextController,
               errorText: _otpErrorText,
               onFieldSubmitted: (_) => _onSigInButtonClicked,
+              keyboardType: TextInputType.number,
             ),
             const SizedBox(
               height: 20,

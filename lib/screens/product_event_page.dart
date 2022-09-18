@@ -1,4 +1,4 @@
-import 'package:ad/AdWiseUser.dart';
+import 'package:ad/adwise_user.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_event.dart';

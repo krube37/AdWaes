@@ -1,4 +1,5 @@
 import 'package:ad/constants.dart';
+import 'package:ad/firebase/api_response.dart';
 import 'package:ad/firebase_options.dart';
 import 'package:ad/provider/firebase_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -80,19 +81,43 @@ class AuthManager {
   //   }
   // }
 
-  Future<ConfirmationResult> signInWithPhoneNumber(String phoneNumber) async {
-    print("AuthManager signInWithPhoneNumber: ");
-    return auth.signInWithPhoneNumber(phoneNumber);
+  Future<ApiResponse<ConfirmationResult>> signInWithPhoneNumber(String phoneNumber) async {
+    debugPrint("AuthManager signInWithPhoneNumber: ");
+    try{
+      ConfirmationResult result = await auth.signInWithPhoneNumber(phoneNumber);
+      return ApiResponse.success(data: result);
+    }catch(e){
+      debugPrint("AuthManager signInWithPhoneNumber: error signing in with phone number $e");
+      return ApiResponse.error(errorMessage: e.toString());
+    }
   }
 
-  Future<bool> signOut(BuildContext context) async {
+  Future<ApiResponse<void>> signOut(BuildContext context) async {
     try {
       await auth.signOut().then((value) => DataManager().removeUserBelongings(context));
-      print("AuthManager signOut: sigined out successfully ");
-      return true;
+      debugPrint("AuthManager signOut: sigined out successfully ");
+      return ApiResponse.success();
     } catch (e) {
-      print("AuthManager signOut: unable to Sign out $e");
-      return false;
+      debugPrint("AuthManager signOut: unable to Sign out $e");
+      return ApiResponse.error(errorMessage: e.toString());
     }
+  }
+
+  Future<ApiResponse<void>> addEmailAddress(String email) async {
+    try{
+      AuthCredential credential = EmailAuthProvider.credential(email: email, password: 'kjbhwcqokkjwecbj');
+
+      UserCredential? cred = await auth.currentUser?.linkWithCredential(credential);
+      return ApiResponse.success();
+    }catch(e){
+      debugPrint("AuthManager addEmailAddress: error in adding email address $e");
+      return ApiResponse.error(errorMessage: e.toString());
+    }
+  }
+
+  Future<ApiResponse<void>> verifyEmailAddress(String email) async {
+    await addEmailAddress(email);
+    throw UnimplementedError();
+    return ApiResponse.success();
   }
 }
