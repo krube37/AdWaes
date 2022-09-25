@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AdWiseUser {
   final String userId, userName, phoneNumber;
   final String? firstName, lastName, emailId, companyName, gstNumber, businessType, profilePhotoUrl;
-  final int? age;
+  final DateTime? age;
   final bool? isEmailVerified;
 
   AdWiseUser(
@@ -32,7 +32,7 @@ class AdWiseUser {
           lastName: user['lastName'],
           companyName: user['companyName'],
           gstNumber: user['gstNumber'],
-          age: user['age'],
+          age: DateTime.fromMillisecondsSinceEpoch(user['age']),
           businessType: user['businessType'],
           profilePhotoUrl: user['profilePhotoUrl']);
 
@@ -55,7 +55,7 @@ class AdWiseUser {
         'isEmailVerified': isEmailVerified,
         'companyName': companyName,
         'gstNumber': gstNumber,
-        'age': age,
+        'age': age?.millisecondsSinceEpoch,
         'businessType': businessType,
         'profilePhotoUrl': profilePhotoUrl,
         'lastName': lastName,
@@ -69,7 +69,7 @@ class AdWiseUser {
     bool? isEmailVerified,
     String? companyName,
     String? gstNumber,
-    int? age,
+    DateTime? age,
     String? businessType,
     String? profilePhotoUrl,
   }) =>

@@ -275,7 +275,8 @@ class _NewUserFieldsCardState extends State<NewUserFieldsCard> {
       }
     }
 
-    String age = _provider.ageTextController.text.trim();
+    String ageString = _provider.ageTextController.text.trim();
+    DateTime? age = ageString.isNotEmpty ? DateTime.tryParse(ageString) : null;
 
     AdWiseUser updatedUser = widget.user.copyWith(
       userName: _provider.userNameTextController.text.trim(),
@@ -284,7 +285,7 @@ class _NewUserFieldsCardState extends State<NewUserFieldsCard> {
       emailId: emailId,
       companyName: _provider.companyTextController.text.trim(),
       gstNumber: _provider.gstTextController.text.trim(),
-      age: age.isNotEmpty ? int.parse(age) : null,
+      age: age,
       businessType: _provider.businessTypeTextController.text.trim(),
     );
 

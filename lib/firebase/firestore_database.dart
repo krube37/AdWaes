@@ -39,6 +39,7 @@ class FirestoreDatabase {
   }
 
   Future<bool> updateUserDetails(AdWiseUser user) async {
+    debugPrint("FirestoreDatabase updateUserDetails: ");
     DocumentReference<Map> ref = FirebaseFirestore.instance.collection(usersCollectionName).doc(user.userId);
     try {
       await ref.set(user.map);
