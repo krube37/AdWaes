@@ -1,6 +1,5 @@
-import 'package:ad/widgets/bottom_bar_column.dart';
+import 'package:ad/screens/product_widgets/bottom_bar_column.dart';
 import 'package:ad/widgets/info_text.dart';
-import 'package:ad/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 
 class BottomBar extends StatelessWidget {
