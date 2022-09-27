@@ -32,7 +32,7 @@ class AdWiseUser {
           lastName: user['lastName'],
           companyName: user['companyName'],
           gstNumber: user['gstNumber'],
-          age: DateTime.fromMillisecondsSinceEpoch(user['age']),
+          age: user['age'] != null ? DateTime.fromMillisecondsSinceEpoch(user['age']) : null,
           businessType: user['businessType'],
           profilePhotoUrl: user['profilePhotoUrl']);
 

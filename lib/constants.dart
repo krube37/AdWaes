@@ -5,6 +5,24 @@ import 'package:flutter/material.dart';
 
 /// firebase signIn/signUp errors and success enum
 ///
+///
+// height of the 'Gallery' header
+const double galleryHeaderHeight = 64;
+
+// The font size delta for headline4 font.
+const double desktopDisplay1FontDelta = 16;
+
+// The width of the settingsDesktop.
+const double desktopSettingsWidth = 520;
+
+// Sentinel value for the system text scale factor option.
+const double systemTextScaleFactorOption = -1;
+
+// The splash page animation duration.
+const splashPageAnimationDurationInMilliseconds = 300;
+
+// The desktop top padding for a page's first header (e.g. Gallery, Settings)
+const firstHeaderDesktopTopPadding = 5.0;
 
 enum FirebaseResult { success, somethingWentWrong, invalidCredentials, passwordWrong, userNotFound, userAlreadyExist }
 
@@ -98,6 +116,52 @@ extension ProductTypeExtention on ProductType {
         return CustomIcons.radio_tower;
       case ProductType.sponsorship:
         return Icons.grain;
+    }
+  }
+
+  Image getImage() {
+    switch (this) {
+      case ProductType.tvChannel:
+        return Image.asset('../assets/images/tv_channel.jpg');
+      case ProductType.newsPaper:
+        return Image.asset('../assets/images/newspaper.jpg');
+      case ProductType.billBoard:
+        return Image.asset('../assets/images/billboard.jpg');
+      case ProductType.onlineGame:
+        return Image.asset('../assets/images/online_game.jpg');
+      case ProductType.webpage:
+        return Image.asset('../assets/images/webpage.jpg');
+      case ProductType.youtube:
+        return Image.asset('../assets/images/youtube.jpg');
+      case ProductType.instagram:
+        return Image.asset('../assets/images/instagram.jpg');
+      case ProductType.fmRadio:
+        return Image.asset('../assets/images/radio.jpg');
+      case ProductType.sponsorship:
+        return Image.asset('../assets/images/sponsorship.jpg');
+    }
+  }
+
+  Color getBgColor() {
+    switch (this) {
+      case ProductType.tvChannel:
+        return const Color(0xFF021a3e);
+      case ProductType.newsPaper:
+        return const Color(0xFFA76432);
+      case ProductType.billBoard:
+        return const Color(0xFF6B94C0);
+      case ProductType.onlineGame:
+        return const Color(0xFFA7A8AC);
+      case ProductType.webpage:
+        return const Color(0xFFC8C9CE);
+      case ProductType.youtube:
+        return const Color(0xFF121D3D);
+      case ProductType.instagram:
+        return const Color(0xFFFF6B54);
+      case ProductType.fmRadio:
+        return const Color(0xFF9530B9);
+      case ProductType.sponsorship:
+        return const Color(0xFF292929);
     }
   }
 }

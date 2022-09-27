@@ -5,6 +5,7 @@ import 'package:ad/product/product_event.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/account_page.dart';
 import 'package:ad/screens/error_page.dart';
+import 'package:ad/screens/new_home/home_page.dart';
 import 'package:ad/screens/invalid_event_page.dart';
 import 'package:ad/screens/home/my_home_page.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
@@ -26,7 +27,7 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
         if (_routes.isHomePage)
           const MaterialPage(
             key: ValueKey('Home'),
-            child: MyHomePage(),
+            child: HomePage(),
           ),
         if (_routes.isAccountPage)
           MaterialPage(
