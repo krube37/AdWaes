@@ -26,9 +26,7 @@ class _ProductsMenuState extends State<_ProductsMenu> {
     });
     Size screenSize = MediaQuery.of(context).size;
 
-    return Container(
-      //color: Colors.red,
-      height: 95.0,
+    return Padding(
       padding: const EdgeInsets.only(top: 20.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -55,8 +53,8 @@ class _ProductsMenuState extends State<_ProductsMenu> {
             },
           ),
           SizedBox(
-            height: 95.0,
             width: screenSize.width / 1.5,
+            height: 100.0,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
@@ -148,40 +146,44 @@ class _ProductListViewTileState extends State<_ProductListViewTile> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => isHovering = true),
-      onExit: (_) => setState(() => isHovering = false),
-      child: SizedBox(
-        width: 100.0,
-        child: InkWell(
-          hoverColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          onTap: _onItemClicked,
-          child: Column(
-            children: [
-              Icon(
-                widget.type.getIcon(),
-                color: isHovering ? primaryColor : Colors.black,
-              ),
-              Text(
-                widget.type.getDisplayName(),
-                style: TextStyle(color: isHovering ? primaryColor : Colors.black),
-              ),
-              const SizedBox(
-                height: 5.0,
-              ),
-              isHovering
-                  ? Container(
-                      width: 30.0,
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(width: 1.5, color: isHovering ? primaryColor : Colors.black),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: MouseRegion(
+        onEnter: (_) => setState(() => isHovering = true),
+        onExit: (_) => setState(() => isHovering = false),
+        child: SizedBox(
+          width: 100.0,
+          child: InkWell(
+            hoverColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            onTap: _onItemClicked,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  widget.type.getIcon(),
+                  color: isHovering ? primaryColor : Colors.black,
+                ),
+                Text(
+                  widget.type.getDisplayName(),
+                  style: TextStyle(color: isHovering ? primaryColor : Colors.black),
+                ),
+                const SizedBox(
+                  height: 5.0,
+                ),
+                isHovering
+                    ? Container(
+                        width: 30.0,
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 1.5, color: isHovering ? primaryColor : Colors.black),
+                          ),
                         ),
-                      ),
-                    )
-                  : const SizedBox(),
-            ],
+                      )
+                    : const SizedBox(),
+              ],
+            ),
           ),
         ),
       ),
