@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AdWiseUser {
-  final String userId, userName, phoneNumber;
+  final String userId, phoneNumber;
+
   final String? firstName, lastName, emailId, companyName, gstNumber, businessType, profilePhotoUrl;
   final DateTime? age;
   final bool? isEmailVerified;
 
   AdWiseUser(
     this.userId,
-    this.userName,
     this.phoneNumber, {
     this.firstName,
     this.emailId,
@@ -24,21 +24,22 @@ class AdWiseUser {
           'if isEmailVerified is true, emailId should be provided',
         );
 
-  factory AdWiseUser.fromFirestoreDB(Map<String, dynamic> user) =>
-      AdWiseUser(user['userId'], user['userName'], user['phoneNumber'],
-          firstName: user['firstName'],
-          emailId: user['emailId'],
-          isEmailVerified: user['isEmailVerified'],
-          lastName: user['lastName'],
-          companyName: user['companyName'],
-          gstNumber: user['gstNumber'],
-          age: DateTime.fromMillisecondsSinceEpoch(user['age']),
-          businessType: user['businessType'],
-          profilePhotoUrl: user['profilePhotoUrl']);
+  factory AdWiseUser.fromFirestoreDB(Map<String, dynamic> user) => AdWiseUser(
+        user['userId'],
+        user['phoneNumber'],
+        firstName: user['firstName'],
+        emailId: user['emailId'],
+        isEmailVerified: user['isEmailVerified'],
+        lastName: user['lastName'],
+        companyName: user['companyName'],
+        gstNumber: user['gstNumber'],
+        age: user['age'] != null ? DateTime.fromMillisecondsSinceEpoch(user['age']) : null,
+        businessType: user['businessType'],
+        profilePhotoUrl: user['profilePhotoUrl'],
+      );
 
   factory AdWiseUser.newUser(User user) => AdWiseUser(
         user.uid,
-        'User_${user.uid}',
         user.phoneNumber!,
         firstName: 'User_${user.uid}',
         emailId: user.email,
@@ -48,7 +49,6 @@ class AdWiseUser {
 
   Map<String, dynamic> get map => {
         'userId': userId,
-        'userName': userName,
         'phoneNumber': phoneNumber,
         'firstName': firstName,
         'emailId': emailId,
@@ -62,7 +62,6 @@ class AdWiseUser {
       };
 
   copyWith({
-    String? userName,
     String? firstName,
     String? lastName,
     String? emailId,
@@ -75,7 +74,6 @@ class AdWiseUser {
   }) =>
       AdWiseUser(
         userId,
-        (userName?.isNotEmpty ?? false) ? userName! : this.userName,
         phoneNumber,
         firstName: (firstName?.isNotEmpty ?? false) ? firstName! : this.firstName,
         lastName: (lastName?.isNotEmpty ?? false) ? lastName : this.lastName,

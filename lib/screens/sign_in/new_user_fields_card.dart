@@ -13,7 +13,7 @@ class _NewUserFieldsCardState extends State<NewUserFieldsCard> {
   late UpdateUserDetailsProvider _provider;
   late ScrollController _scrollController;
 
-  String? userNameErrorText, firstNameErrorText, phoneNumberErrorText, companyErrorText, emailErrorText;
+  String? firstNameErrorText, phoneNumberErrorText, companyErrorText, emailErrorText;
 
   @override
   didChangeDependencies() {
@@ -56,16 +56,6 @@ class _NewUserFieldsCardState extends State<NewUserFieldsCard> {
                         padding: const EdgeInsets.only(right: 30.0),
                         child: Column(
                           children: [
-                            const SizedBox(
-                              height: 10.0,
-                            ),
-                            _CustomSignInTextField(
-                              'user name',
-                              outerLabelText: 'user name',
-                              controller: _provider.userNameTextController,
-                              errorText: userNameErrorText,
-                              isRequiredField: true,
-                            ),
                             const SizedBox(
                               height: 10.0,
                             ),
@@ -229,13 +219,9 @@ class _NewUserFieldsCardState extends State<NewUserFieldsCard> {
   }
 
   bool _validateFilledFields() {
-    userNameErrorText = firstNameErrorText = phoneNumberErrorText = companyErrorText = null;
+    firstNameErrorText = phoneNumberErrorText = companyErrorText = null;
     bool isValid = true;
 
-    if (_provider.userNameTextController.text.trim().isEmpty) {
-      isValid = false;
-      userNameErrorText = "UserName is empty";
-    }
     if (_provider.phoneNumberTextController.text.trim().isEmpty) {
       isValid = false;
       phoneNumberErrorText = "Phone number is empty";
@@ -279,7 +265,6 @@ class _NewUserFieldsCardState extends State<NewUserFieldsCard> {
     DateTime? age = ageString.isNotEmpty ? DateTime.tryParse(ageString) : null;
 
     AdWiseUser updatedUser = widget.user.copyWith(
-      userName: _provider.userNameTextController.text.trim(),
       firstName: _provider.firstNameTextController.text.trim(),
       lastName: _provider.lastNameTextController.text.trim(),
       emailId: emailId,

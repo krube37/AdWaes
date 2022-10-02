@@ -8,8 +8,7 @@ class UpdateUserDetailsProvider extends ChangeNotifier {
   static notify() => _mInstance?.notifyListeners();
 
   /// text editing controllers
-  late TextEditingController _userNameTextController,
-      _firstNameTextController,
+  late TextEditingController _firstNameTextController,
       _lastNameTextController,
       _phoneNumberTextController,
       _emailIdTextController,
@@ -20,7 +19,6 @@ class UpdateUserDetailsProvider extends ChangeNotifier {
   final AdWiseUser adWiseUser;
 
   UpdateUserDetailsProvider(this.adWiseUser) {
-    _userNameTextController = TextEditingController(text: adWiseUser.userName);
     _firstNameTextController = TextEditingController();
     _lastNameTextController = TextEditingController();
     _phoneNumberTextController = TextEditingController(text: adWiseUser.phoneNumber);
@@ -30,8 +28,6 @@ class UpdateUserDetailsProvider extends ChangeNotifier {
     _gstNumberTextController = TextEditingController(text: adWiseUser.gstNumber);
     _businessTypeTextController = TextEditingController(text: adWiseUser.businessType);
   }
-
-  TextEditingController get userNameTextController => _userNameTextController;
 
   TextEditingController get firstNameTextController => _firstNameTextController;
 
@@ -72,7 +68,6 @@ class UpdateUserDetailsProvider extends ChangeNotifier {
       context: context, initialDate: DateTime(1990), firstDate: DateTime(1800), lastDate: DateTime.now());
 
   bool isAllRequiredFieldsFilled() {
-    if (userNameTextController.text.trim().isEmpty) return false;
     if (firstNameTextController.text.trim().isEmpty) return false;
     if (phoneNumberTextController.text.trim().isEmpty) return false;
     if (companyTextController.text.trim().isEmpty) return false;

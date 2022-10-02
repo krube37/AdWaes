@@ -10,16 +10,11 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: const MyAppBar(),
       body: Column(
         children: [
           Text('user Id : ${user.userId}'),
-          const SizedBox(
-            height: 20,
-          ),
-          Text('userName : ${user.userName}'),
           const SizedBox(
             height: 20,
           ),
