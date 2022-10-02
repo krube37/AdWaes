@@ -7,6 +7,8 @@ import 'package:ad/provider/data_manager.dart';
 import 'package:ad/routes/routes.dart';
 import 'package:flutter/material.dart';
 
+import '../product/product_type.dart';
+
 class RouteParser extends RouteInformationParser<Routes> {
   @override
   Future<Routes> parseRouteInformation(RouteInformation routeInformation) async {

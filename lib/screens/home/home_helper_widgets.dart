@@ -177,7 +177,10 @@ class _ProductListViewTileState extends State<_ProductListViewTile> {
                         width: 30.0,
                         decoration: BoxDecoration(
                           border: Border(
-                            bottom: BorderSide(width: 1.5, color: isHovering ? primaryColor : Colors.black),
+                            bottom: BorderSide(
+                              width: 1.5,
+                              color: isHovering ? primaryColor : Colors.black,
+                            ),
                           ),
                         ),
                       )

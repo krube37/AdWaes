@@ -9,6 +9,8 @@ import 'package:ad/screens/second_page.dart';
 import 'package:ad/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 
+import '../product/product_type.dart';
+
 class FloatingQuickAccessBar extends StatefulWidget {
   const FloatingQuickAccessBar({
     Key? key,

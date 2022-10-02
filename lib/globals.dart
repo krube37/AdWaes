@@ -13,17 +13,20 @@ final ThemeData defaultTheme = ThemeData(
   visualDensity: VisualDensity.adaptivePlatformDensity,
 );
 
-bool isDesktopView(Size screenSize) {
+bool isDesktopView(BuildContext context) {
+  var screenSize = MediaQuery.of(context).size;
   DeviceScreenType screenType = getDeviceType(screenSize);
   return screenType == DeviceScreenType.desktop;
 }
 
-bool isMobileView(Size screenSize) {
+bool isMobileView(BuildContext context) {
+  var screenSize = MediaQuery.of(context).size;
   DeviceScreenType screenType = getDeviceType(screenSize);
   return screenType == DeviceScreenType.mobile;
 }
 
-bool isTabletView(Size screenSize) {
+bool isTabletView(BuildContext context) {
+  var screenSize = MediaQuery.of(context).size;
   DeviceScreenType screenType = getDeviceType(screenSize);
   return screenType == DeviceScreenType.tablet;
 }

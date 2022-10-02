@@ -3,6 +3,7 @@ import 'package:ad/constants.dart';
 import 'package:ad/product/product_event.dart';
 
 import '../product/product_data.dart';
+import '../product/product_type.dart';
 
 enum RouteState {
   home,

@@ -11,6 +11,7 @@ import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../product/product_type.dart';
 import '../provider/product_data_provider.dart';
 import '../screens/product_event_page.dart';
 

@@ -7,6 +7,7 @@ import 'package:ad/product/product_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../product/product_type.dart';
 import 'data_manager.dart';
 
 class ProductDataProvider extends ChangeNotifier {

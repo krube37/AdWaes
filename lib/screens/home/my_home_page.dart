@@ -1,6 +1,7 @@
 library home_page;
 
 import 'package:ad/constants.dart';
+import 'package:ad/global_helper_widgets.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/product_widgets/bottombar.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import '../../firebase/firestore_database.dart';
 import '../../product/product_data.dart';
+import '../../product/product_type.dart';
 import '../../routes/my_route_delegate.dart';
 
 part 'home_helper_widgets.dart';

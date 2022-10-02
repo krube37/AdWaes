@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:ad/adwise_user.dart';
 import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_database.dart';
+import 'package:ad/global_helper_widgets.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/helper/custom_icons.dart';
 import 'package:ad/product/product_data.dart';
@@ -18,6 +19,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../product/product_event.dart';
 import '../../product/product_tile.dart';
+import '../../product/product_type.dart';
 import '../../provider/product_data_provider.dart';
 
 part 'product_page_helper_widgets.dart';
@@ -73,8 +75,6 @@ class _ProductPageState extends State<ProductPage> {
       products.update(element.userName, (value) => element, ifAbsent: () => element);
     }
     currentUserName = widget.currentUserName;
-    var screenSize = MediaQuery.of(context).size;
-
     //todo: remove test code.
     if (products.isEmpty) {
       return ElevatedButton(
@@ -150,8 +150,8 @@ class _ProductPageState extends State<ProductPage> {
                                 events = snapshot.data!;
                                 return GridView.builder(
                                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: isDesktopView(screenSize) ? 3 : 2,
-                                      childAspectRatio: isDesktopView(screenSize) ? 3 / 4 : 3/4,
+                                      crossAxisCount: isDesktopView(context) ? 3 : 2,
+                                      childAspectRatio: isDesktopView(context) ? 3 / 4 : 3/4,
                                     ),
                                     itemCount: events.length,
                                     itemBuilder: (context, index) {

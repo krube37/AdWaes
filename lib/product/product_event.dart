@@ -1,3 +1,5 @@
+import 'package:ad/product/product_type.dart';
+
 import '../constants.dart';
 
 class ProductEvent {
