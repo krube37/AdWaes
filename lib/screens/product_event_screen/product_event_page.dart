@@ -65,21 +65,21 @@ class _CustomSliverState extends State<_CustomSliver> {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        for (int i = 0; i < 2; i++)
           SliverStickyHeader.builder(
             overlapsContent: true,
             builder: (context, state) {
-              return i == 0 ? widget.eventImageWidget : const SizedBox();
+              return widget.eventImageWidget;
             },
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 childCount: 1,
                 (context, index) {
-                  return i == 0 ? widget.eventContentWidget : const BottomBar();
+                  return widget.eventContentWidget;
                 },
               ),
             ),
           ),
+        const SliverToBoxAdapter(child: BottomBar()),
       ],
     );
   }

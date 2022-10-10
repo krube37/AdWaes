@@ -178,8 +178,11 @@ class _SignInCardState extends State<SignInCard> {
 
   _showPhoneNumberContent() => Expanded(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Text("Log in to continue", style: TextStyle(fontSize: 20.0),),
+            const SizedBox(height: 60.0),
             _CustomSignInTextField(
               'Your Mobile Number',
               labelText: 'Mobile Number',
@@ -200,11 +203,12 @@ class _SignInCardState extends State<SignInCard> {
 
   _showOtpContent() => Expanded(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Enter the 6 digit code sent to $phoneNumber'),
+            Text('Enter the 6 digit code sent to $phoneNumber', style: TextStyle(fontSize: 20.0),),
             const SizedBox(
-              height: 10,
+              height: 60.0,
             ),
             _CustomSignInTextField(
               'Enter OTP',

@@ -12,7 +12,7 @@ class BottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(0.0)),
           /*gradient: LinearGradient(
             colors: [gradientStartColor, gradientEndColor],
@@ -20,7 +20,7 @@ class BottomBar extends StatelessWidget {
             end: FractionalOffset(1.0, 1.0),
             stops: [0.0, 1.0],
             tileMode: TileMode.clamp),*/
-          color: Colors.black),
+          color: Colors.grey.shade100),
       padding: const EdgeInsets.all(30),
       //color: Colors.blueGrey[900],
 
@@ -52,7 +52,7 @@ class BottomBar extends StatelessWidget {
                   ],
                 ),
                 const Divider(
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 const SizedBox(
                   height: 10,
@@ -75,13 +75,13 @@ class BottomBar extends StatelessWidget {
                   height: 10,
                 ),
                 const Divider(
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 const SizedBox(height: 20),
                 const Text(
                   'Copyright © 2021 | Adwisor',
                   style: TextStyle(
-                    color: Colors.white60,
+                    color: Colors.black87,
                     fontSize: 14,
                   ),
                 ),
@@ -112,7 +112,7 @@ class BottomBar extends StatelessWidget {
                       s3: 'youtube',
                     ),
                     Container(
-                      color: Colors.white,
+                      color: Colors.black87,
                       width: 2,
                       height: 150,
                     ),
@@ -133,13 +133,13 @@ class BottomBar extends StatelessWidget {
                   ],
                 ),
                 const Divider(
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 const SizedBox(height: 20),
                 const Text(
                   'Copyright © 2021 | Adwisor',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black87,
                     fontSize: 14,
                   ),
                 ),

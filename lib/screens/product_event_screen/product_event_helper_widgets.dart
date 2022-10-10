@@ -18,7 +18,9 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
+        color: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 30.0, horizontal: 20.0),
+        margin: const EdgeInsets.only(bottom: 20.0),
         width: (min(screenSize.width, maxScreenWidth)) * 0.40,
         child: Column(
           children: [
@@ -113,6 +115,7 @@ class _EventContentWidget extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
+      color: Colors.white,
       child: Align(
         alignment: Alignment.centerRight,
         child: Container(
