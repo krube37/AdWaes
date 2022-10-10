@@ -1,5 +1,4 @@
 import 'package:ad/adwise_user.dart';
-import 'package:ad/constants.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/routes/routes.dart';
@@ -13,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../product/product_type.dart';
 import '../provider/product_data_provider.dart';
-import '../screens/product_event_page.dart';
+import '../screens/product_event_screen/product_event_page.dart';
 
 class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNavigatorRouterDelegateMixin<Routes> {
   MyRouteDelegate() : _routes = Routes.home();

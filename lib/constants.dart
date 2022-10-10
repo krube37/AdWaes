@@ -1,11 +1,13 @@
 import 'dart:math';
 
-import 'package:ad/helper/custom_icons.dart';
 import 'package:flutter/material.dart';
+
+
+/// screen sizes
+const double maxScreenWidth = 1350.0;
 
 /// firebase signIn/signUp errors and success enum
 ///
-
 enum FirebaseResult { success, somethingWentWrong, invalidCredentials, passwordWrong, userNotFound, userAlreadyExist }
 
 // todo: remove test code
