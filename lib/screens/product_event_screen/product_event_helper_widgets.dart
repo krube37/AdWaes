@@ -168,7 +168,7 @@ class _EventContentWidget extends StatelessWidget {
                           color: Colors.black54,
                         ),
                       ),
-                      TextSpan(text: ' ${DateFormat('dd/MM/yyyy').format(event.dateTime)}'),
+                      TextSpan(text: ' ${DateFormat('dd/MM/yyyy').format(event.eventTime)}'),
                     ],
                   ),
                 ),

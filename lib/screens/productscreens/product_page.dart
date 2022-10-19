@@ -60,7 +60,11 @@ class _ProductPageState extends State<ProductPage> {
   void _fetchData() {
     productDataProvider = Provider.of<ProductDataProvider>(context);
     for (var element in productDataProvider.products) {
-      products.update(element.userName, (value) => element, ifAbsent: () => element);
+      products.update(
+        element.userName,
+        (value) => element,
+        ifAbsent: () => element,
+      );
     }
     if (!_isListeningToEvent && currentUserName.isNotEmpty) {
       productDataProvider.listenToProductData(widget.productType);
@@ -70,6 +74,7 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
     for (var element in widget.products) {
       products.update(element.userName, (value) => element, ifAbsent: () => element);
     }
@@ -90,7 +95,8 @@ class _ProductPageState extends State<ProductPage> {
                   eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
                   description: 'this is description',
                   price: 2000,
-                  dateTime: DateTime.now(),
+                  eventTime: DateTime.now(),
+                  postedTime: DateTime.now(),
                   type: widget.productType,
                   productId: data.userName),
             ];
@@ -107,19 +113,6 @@ class _ProductPageState extends State<ProductPage> {
           _fetchData();
           return Column(
             children: [
-              // Container(
-              //   color: Colors.white,
-              //   child: Center(
-              //     child: Padding(
-              //       padding: const EdgeInsets.all(15.0),
-              //       child: Text(
-              //         widget.productType.getDisplayName(),
-              //         style: const TextStyle(fontSize: 30.0),
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              const SizedBox(height: 10.0,),
               Expanded(
                 child: Row(
                   children: [
@@ -154,7 +147,7 @@ class _ProductPageState extends State<ProductPage> {
                                     ),
                                     itemCount: events.length,
                                     itemBuilder: (context, index) {
-                                      return _ProductEventTile(
+                                      return ProductEventTile(
                                         index: index,
                                         event: events[index],
                                         productData: products[currentUserName]!,
@@ -209,7 +202,8 @@ class _ProductPageState extends State<ProductPage> {
                       eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
                       description: 'this is description',
                       price: 2000,
-                      dateTime: DateTime.now(),
+                      eventTime: DateTime.now(),
+                      postedTime: DateTime.now(),
                       type: widget.productType,
                       productId: data.userName),
                 ];
@@ -237,7 +231,8 @@ class _ProductPageState extends State<ProductPage> {
                       eventName: "${widget.productType.name} event ${Random().nextInt(100)}",
                       description: 'this is description',
                       price: 2000,
-                      dateTime: DateTime.now(),
+                      eventTime: DateTime.now(),
+                      postedTime: DateTime.now(),
                       type: widget.productType,
                       productId: currentUserName),
                 );

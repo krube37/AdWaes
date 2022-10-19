@@ -200,4 +200,18 @@ class FirestoreDatabase {
     }
     return productEvents;
   }
+  //
+  // Future<List<MapEntry<ProductData, ProductEvent>>> getRecentEventsWithProductsName() async {
+  //   List<MapEntry<ProductData, ProductEvent>> productEvents = [];
+  //   try{
+  //     QuerySnapshot<Map> eventSnapshot =
+  //     await _mInstance.collection(eventsCollectionName).orderBy('postedTime', descending: true).limit(20).get();
+  //     for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
+  //       productEvents.add(ProductEvent.fromFirestore(doc.data()));
+  //     }
+  //   }catch(e, stack){
+  //     debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
+  //   }
+  //   return productEvents;
+  // }
 }

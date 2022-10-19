@@ -1,18 +1,24 @@
 part of product_page;
 
-class _ProductEventTile extends StatefulWidget {
+class ProductEventTile extends StatefulWidget {
   final int index;
   final ProductEvent event;
   final ProductData productData;
+  final double? tileWidth;
 
-  const _ProductEventTile({Key? key, required this.index, required this.event, required this.productData})
-      : super(key: key);
+  const ProductEventTile({
+    Key? key,
+    required this.index,
+    required this.event,
+    required this.productData,
+    this.tileWidth,
+  }) : super(key: key);
 
   @override
-  State<_ProductEventTile> createState() => _ProductEventTileState();
+  State<ProductEventTile> createState() => _ProductEventTileState();
 }
 
-class _ProductEventTileState extends State<_ProductEventTile> {
+class _ProductEventTileState extends State<ProductEventTile> {
   int cursorIndex = -1;
   Widget image = getRandomTestImage();
 
@@ -35,60 +41,63 @@ class _ProductEventTileState extends State<_ProductEventTile> {
             splashColor: Colors.transparent,
             onTap: () => MyRouteDelegate.of(context)
                 .navigateToProductEventPage(widget.event.type, widget.productData.userName, widget.event),
-            child: Stack(
-              children: [
-                Center(child: Text(widget.event.eventName)),
-                LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints constraints) {
-                    return SizedBox(
-                      width: constraints.maxWidth,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 5,
-                              child: Center(child: image),
-                            ),
-                            const SizedBox(
-                              height: 10.0,
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    widget.event.eventName,
-                                    style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text("\u20B9${widget.event.price}"),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    'date posted: ${widget.event.dateTime}',
-                                    style: const TextStyle(overflow: TextOverflow.ellipsis),
-                                  ),
-                                ],
+            child: SizedBox(
+              width: widget.tileWidth,
+              child: Stack(
+                children: [
+                  Center(child: Text(widget.event.eventName)),
+                  LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints) {
+                      return SizedBox(
+                        width: constraints.maxWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 5,
+                                child: Center(child: image),
                               ),
-                            ),
-                          ],
+                              const SizedBox(
+                                height: 10.0,
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      widget.event.eventName,
+                                      style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text("\u20B9${widget.event.price}"),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      'date posted: ${widget.event.eventTime}',
+                                      style: const TextStyle(overflow: TextOverflow.ellipsis),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                Positioned(
-                  right: 10,
-                  top: 10,
-                  child: _HeartIcon(eventId: widget.event.eventId),
-                ),
-              ],
+                      );
+                    },
+                  ),
+                  Positioned(
+                    right: 10,
+                    top: 10,
+                    child: _HeartIcon(eventId: widget.event.eventId),
+                  ),
+                ],
+              ),
             )),
       ),
     );

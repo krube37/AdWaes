@@ -1,11 +1,9 @@
 import 'package:ad/product/product_type.dart';
 
-import '../constants.dart';
-
 class ProductEvent {
   final String _eventId, _eventName, _description, _productId;
   final int _price;
-  final DateTime _dateTime;
+  final DateTime _eventTime, _postedTime;
   final ProductType _type;
   final bool _isBooked;
   final String? _bookedUserId;
@@ -15,7 +13,8 @@ class ProductEvent {
     required String eventName,
     required String description,
     required int price,
-    required DateTime dateTime,
+    required DateTime eventTime,
+    required DateTime postedTime,
     required ProductType type,
     required productId,
     isBooked = false,
@@ -26,7 +25,8 @@ class ProductEvent {
         _eventName = eventName,
         _description = description,
         _price = price,
-        _dateTime = dateTime,
+        _eventTime = eventTime,
+        _postedTime = postedTime,
         _type = type,
         _productId = productId,
         _isBooked = isBooked,
@@ -37,7 +37,8 @@ class ProductEvent {
         eventName: json['eventName'],
         description: json['description'],
         price: json['price'],
-        dateTime: DateTime.fromMillisecondsSinceEpoch(json['dateTime']),
+        eventTime: DateTime.fromMillisecondsSinceEpoch(json['eventTime']),
+        postedTime: DateTime.fromMillisecondsSinceEpoch(json['postedTime']),
         type: ProductType.values[json['type']],
         productId: json['productId'],
         isBooked: json['isBooked'],
@@ -49,7 +50,8 @@ class ProductEvent {
     String? eventName,
     String? description,
     int? price,
-    DateTime? dateTime,
+    DateTime? eventTime,
+    DateTime? postedTime,
     ProductType? type,
     int? productId,
     bool? isBooked,
@@ -60,7 +62,8 @@ class ProductEvent {
         eventName: eventName ?? this.eventName,
         description: description ?? this.description,
         price: price ?? this.price,
-        dateTime: dateTime ?? this.dateTime,
+        eventTime: eventTime ?? this.eventTime,
+        postedTime: postedTime ?? this.postedTime,
         type: type ?? this.type,
         productId: productId ?? this.productId,
         isBooked: isBooked ?? this.isBooked,
@@ -75,7 +78,9 @@ class ProductEvent {
 
   int get price => _price;
 
-  DateTime get dateTime => _dateTime;
+  DateTime get eventTime => _eventTime;
+
+  DateTime get postedTime => _postedTime;
 
   ProductType get type => _type;
 
@@ -90,7 +95,8 @@ class ProductEvent {
         'eventName': eventName,
         'description': description,
         'price': price,
-        'dateTime': dateTime.millisecondsSinceEpoch,
+        'eventTime': eventTime.millisecondsSinceEpoch,
+        'postedTime': postedTime.millisecondsSinceEpoch,
         'type': type.index,
         'productId': productId,
         'isBooked': isBooked,
