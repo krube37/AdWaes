@@ -1,7 +1,5 @@
 import 'package:ad/product/product_type.dart';
 
-import '../constants.dart';
-
 class ProductData {
   final String _userName, _name, _description;
   final int _totalEvents;

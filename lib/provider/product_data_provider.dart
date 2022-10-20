@@ -48,7 +48,7 @@ class ProductDataProvider extends ChangeNotifier {
 
   // todo remove test code.
   static addProductData(ProductData product, List<ProductEvent> events, ProductType type) async {
-    DocumentReference ref = FirebaseFirestore.instance.collection(type.name).doc(product.userName);
+    DocumentReference ref = FirebaseFirestore.instance.collection('productData').doc(product.userName);
     await ref.set(product.map);
     CollectionReference eventsRef = FirebaseFirestore.instance.collection('events');
     for (ProductEvent event in events) {
@@ -57,7 +57,7 @@ class ProductDataProvider extends ChangeNotifier {
   }
 
   static removeProductData(String productId, ProductType type) async {
-    await FirebaseFirestore.instance.collection(type.name).doc(productId).delete();
+    await FirebaseFirestore.instance.collection('productData').doc(productId).delete();
     Query<Map<String, dynamic>> query =
         FirebaseFirestore.instance.collection('events').where('productId', isEqualTo: productId);
     QuerySnapshot snapshot = await query.get();

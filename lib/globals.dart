@@ -4,7 +4,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 /// THEME DETAILS
 /// ===========================================
 
-const primaryColor = Color(0xFF0449D1);
+const primaryColor = Colors.orange;
 
 
 

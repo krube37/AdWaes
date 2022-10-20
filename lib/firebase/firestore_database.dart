@@ -53,8 +53,8 @@ class FirestoreDatabase {
   Future<bool> updateNewUserDetails(AdWiseUser user) async => await updateUserDetails(user);
 
   Future<List<ProductData>> getProductsOfType({required ProductType type}) async {
-    final CollectionReference<Map> collectionRef = _mInstance.collection(type.name);
-    QuerySnapshot<Map> productCollectionData = await collectionRef.get();
+    final CollectionReference<Map> collectionRef = _mInstance.collection('productData');
+    QuerySnapshot<Map> productCollectionData = await collectionRef.where('type', isEqualTo: type.index).get();
     List<ProductData> products = [];
     for (QueryDocumentSnapshot<Map> value in productCollectionData.docs) {
       products.add(ProductData.fromFirestore(value.data()));
@@ -63,12 +63,15 @@ class FirestoreDatabase {
   }
 
   StreamSubscription<QuerySnapshot> listenToProductData(
-      ProductType productType, Function(List<ProductData> productData)? onUpdate) {
+    ProductType productType,
+    Function(List<ProductData> productData)? onUpdate,
+  ) {
     if (productDataStream != null) {
       productDataStream!.cancel();
       productDataStream = null;
     }
-    productDataStream = _mInstance.collection(productType.name).snapshots().listen((event) {
+    productDataStream =
+        _mInstance.collection('productData').where('type', isEqualTo: productType.index).snapshots().listen((event) {
       List<ProductData> products = [];
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         products.add(ProductData.fromFirestore(value.data()));
@@ -79,7 +82,10 @@ class FirestoreDatabase {
   }
 
   StreamSubscription<QuerySnapshot> listenToEvents(
-      ProductType type, String companyUserName, Function(List<ProductEvent> productEvent)? onUpdate) {
+    ProductType type,
+    String companyUserName,
+    Function(List<ProductEvent> productEvent)? onUpdate,
+  ) {
     if (eventsStream != null) {
       eventsStream!.cancel();
       eventsStream = null;
@@ -101,7 +107,7 @@ class FirestoreDatabase {
 
   Future<ProductEvent?> getEventById(ProductType type, String companyUserName, String eventId) async {
     try {
-      DocumentSnapshot<Map> data = await _mInstance.collection(type.name).doc(eventId).get();
+      DocumentSnapshot<Map> data = await _mInstance.collection('events').doc(eventId).get();
       if (data.data() != null) {
         ProductEvent event = ProductEvent.fromFirestore(data.data()!);
         if (!event.isBooked) return event;
@@ -200,18 +206,18 @@ class FirestoreDatabase {
     }
     return productEvents;
   }
-  //
-  // Future<List<MapEntry<ProductData, ProductEvent>>> getRecentEventsWithProductsName() async {
-  //   List<MapEntry<ProductData, ProductEvent>> productEvents = [];
-  //   try{
-  //     QuerySnapshot<Map> eventSnapshot =
-  //     await _mInstance.collection(eventsCollectionName).orderBy('postedTime', descending: true).limit(20).get();
-  //     for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
-  //       productEvents.add(ProductEvent.fromFirestore(doc.data()));
-  //     }
-  //   }catch(e, stack){
-  //     debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
-  //   }
-  //   return productEvents;
-  // }
+//
+// Future<List<MapEntry<ProductData, ProductEvent>>> getRecentEventsWithProductsName() async {
+//   List<MapEntry<ProductData, ProductEvent>> productEvents = [];
+//   try{
+//     QuerySnapshot<Map> eventSnapshot =
+//     await _mInstance.collection(eventsCollectionName).orderBy('postedTime', descending: true).limit(20).get();
+//     for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
+//       productEvents.add(ProductEvent.fromFirestore(doc.data()));
+//     }
+//   }catch(e, stack){
+//     debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
+//   }
+//   return productEvents;
+// }
 }
