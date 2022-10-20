@@ -24,6 +24,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<MapEntry<ProductData, ProductEvent>> dataToEventsMap = [];
+  bool isRecentEventsFetched = false;
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -45,6 +48,13 @@ class _MyHomePageState extends State<MyHomePage> {
         postedTime: DateTime.now(),
         type: ProductType.tvChannel,
         productId: data.userName);
+
+    if (dataToEventsMap.isEmpty && !isRecentEventsFetched) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        dataToEventsMap = await FirestoreDatabase().getRecentEventsWithProductsName();
+        if(mounted) setState(() => isRecentEventsFetched = true);
+      });
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -74,16 +84,25 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 _CustomHorizontalScroller(
-                  itemLength: 10,
+                  itemLength: dataToEventsMap.length,
                   height: 400,
                   scrollingArrowSize: 50.0,
                   scrollPixelsPerClick: (screenSize.width / 300) * 200,
-                  itemBuilder: (index) => ProductEventTile(
-                    index: index,
-                    event: productEvent,
-                    productData: data,
-                    tileWidth: 300,
-                  ),
+                  //todo : implement loading before fetching
+                  itemBuilder: (index) {
+                    return dataToEventsMap.isNotEmpty
+                        ? ProductEventTile(
+                            index: index,
+                            event: dataToEventsMap[index].value,
+                            productData: dataToEventsMap[index].key,
+                            tileWidth: 300,
+                          )
+                        : const SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Text('some error is there'),
+                          );
+                  },
                 ),
                 const SizedBox(height: 50.0),
                 const BottomBar(),

@@ -206,18 +206,33 @@ class FirestoreDatabase {
     }
     return productEvents;
   }
-//
-// Future<List<MapEntry<ProductData, ProductEvent>>> getRecentEventsWithProductsName() async {
-//   List<MapEntry<ProductData, ProductEvent>> productEvents = [];
-//   try{
-//     QuerySnapshot<Map> eventSnapshot =
-//     await _mInstance.collection(eventsCollectionName).orderBy('postedTime', descending: true).limit(20).get();
-//     for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
-//       productEvents.add(ProductEvent.fromFirestore(doc.data()));
-//     }
-//   }catch(e, stack){
-//     debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
-//   }
-//   return productEvents;
-// }
+
+  Future<List<MapEntry<ProductData, ProductEvent>>> getRecentEventsWithProductsName() async {
+    List<MapEntry<ProductData, ProductEvent>> productDataToEventsMap = [];
+    try {
+      QuerySnapshot<Map> eventSnapshot =
+          await _mInstance.collection(eventsCollectionName).orderBy('postedTime', descending: true).limit(10).get();
+      List<ProductEvent> productEvents = [];
+      for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
+        productEvents.add(ProductEvent.fromFirestore(doc.data()));
+      }
+      QuerySnapshot<Map> dataSnapshot = await _mInstance
+          .collection('productData')
+          .where('userName', whereIn: productEvents.map((e) => e.productId).toList())
+          .get();
+      int i = 0;
+      List<ProductData> productDataList = [];
+      for (QueryDocumentSnapshot<Map> doc in dataSnapshot.docs) {
+        productDataList.add(ProductData.fromFirestore(doc.data()));
+      }
+
+      for (ProductEvent event in productEvents) {
+        productDataToEventsMap
+            .add(MapEntry(productDataList.firstWhere((element) => element.userName == event.productId), event));
+      }
+    } catch (e, stack) {
+      debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
+    }
+    return productDataToEventsMap;
+  }
 }
