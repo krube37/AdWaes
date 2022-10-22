@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 
 import '../../adwise_user.dart';
 import '../../firebase/auth_manager.dart';
-import '../../helper/custom_text_field.dart';
 import '../../provider/sign_in_provider.dart';
 
 part 'sign_up_card.dart';

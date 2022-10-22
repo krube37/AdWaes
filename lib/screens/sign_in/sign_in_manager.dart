@@ -93,7 +93,7 @@ class _CustomSignInTextField extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-            CustomTextField(
+            TextFormField(
               focusNode: focusNode ?? FocusNode(),
               controller: controller,
               decoration: InputDecoration(
@@ -109,7 +109,7 @@ class _CustomSignInTextField extends StatelessWidget {
               onFieldSubmitted: onFieldSubmitted,
               keyboardType: keyboardType,
               onTap: onTap,
-              cursor: cursor,
+              mouseCursor: cursor,
               enabled: enabled,
             ),
           ],
