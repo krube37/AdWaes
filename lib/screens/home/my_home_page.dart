@@ -6,7 +6,6 @@ import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/product_widgets/bottombar.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../firebase/firestore_database.dart';
 import '../../product/product_data.dart';
@@ -30,24 +29,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-
-    //todo: test code
-    ProductData data = ProductData(
-        userName: 'username_${const Uuid().v1()}',
-        name: '${ProductType.tvChannel.name} ${Random().nextInt(100)}',
-        totalEvents: 15,
-        description: 'this is product data description string ',
-        type: ProductType.tvChannel);
-
-    var productEvent = ProductEvent(
-        eventId: const Uuid().v1(),
-        eventName: "${ProductType.tvChannel.name} event ${Random().nextInt(100)}",
-        description: 'this is description',
-        price: 2000,
-        eventTime: DateTime.now(),
-        postedTime: DateTime.now(),
-        type: ProductType.tvChannel,
-        productId: data.userName);
 
     if (dataToEventsMap.isEmpty && !isRecentEventsFetched) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {

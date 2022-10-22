@@ -38,21 +38,21 @@ class _CustomHorizontalScrollerState extends State<_CustomHorizontalScroller> {
         });
       }
     });
-    Size screenSize = MediaQuery.of(context).size;
 
     return Center(
       child: SizedBox(
-        width: screenSize.width,
         height: widget.height,
         child: Stack(
           children: [
             Padding(
               padding: EdgeInsets.symmetric(horizontal: widget.scrollingArrowSize / 2),
-              child: ListView.builder(
-                controller: _controller,
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.itemLength,
-                itemBuilder: (context, index) => widget.itemBuilder.call(index),
+              child: Center(
+                child: ListView.builder(
+                  controller: _controller,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: widget.itemLength,
+                  itemBuilder: (context, index) => widget.itemBuilder.call(index),
+                ),
               ),
             ),
             Align(

@@ -2,7 +2,7 @@ import 'package:ad/adwise_user.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/routes/routes.dart';
-import 'package:ad/screens/account_page.dart';
+import 'package:ad/screens/account/account_page.dart';
 import 'package:ad/screens/error_page.dart';
 import 'package:ad/screens/invalid_event_page.dart';
 import 'package:ad/screens/home/my_home_page.dart';
