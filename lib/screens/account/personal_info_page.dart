@@ -1,13 +1,19 @@
 import 'dart:math';
 
+import 'package:ad/adwise_user.dart';
+import 'package:ad/firebase/firestore_database.dart';
+import 'package:ad/provider/data_manager.dart';
 import 'package:flutter/material.dart';
 
+import '../../globals.dart';
+
 class PersonalInfoPage extends StatelessWidget {
-  const PersonalInfoPage({Key? key}) : super(key: key);
+  final AdWiseUser user;
+
+  const PersonalInfoPage({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -16,13 +22,21 @@ class PersonalInfoPage extends StatelessWidget {
           style: TextStyle(color: Colors.black87),
         ),
       ),
-      body: screenSize.width < 700 ? const _MobileView() : const _TabAndDesktopView(),
+      body: isMobileView(context)
+          ? _MobileView(
+              user: user,
+            )
+          : _TabAndDesktopView(
+              user: user,
+            ),
     );
   }
 }
 
 class _TabAndDesktopView extends StatelessWidget {
-  const _TabAndDesktopView({Key? key}) : super(key: key);
+  final AdWiseUser user;
+
+  const _TabAndDesktopView({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +92,9 @@ class _TabAndDesktopView extends StatelessWidget {
 }
 
 class _MobileView extends StatelessWidget {
-  const _MobileView({Key? key}) : super(key: key);
+  final AdWiseUser user;
+
+  const _MobileView({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -125,13 +141,16 @@ class _ProfilePic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AdWiseUser user = DataManager().user!;
     return Column(
       children: [
         CircleAvatar(
           radius: 100.0,
-          backgroundImage: Image.asset(
-            'assets/images/newspaper.jpeg',
-          ).image,
+          backgroundImage: user.profilePhotoUrl != null
+              ? Image.network(
+                  user.profilePhotoUrl!,
+                ).image
+              : null,
         ),
         const SizedBox(
           height: 50.0,
@@ -172,6 +191,7 @@ class _CustomInfoBtn extends StatelessWidget {
   final Color? textColor;
   final Function? onTap;
   final double? minWidth, height;
+  final bool isLoading;
 
   const _CustomInfoBtn({
     Key? key,
@@ -181,6 +201,7 @@ class _CustomInfoBtn extends StatelessWidget {
     this.onTap,
     this.minWidth,
     this.height = 30.0,
+    this.isLoading = false,
   }) : super(key: key);
 
   @override
@@ -194,16 +215,26 @@ class _CustomInfoBtn extends StatelessWidget {
           borderRadius: BorderRadius.circular(3.0),
         ),
         padding: EdgeInsets.symmetric(
-          //vertical: 8.0,
           horizontal: minWidth != null ? minWidth! / 2.5 : 10,
         ),
         child: Center(
-          child: Text(
-            name,
-            style: TextStyle(
-              color: textColor,
-            ),
-          ),
+          child: isLoading
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  ),
+                )
+              : Text(
+                  name,
+                  style: TextStyle(
+                    color: textColor,
+                  ),
+                ),
         ),
       ),
     );
@@ -218,47 +249,63 @@ class _InfoContent extends StatefulWidget {
 }
 
 class _InfoContentState extends State<_InfoContent> {
-  List<bool> editMode = [false, false, false, false, false];
+  List<bool> editMode = [false, false, false, false, false, false, false];
 
   @override
   Widget build(BuildContext context) {
+    AdWiseUser user = DataManager().user!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _InfoTile(
           title: 'Name',
-          value: 'Shanmugam',
+          value: user.firstName ?? 'User_${user.userId}',
           isEditMode: editMode[0],
           onEditMode: (isEditMode) => setState(() => editMode[0] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
           isNameTile: true,
+          lastName: user.lastName,
         ),
         _InfoTile(
-          title: 'Name',
-          value: 'Shanmugam',
+          title: AdWiseUser.dobTitle,
+          value: user.ageAsString,
           isEditMode: editMode[1],
           onEditMode: (isEditMode) => setState(() => editMode[1] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
         ),
         _InfoTile(
-          title: 'Name',
-          value: 'Shanmugam',
+          title: AdWiseUser.phoneNumberTitle,
+          value: user.phoneNumber,
           isEditMode: editMode[2],
           onEditMode: (isEditMode) => setState(() => editMode[2] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
         ),
         _InfoTile(
-          title: 'Name',
-          value: 'Shanmugam',
+          title: AdWiseUser.emailTitle,
+          value: user.emailId ?? '',
           isEditMode: editMode[3],
           onEditMode: (isEditMode) => setState(() => editMode[3] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
         ),
         _InfoTile(
-          title: 'Name',
-          value: 'Shanmugam',
+          title: AdWiseUser.companyNameTitle,
+          value: user.companyName ?? '',
           isEditMode: editMode[4],
           onEditMode: (isEditMode) => setState(() => editMode[4] = isEditMode),
+          hasEditTile: editMode.any((element) => element == true),
+        ),
+        _InfoTile(
+          title: AdWiseUser.gstNumberTitle,
+          value: user.gstNumber ?? '',
+          isEditMode: editMode[5],
+          onEditMode: (isEditMode) => setState(() => editMode[5] = isEditMode),
+          hasEditTile: editMode.any((element) => element == true),
+        ),
+        _InfoTile(
+          title: AdWiseUser.businessTypeTitle,
+          value: user.businessType ?? '',
+          isEditMode: editMode[6],
+          onEditMode: (isEditMode) => setState(() => editMode[6] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
         ),
       ],
@@ -267,8 +314,11 @@ class _InfoContentState extends State<_InfoContent> {
 }
 
 class _InfoTile extends StatefulWidget {
-  final String title, value;
+  final String title;
+  final String value;
+  final String? lastName;
   final Function(bool isEditMode)? onEditMode;
+  final String? hintText;
   final bool isEditMode;
   final bool hasEditTile;
   final bool isNameTile;
@@ -281,7 +331,13 @@ class _InfoTile extends StatefulWidget {
     this.isEditMode = false,
     this.hasEditTile = false,
     this.isNameTile = false,
-  }) : super(key: key);
+    this.hintText,
+    this.lastName,
+  })  : assert(
+          (lastName == null || isNameTile),
+          'if NameTile is true, then lastName should not be null',
+        ),
+        super(key: key);
 
   @override
   State<_InfoTile> createState() => _InfoTileState();
@@ -292,16 +348,23 @@ class _InfoTileState extends State<_InfoTile> {
 
   @override
   void initState() {
-    _controller = TextEditingController();
+    _controller = TextEditingController(text: widget.value);
     if (widget.isNameTile) {
-      _lastNameController = TextEditingController();
+      _lastNameController = TextEditingController(text: widget.lastName);
     }
     super.initState();
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    if (widget.isNameTile) _lastNameController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
+    String hintText = widget.hintText ?? widget.title;
     return Opacity(
       opacity: (widget.hasEditTile && !widget.isEditMode) ? 0.3 : 1,
       child: IgnorePointer(
@@ -331,47 +394,77 @@ class _InfoTileState extends State<_InfoTile> {
                         ),
                         const SizedBox(height: 15.0),
                         widget.isEditMode
-                            ? screenSize.width < 700
-                            ? Column(
-                          children: [
-                            widget.isNameTile
-                                ? Row(
-                              children: [
-                                Expanded(child: _getTextField(_controller)),
-                                const SizedBox(width: 10.0),
-                                Expanded(child: _getTextField(_lastNameController))
-                              ],
-                            )
-                                : _getTextField(_controller),
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 200),
-                              child: _getSaveCancelBtns(),
-                            )
-                          ],
-                        )
-                            : Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: _getTextField(_controller),
-                            ),
-                            const SizedBox(width: 30.0),
-                            Expanded(
-                              flex: 1,
-                              child: _getSaveCancelBtns(),
-                            ),
-                          ],
-                        )
+                            ? isMobileView(context)
+                                ? Column(
+                                    children: [
+                                      widget.isNameTile
+                                          ? Row(
+                                              children: [
+                                                Expanded(
+                                                  child: _getTextField(
+                                                    _controller,
+                                                    hintText: 'First name',
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10.0),
+                                                Expanded(
+                                                  child: _getTextField(
+                                                    _lastNameController,
+                                                    hintText: 'Last name',
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          : _getTextField(
+                                              _controller,
+                                              hintText: hintText,
+                                            ),
+                                      Container(
+                                        constraints: const BoxConstraints(maxWidth: 200),
+                                        child: _getSaveCancelBtns(),
+                                      )
+                                    ],
+                                  )
+                                : Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: widget.isNameTile
+                                            ? Column(
+                                                children: [
+                                                  _getTextField(
+                                                    _controller,
+                                                    hintText: 'First name',
+                                                  ),
+                                                  const SizedBox(height: 10.0),
+                                                  _getTextField(
+                                                    _lastNameController,
+                                                    hintText: 'Last name',
+                                                  )
+                                                ],
+                                              )
+                                            : _getTextField(
+                                                _controller,
+                                                hintText: hintText,
+                                              ),
+                                      ),
+                                      const SizedBox(width: 30.0),
+                                      Expanded(
+                                        flex: 1,
+                                        child: _getSaveCancelBtns(),
+                                      ),
+                                    ],
+                                  )
                             : Text(
-                          widget.value,
-                          style: const TextStyle(color: Colors.black54),
-                        ),
+                                widget.value,
+                                style: const TextStyle(color: Colors.black54),
+                              ),
                       ],
                     ),
                   ),
                   if (!widget.isEditMode)
                     _CustomInfoBtn(
-                      name: 'Edit',
+                      name: widget.value.isEmpty ? 'Add' : 'Edit',
                       color: Colors.orange,
                       textColor: Colors.white,
                       minWidth: 60.0,
@@ -388,41 +481,131 @@ class _InfoTileState extends State<_InfoTile> {
   }
 
   Widget _getSaveCancelBtns() => Row(
-    mainAxisAlignment: MainAxisAlignment.start,
-    children: [
-      const Expanded(
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: _CustomInfoBtn(
-            name: 'Save',
-            color: Colors.orange,
-            textColor: Colors.white,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _SaveButton(
+                  title: widget.title,
+                  value: () => _controller.text.trim(),
+                  lastName: () => widget.isNameTile ? _lastNameController.text.trim() : null,
+                  onCompleted: () => widget.onEditMode?.call(false),
+                )),
           ),
-        ),
-      ),
-      Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: _CustomInfoBtn(
-            name: 'Cancel',
-            color: Colors.grey.shade300,
-            onTap: () => widget.onEditMode?.call(false),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _CustomInfoBtn(
+                name: 'Cancel',
+                color: Colors.grey.shade300,
+                onTap: () => widget.onEditMode?.call(false),
+              ),
+            ),
           ),
-        ),
-      ),
-    ],
-  );
+        ],
+      );
 
-  Widget _getTextField(TextEditingController controller) => TextField(
-    controller: controller,
-    decoration: const InputDecoration(
-      hintText: 'First name',
-      border: OutlineInputBorder(
-        borderSide: BorderSide(
-          color: Colors.grey,
+  Widget _getTextField(TextEditingController controller, {required String hintText}) => TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          hintText: hintText,
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.grey,
+            ),
+          ),
         ),
-      ),
-    ),
-  );
+      );
 }
 
+class _SaveButton extends StatefulWidget {
+  final String title;
+  final Function? onCompleted, lastName;
+  final Function value;
+
+  const _SaveButton({
+    Key? key,
+    required this.title,
+    this.onCompleted,
+    required this.value,
+    this.lastName,
+  })  : assert(
+          (title != 'Name' || lastName != null),
+          'if title is Name, then should provide last Name',
+        ),
+        super(key: key);
+
+  @override
+  State<_SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<_SaveButton> {
+  bool isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return _CustomInfoBtn(
+      name: 'Save',
+      color: Colors.orange,
+      textColor: Colors.white,
+      onTap: _updateUserData,
+      isLoading: isLoading,
+    );
+  }
+
+  _updateUserData() async {
+    DataManager dataManager = DataManager();
+    AdWiseUser user = dataManager.user!;
+    String value = widget.value.call();
+
+    switch (widget.title) {
+      case 'Name':
+        String lastName = widget.lastName?.call();
+        String firstName = value.isEmpty && lastName.isEmpty ? 'User_${user.userId}' : value;
+        user = user.copyWith(firstName: firstName, lastName: widget.lastName?.call());
+        break;
+      case AdWiseUser.dobTitle:
+        user = user.copyWith(age: DateTime.fromMillisecondsSinceEpoch(int.parse(value)));
+        break;
+      case AdWiseUser.phoneNumberTitle:
+        // should not allow user to edit phone number
+        break;
+      case AdWiseUser.emailTitle:
+        user = user.copyWith(emailId: value);
+        break;
+      case AdWiseUser.companyNameTitle:
+        user = user.copyWith(companyName: value);
+        break;
+      case AdWiseUser.gstNumberTitle:
+        user = user.copyWith(gstNumber: value);
+        break;
+      case AdWiseUser.businessTypeTitle:
+        user = user.copyWith(businessType: value);
+        break;
+      default:
+        widget.onCompleted?.call();
+        return;
+    }
+    String toastMsg;
+    setState(() => isLoading = true);
+    bool isSuccess = await FirestoreDatabase().updateUserDetails(user);
+    if (isSuccess) {
+      toastMsg = 'Updated the account details';
+      dataManager.user = user;
+    } else {
+      toastMsg = 'Error in updating the account details';
+    }
+    SnackBar snackBar = SnackBar(
+      content: Text(toastMsg),
+      behavior: SnackBarBehavior.floating,
+      width: 500.0,
+    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      setState(() => isLoading = false);
+    }
+    widget.onCompleted?.call();
+  }
+}

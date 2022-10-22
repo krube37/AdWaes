@@ -7,6 +7,15 @@ class AdWiseUser {
   final DateTime? age;
   final bool? isEmailVerified;
 
+  static const String firstNameTitle = 'First name',
+      lastNameTitle = 'Last name',
+      phoneNumberTitle = 'Phone number',
+      emailTitle = 'Email',
+      dobTitle = 'Date of birth',
+      companyNameTitle = 'Company name',
+      gstNumberTitle = 'GST number',
+      businessTypeTitle = 'Business type';
+
   AdWiseUser(
     this.userId,
     this.phoneNumber, {
@@ -85,4 +94,13 @@ class AdWiseUser {
         businessType: (businessType?.isNotEmpty ?? false) ? businessType : this.businessType,
         profilePhotoUrl: (profilePhotoUrl?.isNotEmpty ?? false) ? profilePhotoUrl : this.profilePhotoUrl,
       );
+
+  String get displayName {
+    String displayName = '';
+    if (firstName != null) displayName = '$firstName ';
+    if (lastName != null) displayName = displayName + lastName!;
+    return displayName;
+  }
+
+  String get ageAsString => age != null ? (DateTime.now().year - age!.year).toString() : '';
 }

@@ -1,9 +1,11 @@
 import 'package:ad/adwise_user.dart';
+import 'package:ad/globals.dart';
 import 'package:ad/screens/account/personal_info_page.dart';
 import 'package:flutter/material.dart';
 
 class AccountPage extends StatefulWidget {
   final AdWiseUser user;
+
   const AccountPage({Key? key, required this.user}) : super(key: key);
 
   @override
@@ -11,8 +13,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-
-
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -53,21 +53,25 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     ),
                     const SizedBox(height: 20.0),
-                    screenSize.width > 700
+                    !isMobileView(context)
                         ? GridView.builder(
-                      shrinkWrap: true,
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 500,
-                        mainAxisExtent: 200,
-                      ),
-                      itemBuilder: (context, index) => const _AccountDesktopTile(),
-                      itemCount: 9,
-                    )
+                            shrinkWrap: true,
+                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 500,
+                              mainAxisExtent: 200,
+                            ),
+                            itemBuilder: (context, index) => _AccountDesktopTile(
+                              user: widget.user,
+                            ),
+                            itemCount: 9,
+                          )
                         : ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: 9,
-                      itemBuilder: (context, index) => const _AccountMobileTile(),
-                    ),
+                            shrinkWrap: true,
+                            itemCount: 9,
+                            itemBuilder: (context, index) => _AccountMobileTile(
+                              user: widget.user,
+                            ),
+                          ),
                   ],
                 ),
               ),
@@ -81,7 +85,9 @@ class _AccountPageState extends State<AccountPage> {
 }
 
 class _AccountDesktopTile extends StatelessWidget {
-  const _AccountDesktopTile({Key? key}) : super(key: key);
+  final AdWiseUser user;
+
+  const _AccountDesktopTile({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +100,9 @@ class _AccountDesktopTile extends StatelessWidget {
         hoverColor: Colors.transparent,
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const PersonalInfoPage();
+            return PersonalInfoPage(
+              user: user,
+            );
           }));
         },
         child: Card(
@@ -135,7 +143,9 @@ class _AccountDesktopTile extends StatelessWidget {
 }
 
 class _AccountMobileTile extends StatelessWidget {
-  const _AccountMobileTile({Key? key}) : super(key: key);
+  final AdWiseUser user;
+
+  const _AccountMobileTile({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +154,9 @@ class _AccountMobileTile extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const PersonalInfoPage();
+            return PersonalInfoPage(
+              user: user,
+            );
           }));
         },
         hoverColor: Colors.transparent,
