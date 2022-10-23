@@ -257,114 +257,120 @@ class _InfoContentState extends State<_InfoContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _InfoTile(
+        _InfoContentTile(
           title: 'Name',
-          value: user.firstName ?? 'User_${user.userId}',
+          value: user.displayName,
           isEditMode: editMode[0],
           onEditMode: (isEditMode) => setState(() => editMode[0] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
-          isNameTile: true,
-          lastName: user.lastName,
+          infoTile: _InfoNameTile(
+            title: 'Name',
+            firstName: user.firstName ?? '',
+            lastName: user.lastName ?? '',
+            onEditMode: (isEditMode) => setState(() => editMode[0] = isEditMode),
+          ),
         ),
-        _InfoTile(
+        _InfoContentTile(
           title: AdWiseUser.dobTitle,
           value: user.ageAsString,
           isEditMode: editMode[1],
           onEditMode: (isEditMode) => setState(() => editMode[1] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
+          infoTile: _InfoTile(
+            title: AdWiseUser.dobTitle,
+            value: user.ageAsString,
+            onEditMode: (isEditMode) => setState(() => editMode[1] = isEditMode),
+          ),
         ),
-        _InfoTile(
+        _InfoContentTile(
           title: AdWiseUser.phoneNumberTitle,
           value: user.phoneNumber,
           isEditMode: editMode[2],
           onEditMode: (isEditMode) => setState(() => editMode[2] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
+          infoTile: _InfoTile(
+            title: AdWiseUser.phoneNumberTitle,
+            value: user.phoneNumber,
+            onEditMode: (isEditMode) => setState(() => editMode[2] = isEditMode),
+          ),
         ),
-        _InfoTile(
+        _InfoContentTile(
           title: AdWiseUser.emailTitle,
           value: user.emailId ?? '',
           isEditMode: editMode[3],
           onEditMode: (isEditMode) => setState(() => editMode[3] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
+          infoTile: _InfoTile(
+            title: AdWiseUser.emailTitle,
+            value: user.emailId ?? '',
+            onEditMode: (isEditMode) => setState(() => editMode[3] = isEditMode),
+          ),
         ),
-        _InfoTile(
+        _InfoContentTile(
           title: AdWiseUser.companyNameTitle,
           value: user.companyName ?? '',
           isEditMode: editMode[4],
           onEditMode: (isEditMode) => setState(() => editMode[4] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
+          infoTile: _InfoTile(
+            title: AdWiseUser.companyNameTitle,
+            value: user.companyName ?? '',
+            onEditMode: (isEditMode) => setState(() => editMode[4] = isEditMode),
+          ),
         ),
-        _InfoTile(
+        _InfoContentTile(
           title: AdWiseUser.gstNumberTitle,
           value: user.gstNumber ?? '',
           isEditMode: editMode[5],
           onEditMode: (isEditMode) => setState(() => editMode[5] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
+          infoTile: _InfoTile(
+            title: AdWiseUser.gstNumberTitle,
+            value: user.gstNumber ?? '',
+            onEditMode: (isEditMode) => setState(() => editMode[5] = isEditMode),
+          ),
         ),
-        _InfoTile(
+        _InfoContentTile(
           title: AdWiseUser.businessTypeTitle,
           value: user.businessType ?? '',
           isEditMode: editMode[6],
           onEditMode: (isEditMode) => setState(() => editMode[6] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
+          infoTile: _InfoTile(
+            title: AdWiseUser.businessTypeTitle,
+            value: user.businessType ?? '',
+            onEditMode: (isEditMode) => setState(() => editMode[6] = isEditMode),
+          ),
         ),
       ],
     );
   }
 }
 
-class _InfoTile extends StatefulWidget {
-  final String title;
-  final String value;
-  final String? lastName;
+class _InfoContentTile extends StatefulWidget {
+  final String title, value;
   final Function(bool isEditMode)? onEditMode;
-  final String? hintText;
   final bool isEditMode;
   final bool hasEditTile;
-  final bool isNameTile;
+  final Widget infoTile;
 
-  const _InfoTile({
+  const _InfoContentTile({
     Key? key,
     required this.title,
     required this.value,
     this.onEditMode,
-    this.isEditMode = false,
-    this.hasEditTile = false,
-    this.isNameTile = false,
-    this.hintText,
-    this.lastName,
-  })  : assert(
-          (lastName == null || isNameTile),
-          'if NameTile is true, then lastName should not be null',
-        ),
-        super(key: key);
+    required this.isEditMode,
+    required this.hasEditTile,
+    required this.infoTile,
+  }) : super(key: key);
 
   @override
-  State<_InfoTile> createState() => _InfoTileState();
+  State<_InfoContentTile> createState() => _InfoContentTileState();
 }
 
-class _InfoTileState extends State<_InfoTile> {
-  late TextEditingController _controller, _lastNameController;
-
-  @override
-  void initState() {
-    _controller = TextEditingController(text: widget.value);
-    if (widget.isNameTile) {
-      _lastNameController = TextEditingController(text: widget.lastName);
-    }
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    if (widget.isNameTile) _lastNameController.dispose();
-    super.dispose();
-  }
-
+class _InfoContentTileState extends State<_InfoContentTile> {
   @override
   Widget build(BuildContext context) {
-    String hintText = widget.hintText ?? widget.title;
     return Opacity(
       opacity: (widget.hasEditTile && !widget.isEditMode) ? 0.3 : 1,
       child: IgnorePointer(
@@ -394,67 +400,7 @@ class _InfoTileState extends State<_InfoTile> {
                         ),
                         const SizedBox(height: 15.0),
                         widget.isEditMode
-                            ? isMobileView(context)
-                                ? Column(
-                                    children: [
-                                      widget.isNameTile
-                                          ? Row(
-                                              children: [
-                                                Expanded(
-                                                  child: _getTextField(
-                                                    _controller,
-                                                    hintText: 'First name',
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 10.0),
-                                                Expanded(
-                                                  child: _getTextField(
-                                                    _lastNameController,
-                                                    hintText: 'Last name',
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          : _getTextField(
-                                              _controller,
-                                              hintText: hintText,
-                                            ),
-                                      Container(
-                                        constraints: const BoxConstraints(maxWidth: 200),
-                                        child: _getSaveCancelBtns(),
-                                      )
-                                    ],
-                                  )
-                                : Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: widget.isNameTile
-                                            ? Column(
-                                                children: [
-                                                  _getTextField(
-                                                    _controller,
-                                                    hintText: 'First name',
-                                                  ),
-                                                  const SizedBox(height: 10.0),
-                                                  _getTextField(
-                                                    _lastNameController,
-                                                    hintText: 'Last name',
-                                                  )
-                                                ],
-                                              )
-                                            : _getTextField(
-                                                _controller,
-                                                hintText: hintText,
-                                              ),
-                                      ),
-                                      const SizedBox(width: 30.0),
-                                      Expanded(
-                                        flex: 1,
-                                        child: _getSaveCancelBtns(),
-                                      ),
-                                    ],
-                                  )
+                            ? widget.infoTile
                             : Text(
                                 widget.value,
                                 style: const TextStyle(color: Colors.black54),
@@ -479,6 +425,95 @@ class _InfoTileState extends State<_InfoTile> {
       ),
     );
   }
+}
+
+class _InfoNameTile extends StatefulWidget {
+  final String title;
+  final String firstName;
+  final String lastName;
+  final Function(bool isEditMode)? onEditMode;
+
+  const _InfoNameTile({
+    Key? key,
+    required this.title,
+    required this.firstName,
+    required this.lastName,
+    this.onEditMode,
+  }) : super(key: key);
+
+  @override
+  State<_InfoNameTile> createState() => _InfoNameTileState();
+}
+
+class _InfoNameTileState extends State<_InfoNameTile> {
+  late TextEditingController _firstNameTextController, _lastNameTextController;
+
+  @override
+  void initState() {
+    _firstNameTextController = TextEditingController(text: widget.firstName);
+    _lastNameTextController = TextEditingController(text: widget.lastName);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _firstNameTextController.dispose();
+    _lastNameTextController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isMobileView(context)
+        ? Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: _getTextField(
+                      _firstNameTextController,
+                      hintText: 'First name',
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
+                  Expanded(
+                    child: _getTextField(
+                      _lastNameTextController,
+                      hintText: 'Last name',
+                    ),
+                  )
+                ],
+              ),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200),
+                child: _getSaveCancelBtns(),
+              )
+            ],
+          )
+        : Row(
+            children: [
+              Expanded(
+                child: Column(
+                  children: [
+                    _getTextField(
+                      _firstNameTextController,
+                      hintText: 'First name',
+                    ),
+                    const SizedBox(height: 10.0),
+                    _getTextField(
+                      _lastNameTextController,
+                      hintText: 'Last name',
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200),
+                child: _getSaveCancelBtns(),
+              )
+            ],
+          );
+  }
 
   Widget _getSaveCancelBtns() => Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -488,8 +523,8 @@ class _InfoTileState extends State<_InfoTile> {
                 padding: const EdgeInsets.all(8.0),
                 child: _SaveButton(
                   title: widget.title,
-                  value: () => _controller.text.trim(),
-                  lastName: () => widget.isNameTile ? _lastNameController.text.trim() : null,
+                  value: () => _firstNameTextController.text.trim(),
+                  lastName: () => _lastNameTextController.text.trim(),
                   onCompleted: () => widget.onEditMode?.call(false),
                 )),
           ),
@@ -511,6 +546,104 @@ class _InfoTileState extends State<_InfoTile> {
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           hintText: hintText,
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+}
+
+class _InfoTile extends StatefulWidget {
+  final String title, value;
+  final Function(bool isEditMode)? onEditMode;
+  final String? hintText;
+
+  const _InfoTile({
+    Key? key,
+    required this.title,
+    required this.value,
+    this.onEditMode,
+    this.hintText,
+  }) : super(key: key);
+
+  @override
+  State<_InfoTile> createState() => _InfoTileState();
+}
+
+class _InfoTileState extends State<_InfoTile> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController(text: widget.value);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isMobileView(context)
+        ? Column(
+            children: [
+              _getTextField(),
+              const SizedBox(height: 10.0),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200),
+                child: _getSaveCancelBtns(),
+              )
+            ],
+          )
+        : Row(
+            children: [
+              Expanded(
+                child: _getTextField(),
+              ),
+              const SizedBox(width: 10.0),
+              Container(
+                constraints: const BoxConstraints(maxWidth: 200),
+                child: _getSaveCancelBtns(),
+              )
+            ],
+          );
+  }
+
+  Widget _getSaveCancelBtns() => Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: _SaveButton(
+                  title: widget.title,
+                  value: () => _controller.text.trim(),
+                  onCompleted: () => widget.onEditMode?.call(false),
+                )),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: _CustomInfoBtn(
+                name: 'Cancel',
+                color: Colors.grey.shade300,
+                onTap: () => widget.onEditMode?.call(false),
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget _getTextField() => TextField(
+        controller: _controller,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          hintText: widget.hintText ?? widget.title,
           border: const OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.grey,
