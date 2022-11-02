@@ -33,18 +33,18 @@ class DataManager extends ChangeNotifier {
     if (FirebaseAuth.instance.currentUser != null) {
       user = await FirestoreDatabase().getCurrentUserDetails(FirebaseAuth.instance.currentUser!);
     }
-    _favouriteEventIds.addAll(await FirestoreDatabase().getAllFavouriteEventIds());
     _listenToUser();
   }
 
   _listenToUser() {
-    FirebaseAuth.instance.authStateChanges().listen((user) async {
+    FirebaseAuth.instance.userChanges().listen((user) async {
       debugPrint("DataManager _listenToUser: user changed ${user?.uid} time ${DateTime.now().millisecondsSinceEpoch}");
       if (user != null) {
         fetchingSigInDetails = true;
         notifyListeners();
         this.user = await FirestoreDatabase().getCurrentUserDetails(user);
         fetchingSigInDetails = false;
+        _favouriteEventIds.addAll(await FirestoreDatabase().getAllFavouriteEventIds());
       }
       notifyListeners();
     });

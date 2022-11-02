@@ -1,19 +1,23 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:ad/adwise_user.dart';
 import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/provider/data_manager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 
+import '../../constants.dart';
 import '../../globals.dart';
+import '../../widgets/custom_sliver.dart';
 
 class PersonalInfoPage extends StatelessWidget {
-  final AdWiseUser user;
-
-  const PersonalInfoPage({Key? key, required this.user}) : super(key: key);
+  const PersonalInfoPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    AdWiseUser user = DataManager().user!;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -42,50 +46,47 @@ class _TabAndDesktopView extends StatelessWidget {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
 
-    return SingleChildScrollView(
-      child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: 1100.0,
-            minWidth: min(
-              screenSize.width,
-              1100.0,
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: maxScreenWidth,
+        ),
+        child: CustomSliver(
+          leftSideWidget: const _ProfilePicSide(),
+          rightSideWidget: const _InfoContent(),
+          leftSideWidth: (min(screenSize.width, maxScreenWidth)) * 0.40,
+          rightSideWidth: (min(screenSize.width, maxScreenWidth)) * 0.60,
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfilePicSide extends StatelessWidget {
+  const _ProfilePicSide({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 50.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Padding(
+            padding: EdgeInsets.only(
+              top: 40.0,
+              bottom: 50.0,
+            ),
+            child: Text(
+              "Personal Info",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 30.0,
+              ),
             ),
           ),
-          margin: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(
-                  top: 40.0,
-                  bottom: 20.0,
-                ),
-                child: Text(
-                  "Personal Info",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30.0,
-                  ),
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 50.0),
-                      child: _ProfilePic(),
-                    ),
-                  ),
-                  SizedBox(width: 20.0),
-                  Expanded(flex: 2, child: _InfoContent()),
-                ],
-              ),
-            ],
-          ),
-        ),
+          _ProfilePic(),
+        ],
       ),
     );
   }
@@ -136,52 +137,93 @@ class _MobileView extends StatelessWidget {
   }
 }
 
-class _ProfilePic extends StatelessWidget {
+class _ProfilePic extends StatefulWidget {
   const _ProfilePic({Key? key}) : super(key: key);
 
   @override
+  State<_ProfilePic> createState() => _ProfilePicState();
+}
+
+// todo: IMPORTANT *********************************handle CORS issue and remove CORS neglect package **********************************
+class _ProfilePicState extends State<_ProfilePic> {
+  bool isLoading = false;
+  late AdWiseUser user;
+
+  @override
   Widget build(BuildContext context) {
-    AdWiseUser user = DataManager().user!;
+    user = DataManager().user!;
     return Column(
       children: [
         CircleAvatar(
           radius: 100.0,
-          backgroundImage: user.profilePhotoUrl != null
-              ? Image.network(
-                  user.profilePhotoUrl!,
-                ).image
-              : null,
+          backgroundImage: user.proPicImageProvider,
+          backgroundColor: Colors.grey.shade400,
+          child: isLoading
+              ? const CircularProgressIndicator(
+                  color: Colors.white,
+                )
+              : user.profilePhotoUrl == null
+                  ? const Icon(
+                      Icons.person_sharp,
+                      size: 150.0,
+                      color: Colors.white,
+                    )
+                  : null,
         ),
         const SizedBox(
           height: 50.0,
         ),
         Row(
           children: [
-            const Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(10.0),
-                child: _CustomInfoBtn(
-                  name: 'Edit',
-                  color: Colors.orange,
-                  textColor: Colors.white,
-                  height: 40.0,
-                ),
-              ),
-            ),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: _CustomInfoBtn(
-                  name: 'Remove',
-                  color: Colors.grey.shade300,
+                  name: user.profilePhotoUrl != null ? 'Edit' : 'Add',
+                  color: Colors.orange,
+                  textColor: Colors.white,
                   height: 40.0,
+                  onTap: _pickProfilePic,
                 ),
               ),
             ),
+            if (user.profilePhotoUrl != null)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: _CustomInfoBtn(
+                    name: 'Remove',
+                    color: Colors.grey.shade300,
+                    height: 40.0,
+                    onTap: _deleteProfilePic,
+                  ),
+                ),
+              ),
           ],
         )
       ],
     );
+  }
+
+  _pickProfilePic() async {
+    Uint8List? rawPath = await ImagePickerWeb.getImageAsBytes();
+    if (rawPath == null) return;
+
+    setState(() => isLoading = true);
+    bool isSuccess = await FirestoreDatabase().updateUserProfilePic(rawPath);
+    if (isSuccess) {
+      setState(() => isLoading = false);
+    }
+  }
+
+  _deleteProfilePic() async {
+    String url = user.profilePhotoUrl!;
+    setState(() => isLoading = true);
+    bool isSuccess = await FirestoreDatabase().deleteUserProfilePic();
+    if (isSuccess) {
+      CachedNetworkImage.evictFromCache(url);
+      setState(() => isLoading = false);
+    }
   }
 }
 

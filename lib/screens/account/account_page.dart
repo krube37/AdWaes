@@ -1,12 +1,14 @@
 import 'package:ad/adwise_user.dart';
 import 'package:ad/globals.dart';
-import 'package:ad/screens/account/personal_info_page.dart';
+import 'package:ad/provider/data_manager.dart';
+import 'package:ad/screens/home/my_app_bar.dart';
+import 'package:ad/screens/product_widgets/bottombar.dart';
 import 'package:flutter/material.dart';
 
-class AccountPage extends StatefulWidget {
-  final AdWiseUser user;
+import '../../routes/my_route_delegate.dart';
 
-  const AccountPage({Key? key, required this.user}) : super(key: key);
+class AccountPage extends StatefulWidget {
+  const AccountPage({Key? key}) : super(key: key);
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -16,78 +18,152 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    AdWiseUser user = DataManager().user!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          'Flutter',
-          style: TextStyle(color: Colors.black87),
-        ),
-        backgroundColor: Colors.grey.shade50,
-      ),
+      appBar: const MyAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Center(
-              child: Container(
-                constraints: const BoxConstraints(
-                  maxWidth: 1100.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 70.0),
-                    const Text(
-                      "Container",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 30.0,
-                      ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              child: Center(
+                child: Container(
+                  constraints: const BoxConstraints(
+                    maxWidth: 1100.0,
                     ),
-                    const SizedBox(height: 20.0),
-                    const Text(
-                      "changes of container reflect here",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 70.0),
+                      const Text(
+                        "Account",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 30.0,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 20.0),
-                    !isMobileView(context)
-                        ? GridView.builder(
-                            shrinkWrap: true,
-                            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 500,
-                              mainAxisExtent: 200,
+                      const SizedBox(height: 20.0),
+                      Text(
+                        "Hi ${user.firstName ?? user.lastName ?? user.userId},",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
+                      !isMobileView(context)
+                          ? GridView(
+                              shrinkWrap: true,
+                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 500,
+                                mainAxisExtent: 200,
+                              ),
+                              children: [
+                                _AccountDesktopTile(
+                                  user: user,
+                                  header: "Personal Information",
+                                  description: "Manage your personal Information",
+                                  onTap: _navigateToPersonalInfoPage,
+                                ),
+                                _AccountDesktopTile(
+                                  user: user,
+                                  header: "Card Header",
+                                  description: "Card description",
+                                  onTap: () {},
+                                ),
+                                _AccountDesktopTile(
+                                  user: user,
+                                  header: "Card Header",
+                                  description: "Card description",
+                                  onTap: () {},
+                                ),
+                                _AccountDesktopTile(
+                                  user: user,
+                                  header: "Card Header",
+                                  description: "Card description",
+                                  onTap: () {},
+                                ),
+                                _AccountDesktopTile(
+                                  user: user,
+                                  header: "Card Header",
+                                  description: "Card description",
+                                  onTap: () {},
+                                ),
+                                _AccountDesktopTile(
+                                  user: user,
+                                  header: "Card Header",
+                                  description: "Card description",
+                                  onTap: () {},
+                                )
+                              ],
+                            )
+                          : ListView(
+                              shrinkWrap: true,
+                              children: [
+                                _AccountMobileTile(
+                                  user: user,
+                                  header: "Personal Info",
+                                  onTap: _navigateToPersonalInfoPage,
+                                ),
+                                _AccountMobileTile(
+                                  user: user,
+                                  header: "Header",
+                                  onTap: () {},
+                                ),
+                                _AccountMobileTile(
+                                  user: user,
+                                  header: "Header",
+                                  onTap: () {},
+                                ),
+                                _AccountMobileTile(
+                                  user: user,
+                                  header: "Header",
+                                  onTap: () {},
+                                ),
+                                _AccountMobileTile(
+                                  user: user,
+                                  header: "Header",
+                                  onTap: () {},
+                                ),
+                                _AccountMobileTile(
+                                  user: user,
+                                  header: "Header",
+                                  onTap: () {},
+                                ),
+                              ],
                             ),
-                            itemBuilder: (context, index) => _AccountDesktopTile(
-                              user: widget.user,
-                            ),
-                            itemCount: 9,
-                          )
-                        : ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: 9,
-                            itemBuilder: (context, index) => _AccountMobileTile(
-                              user: widget.user,
-                            ),
-                          ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 500.0),
+            const SizedBox(height: 100.0),
+            const BottomBar()
           ],
         ),
       ),
     );
   }
+
+  _navigateToPersonalInfoPage() {
+    MyRouteDelegate.of(context).navigateToPersonalInfo();
+  }
 }
 
 class _AccountDesktopTile extends StatelessWidget {
   final AdWiseUser user;
+  final String header;
+  final String? description;
+  final Function? onTap;
 
-  const _AccountDesktopTile({Key? key, required this.user}) : super(key: key);
+  const _AccountDesktopTile({
+    Key? key,
+    required this.user,
+    required this.header,
+    this.description,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -98,15 +174,9 @@ class _AccountDesktopTile extends StatelessWidget {
         focusColor: Colors.transparent,
         splashColor: Colors.transparent,
         hoverColor: Colors.transparent,
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return PersonalInfoPage(
-              user: user,
-            );
-          }));
-        },
+        onTap: () => onTap?.call(),
         child: Card(
-          elevation: 2.0,
+          elevation: 4.0,
           shadowColor: Colors.grey.shade300,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
@@ -114,25 +184,26 @@ class _AccountDesktopTile extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
-              children: const [
-                Icon(
+              children: [
+                const Icon(
                   Icons.account_circle_rounded,
                   color: Colors.grey,
                   size: 50.0,
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 Text(
-                  'Card headline',
-                  style: TextStyle(
+                  header,
+                  style: const TextStyle(
                     fontSize: 18.0,
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 15.0),
-                Text(
-                  'this is the card information',
-                  style: TextStyle(fontSize: 13.0),
-                ),
+                if (description != null) const SizedBox(height: 15.0),
+                if (description != null)
+                  Text(
+                    description!,
+                    style: const TextStyle(fontSize: 13.0),
+                  ),
               ],
             ),
           ),
@@ -144,21 +215,22 @@ class _AccountDesktopTile extends StatelessWidget {
 
 class _AccountMobileTile extends StatelessWidget {
   final AdWiseUser user;
+  final String header;
+  final Function? onTap;
 
-  const _AccountMobileTile({Key? key, required this.user}) : super(key: key);
+  const _AccountMobileTile({
+    Key? key,
+    required this.user,
+    required this.header,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: InkWell(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return PersonalInfoPage(
-              user: user,
-            );
-          }));
-        },
+        onTap: () => onTap?.call(),
         hoverColor: Colors.transparent,
         highlightColor: Colors.transparent,
         splashColor: Colors.transparent,
@@ -170,22 +242,22 @@ class _AccountMobileTile extends StatelessWidget {
             ),
           ),
           child: Row(
-            children: const [
-              Icon(
+            children: [
+              const Icon(
                 Icons.account_circle_rounded,
                 color: Colors.grey,
               ),
-              SizedBox(width: 15.0),
+              const SizedBox(width: 15.0),
               Expanded(
                 child: Text(
-                  'Card headline',
-                  style: TextStyle(
+                  header,
+                  style: const TextStyle(
                     fontSize: 18.0,
                     color: Colors.black,
                   ),
                 ),
               ),
-              Icon(
+              const Icon(
                 Icons.arrow_forward_ios_outlined,
                 color: Colors.grey,
                 size: 14.0,

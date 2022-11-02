@@ -32,7 +32,7 @@ class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
-    Provider.of<DataManager>(context);
+    DataManager dataManager = Provider.of<DataManager>(context);
     return AppBar(
       leading: Padding(
         padding: const EdgeInsets.only(left: 30.0),
@@ -61,7 +61,7 @@ class _MyAppBarState extends State<MyAppBar> {
       centerTitle: true,
       leadingWidth: 150.0,
       toolbarHeight: 75.0,
-      actions: FirebaseAuth.instance.currentUser != null
+      actions: dataManager.user != null
           ? [
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 13.0),
@@ -69,7 +69,7 @@ class _MyAppBarState extends State<MyAppBar> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25.0),
                   onTap: () async {
-                    await SignInManager().showNewUserFields(context, DataManager().user!);
+                    await SignInManager().showNewUserFields(context, dataManager.user!);
                   },
                   child: const Icon(
                     CustomIcons.heart_svgrepo_com,
@@ -88,10 +88,13 @@ class _MyAppBarState extends State<MyAppBar> {
                     borderRadius: BorderRadius.circular(18.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.grey.shade400,
-                      child: const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                      ),
+                      backgroundImage: dataManager.user!.proPicImageProvider,
+                      child: dataManager.user!.profilePhotoUrl == null
+                          ? const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                            )
+                          : null,
                     ),
                   ),
                   const SizedBox(
@@ -140,10 +143,7 @@ class _MyAppBarState extends State<MyAppBar> {
   }
 
   _navigateToAccountsPage() {
-    AdWiseUser? user = DataManager().user;
-    if (user != null) {
-      MyRouteDelegate.of(context).navigateToAccount(user);
-    }
+    MyRouteDelegate.of(context).navigateToAccount();
   }
 }
 

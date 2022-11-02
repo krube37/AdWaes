@@ -8,12 +8,12 @@ import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
-import 'package:ad/screens/product_widgets/bottombar.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:intl/intl.dart';
+
+import '../../widgets/custom_sliver.dart';
 
 part 'product_event_helper_widgets.dart';
 
@@ -28,6 +28,8 @@ class ProductEventPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (isMobileView(context)) return const Center(child: Text("Mobile view"));
 
+    Size screenSize = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: const MyAppBar(),
@@ -36,51 +38,14 @@ class ProductEventPage extends StatelessWidget {
           constraints: const BoxConstraints(
             maxWidth: maxScreenWidth,
           ),
-          child: _CustomSliver(
-            eventImageWidget: _EventImageWidget(event: _event),
-            eventContentWidget: _EventContentWidget(event: _event),
+          child: CustomSliver(
+            leftSideWidget: _EventImageWidget(event: _event),
+            rightSideWidget: _EventContentWidget(event: _event),
+            leftSideWidth: (min(screenSize.width, maxScreenWidth)) * 0.40,
+            rightSideWidth: (min(screenSize.width, maxScreenWidth)) * 0.60,
           ),
         ),
       ),
-    );
-  }
-
-}
-
-class _CustomSliver extends StatefulWidget {
-  final Widget eventImageWidget, eventContentWidget;
-
-  const _CustomSliver({
-    Key? key,
-    required this.eventImageWidget,
-    required this.eventContentWidget,
-  }) : super(key: key);
-
-  @override
-  State<_CustomSliver> createState() => _CustomSliverState();
-}
-
-class _CustomSliverState extends State<_CustomSliver> {
-  @override
-  Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-          SliverStickyHeader.builder(
-            overlapsContent: true,
-            builder: (context, state) {
-              return widget.eventImageWidget;
-            },
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: 1,
-                (context, index) {
-                  return widget.eventContentWidget;
-                },
-              ),
-            ),
-          ),
-        const SliverToBoxAdapter(child: BottomBar()),
-      ],
     );
   }
 }

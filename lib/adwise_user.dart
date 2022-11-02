@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class AdWiseUser {
   final String userId, phoneNumber;
@@ -6,6 +8,7 @@ class AdWiseUser {
   final String? firstName, lastName, emailId, companyName, gstNumber, businessType, profilePhotoUrl;
   final DateTime? age;
   final bool? isEmailVerified;
+  final ImageProvider? proPicImageProvider;
 
   static const String firstNameTitle = 'First name',
       lastNameTitle = 'Last name',
@@ -28,7 +31,8 @@ class AdWiseUser {
     this.businessType,
     this.profilePhotoUrl,
     this.lastName,
-  }) : assert(
+  })  : proPicImageProvider = (profilePhotoUrl != null) ? CachedNetworkImageProvider(profilePhotoUrl) : null,
+        assert(
           (emailId != null || isEmailVerified == false),
           'if isEmailVerified is true, emailId should be provided',
         );
@@ -80,20 +84,28 @@ class AdWiseUser {
     DateTime? age,
     String? businessType,
     String? profilePhotoUrl,
-  }) =>
-      AdWiseUser(
-        userId,
-        phoneNumber,
-        firstName: (firstName?.isNotEmpty ?? false) ? firstName! : this.firstName,
-        lastName: (lastName?.isNotEmpty ?? false) ? lastName : this.lastName,
-        emailId: (emailId?.isNotEmpty ?? false) ? emailId : this.emailId,
-        isEmailVerified: isEmailVerified ?? this.isEmailVerified,
-        companyName: (companyName?.isNotEmpty ?? false) ? companyName : this.companyName,
-        gstNumber: (gstNumber?.isNotEmpty ?? false) ? gstNumber : this.gstNumber,
-        age: age ?? this.age,
-        businessType: (businessType?.isNotEmpty ?? false) ? businessType : this.businessType,
-        profilePhotoUrl: (profilePhotoUrl?.isNotEmpty ?? false) ? profilePhotoUrl : this.profilePhotoUrl,
-      );
+    bool? deleteProfilePic,
+  }) {
+    assert((deleteProfilePic == null || !deleteProfilePic || profilePhotoUrl == null),
+        'if deleteProfilePic is set to true, then profilePhotoUrl value should not be given');
+    String? proPicUrl;
+    if (deleteProfilePic == null || !deleteProfilePic) {
+      proPicUrl = (profilePhotoUrl?.isNotEmpty ?? false) ? profilePhotoUrl : this.profilePhotoUrl;
+    }
+    return AdWiseUser(
+      userId,
+      phoneNumber,
+      firstName: (firstName?.isNotEmpty ?? false) ? firstName! : this.firstName,
+      lastName: (lastName?.isNotEmpty ?? false) ? lastName : this.lastName,
+      emailId: (emailId?.isNotEmpty ?? false) ? emailId : this.emailId,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
+      companyName: (companyName?.isNotEmpty ?? false) ? companyName : this.companyName,
+      gstNumber: (gstNumber?.isNotEmpty ?? false) ? gstNumber : this.gstNumber,
+      age: age ?? this.age,
+      businessType: (businessType?.isNotEmpty ?? false) ? businessType : this.businessType,
+      profilePhotoUrl: proPicUrl,
+    );
+  }
 
   String get displayName {
     String displayName = '';

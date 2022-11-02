@@ -1,15 +1,15 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:ad/adwise_user.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/provider/data_manager.dart';
-import 'package:ad/provider/product_data_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../constants.dart';
 import '../product/product_type.dart';
 
 class FirestoreDatabase {
@@ -44,11 +44,52 @@ class FirestoreDatabase {
     DocumentReference<Map> ref = FirebaseFirestore.instance.collection(usersCollectionName).doc(user.userId);
     try {
       await ref.set(user.map);
+      DataManager().user = user;
     } catch (e) {
       return false;
     }
     return true;
   }
+
+  Future<bool> updateUserProfilePic(Uint8List image) async {
+    debugPrint("FirestoreDatabase updateUserProfilePic: ");
+    AdWiseUser user = DataManager().user!;
+    bool isSuccess = false;
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference reference = storage.ref().child('userProfilePic/${user.userId}');
+    UploadTask uploadTask = reference.putData(image, SettableMetadata(contentType: 'image/jpeg'));
+
+    await uploadTask.whenComplete(() async {
+      String url = await reference.getDownloadURL();
+      debugPrint("FirestoreDatabase updateUserProfilePic: new photo url $url");
+      user = user.copyWith(profilePhotoUrl: url);
+      isSuccess = await updateUserDetails(user);
+    }).catchError((error) {
+      debugPrint("FirestoreDatabase updateUserProfilePic: error in updating profile picture $error");
+      isSuccess = false;
+    });
+    return isSuccess;
+  }
+
+  Future<bool> deleteUserProfilePic() async {
+    debugPrint("FirestoreDatabase deleteUserProfilePic: ");
+    AdWiseUser user = DataManager().user!;
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference reference = storage.ref().child('userProfilePic/${user.userId}');
+    try{
+      await reference.delete();
+      user = user.copyWith(deleteProfilePic: true);
+      return await updateUserDetails(user);
+    }catch(e){
+      debugPrint("FirestoreDatabase deleteUserProfilePic: exception in deleting profile pic ");
+    }
+    return false;
+  }
+
+  // Future downloadUserProfilePic(String url) async{
+  //   FirebaseStorage storage = FirebaseStorage.instance;
+  //   Reference reference = storage.ref().child('userProfilePic/${user.userId}');
+  // }
 
   Future<bool> updateNewUserDetails(AdWiseUser user) async => await updateUserDetails(user);
 
