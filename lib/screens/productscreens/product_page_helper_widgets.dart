@@ -2,9 +2,10 @@ part of product_page;
 
 class ProductEventTile extends StatefulWidget {
   final int index;
-  final ProductEvent event;
-  final ProductData productData;
+  final ProductEvent? event;
+  final ProductData? productData;
   final double? tileWidth;
+  final bool isLoading;
 
   const ProductEventTile({
     Key? key,
@@ -12,7 +13,10 @@ class ProductEventTile extends StatefulWidget {
     required this.event,
     required this.productData,
     this.tileWidth,
-  }) : super(key: key);
+    this.isLoading = false,
+  })  : assert(isLoading || (productData != null && event != null),
+            'if isLoading is false, then productData and event should not be null'),
+        super(key: key);
 
   @override
   State<ProductEventTile> createState() => _ProductEventTileState();
@@ -24,81 +28,91 @@ class _ProductEventTileState extends State<ProductEventTile> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => cursorIndex = widget.index),
-      onExit: (_) => setState(() => cursorIndex = -1),
-      child: Card(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-            side: BorderSide(
-              color: Colors.grey.shade400,
-              width: 0.2,
-            )),
-        elevation: cursorIndex == widget.index ? 10 : 0,
-        child: InkWell(
-            borderRadius: BorderRadius.circular(10),
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            onTap: () => MyRouteDelegate.of(context)
-                .navigateToProductEventPage(widget.event.type, widget.productData.userName, widget.event),
-            child: SizedBox(
-              width: widget.tileWidth,
-              child: Stack(
-                children: [
-                  Center(child: Text(widget.event.eventName)),
-                  LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return SizedBox(
-                        width: constraints.maxWidth,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                flex: 5,
-                                child: Center(child: image),
-                              ),
-                              const SizedBox(
-                                height: 10.0,
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.event.eventName,
-                                      style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text("\u20B9${widget.event.price}"),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                      'date posted: ${widget.event.eventTime}',
-                                      style: const TextStyle(overflow: TextOverflow.ellipsis),
-                                    ),
-                                  ],
+    return IgnorePointer(
+      ignoring: widget.isLoading,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => cursorIndex = widget.index),
+        onExit: (_) => setState(() => cursorIndex = -1),
+        child: Card(
+          color: widget.isLoading ? Colors.grey.shade200 : null,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5),
+              side: BorderSide(
+                color: Colors.grey.shade400,
+                width: 0.2,
+              )),
+          elevation: cursorIndex == widget.index ? 10 : 0,
+          child: InkWell(
+              borderRadius: BorderRadius.circular(10),
+              hoverColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              onTap: () => widget.isLoading
+                  ? null
+                  : MyRouteDelegate.of(context)
+                      .navigateToProductEventPage(widget.event!.type, widget.productData!.userName, widget.event!),
+              child: SizedBox(
+                width: widget.tileWidth,
+                child: Stack(
+                  children: [
+                    LayoutBuilder(
+                      builder: (BuildContext context, BoxConstraints constraints) {
+                        return SizedBox(
+                          width: constraints.maxWidth,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: widget.isLoading ? const SizedBox() : Center(child: image),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      widget.isLoading
+                                          ? const SizedBox()
+                                          : Text(
+                                              widget.event!.eventName,
+                                              style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
+                                            ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      widget.isLoading ? const SizedBox() : Text("\u20B9${widget.event!.price}"),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      widget.isLoading
+                                          ? const SizedBox()
+                                          : Text(
+                                              'date posted: ${widget.event!.eventTime}',
+                                              style: const TextStyle(overflow: TextOverflow.ellipsis),
+                                            ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                  Positioned(
-                    right: 10,
-                    top: 10,
-                    child: _HeartIcon(eventId: widget.event.eventId),
-                  ),
-                ],
-              ),
-            )),
+                        );
+                      },
+                    ),
+                    if (!widget.isLoading)
+                      Positioned(
+                        right: 10,
+                        top: 10,
+                        child: _HeartIcon(eventId: widget.event!.eventId),
+                      ),
+                  ],
+                ),
+              )),
+        ),
       ),
     );
   }

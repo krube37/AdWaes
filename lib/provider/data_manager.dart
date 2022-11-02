@@ -3,6 +3,9 @@ import 'package:ad/firebase/firestore_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../product/product_data.dart';
+import '../product/product_event.dart';
+
 class DataManager extends ChangeNotifier {
   /// singleton class
   static final DataManager _mInstance = DataManager._internal();
@@ -21,7 +24,17 @@ class DataManager extends ChangeNotifier {
   /// favourite event ids of current user
   final Set<String> _favouriteEventIds = {};
 
+  /// recent events (productData to events map)
+  final List<MapEntry<ProductData, ProductEvent>> _recentEventsList = [];
+
   get favouriteEventIds => _favouriteEventIds;
+
+  List<MapEntry<ProductData, ProductEvent>>? get recentEventsList =>
+      _recentEventsList.isEmpty ? null : _recentEventsList;
+
+  set recentEventList(List<MapEntry<ProductData, ProductEvent>> data) => _recentEventsList
+    ..clear()
+    ..addAll(data);
 
   addFavouriteEventIds(List<String> eventIds) => _favouriteEventIds.addAll(eventIds);
 

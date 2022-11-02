@@ -2,6 +2,7 @@ library home_page;
 
 import 'dart:math';
 import 'package:ad/globals.dart';
+import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/product_widgets/bottombar.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
@@ -23,19 +24,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<MapEntry<ProductData, ProductEvent>> dataToEventsMap = [];
-  bool isRecentEventsFetched = false;
-
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-
-    if (dataToEventsMap.isEmpty && !isRecentEventsFetched) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        dataToEventsMap = await FirestoreDatabase().getRecentEventsWithProductsName();
-        if(mounted) setState(() => isRecentEventsFetched = true);
-      });
-    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -64,27 +55,53 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: TextStyle(fontSize: 25.0),
                   ),
                 ),
-                _CustomHorizontalScroller(
-                  itemLength: dataToEventsMap.length,
-                  height: 400,
-                  scrollingArrowSize: 50.0,
-                  scrollPixelsPerClick: (screenSize.width / 300) * 200,
-                  //todo : implement loading before fetching
-                  itemBuilder: (index) {
-                    return dataToEventsMap.isNotEmpty
-                        ? ProductEventTile(
-                            index: index,
-                            event: dataToEventsMap[index].value,
-                            productData: dataToEventsMap[index].key,
-                            tileWidth: 300,
-                          )
-                        : const SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: Text('some error is there'),
-                          );
-                  },
-                ),
+                FutureBuilder(
+                    future: FirestoreDatabase().getRecentEventsWithProductsName(),
+                    initialData: DataManager().recentEventsList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        DataManager().recentEventList = snapshot.data!;
+                        List<MapEntry<ProductData, ProductEvent>> recentProductDataToEventsMap = snapshot.data!;
+                        return _CustomHorizontalScroller(
+                          itemLength: recentProductDataToEventsMap.length,
+                          height: 400,
+                          scrollingArrowSize: 50.0,
+                          scrollPixelsPerClick: (screenSize.width / 300) * 200,
+                          itemBuilder: (index) {
+                            return recentProductDataToEventsMap.isNotEmpty
+                                ? ProductEventTile(
+                                    index: index,
+                                    event: recentProductDataToEventsMap[index].value,
+                                    productData: recentProductDataToEventsMap[index].key,
+                                    tileWidth: 300,
+                                  )
+                                : const SizedBox(
+                                    width: 100,
+                                    height: 100,
+                                    child: Text('some error is there'),
+                                  );
+                          },
+                        );
+                      } else {
+                        int noOfEmptyEvents = (screenSize.width / 340).ceil();
+                        return SizedBox(
+                          height: 400,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: noOfEmptyEvents,
+                            itemBuilder: (context, index) {
+                              return ProductEventTile(
+                                index: index,
+                                event: null,
+                                productData: null,
+                                isLoading: true,
+                                tileWidth: 300,
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    }),
                 const SizedBox(height: 50.0),
                 const BottomBar(),
               ],
