@@ -489,11 +489,13 @@ class _InfoNameTile extends StatefulWidget {
 
 class _InfoNameTileState extends State<_InfoNameTile> {
   late TextEditingController _firstNameTextController, _lastNameTextController;
+  late FocusNode _firstNameFocusNode;
 
   @override
   void initState() {
     _firstNameTextController = TextEditingController(text: widget.firstName);
     _lastNameTextController = TextEditingController(text: widget.lastName);
+    _firstNameFocusNode = FocusNode();
     super.initState();
   }
 
@@ -501,11 +503,17 @@ class _InfoNameTileState extends State<_InfoNameTile> {
   void dispose() {
     _firstNameTextController.dispose();
     _lastNameTextController.dispose();
+    _firstNameFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (_firstNameFocusNode.canRequestFocus) {
+        _firstNameFocusNode.requestFocus();
+      }
+    });
     return isMobileView(context)
         ? Column(
             children: [
@@ -515,6 +523,7 @@ class _InfoNameTileState extends State<_InfoNameTile> {
                     child: _getTextField(
                       _firstNameTextController,
                       hintText: 'First name',
+                      focusNode: _firstNameFocusNode,
                     ),
                   ),
                   const SizedBox(width: 10.0),
@@ -540,6 +549,7 @@ class _InfoNameTileState extends State<_InfoNameTile> {
                     _getTextField(
                       _firstNameTextController,
                       hintText: 'First name',
+                      focusNode: _firstNameFocusNode,
                     ),
                     const SizedBox(height: 10.0),
                     _getTextField(
@@ -583,7 +593,13 @@ class _InfoNameTileState extends State<_InfoNameTile> {
         ],
       );
 
-  Widget _getTextField(TextEditingController controller, {required String hintText}) => TextField(
+  Widget _getTextField(
+    TextEditingController controller, {
+    required String hintText,
+    focusNode,
+  }) =>
+      TextField(
+        focusNode: focusNode,
         controller: controller,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
@@ -616,21 +632,29 @@ class _InfoTile extends StatefulWidget {
 
 class _InfoTileState extends State<_InfoTile> {
   late TextEditingController _controller;
+  late FocusNode _focusNode;
 
   @override
   void initState() {
     _controller = TextEditingController(text: widget.value);
+    _focusNode = FocusNode();
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (_focusNode.canRequestFocus) {
+        _focusNode.requestFocus();
+      }
+    });
     return isMobileView(context)
         ? Column(
             children: [
@@ -682,6 +706,7 @@ class _InfoTileState extends State<_InfoTile> {
       );
 
   Widget _getTextField() => TextField(
+        focusNode: _focusNode,
         controller: _controller,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
