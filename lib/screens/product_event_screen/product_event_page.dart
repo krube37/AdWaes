@@ -4,7 +4,7 @@ import 'dart:math';
 
 import 'package:ad/adwise_user.dart';
 import 'package:ad/constants.dart';
-import 'package:ad/firebase/firestore_database.dart';
+import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/screens/home/my_app_bar.dart';

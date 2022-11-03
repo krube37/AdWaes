@@ -44,10 +44,11 @@ class _CustomHorizontalScrollerState extends State<_CustomHorizontalScroller> {
         height: widget.height,
         child: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: widget.scrollingArrowSize / 2),
-              child: Center(
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: widget.scrollingArrowSize / 2),
                 child: ListView.builder(
+                  shrinkWrap: true,
                   controller: _controller,
                   scrollDirection: Axis.horizontal,
                   itemCount: widget.itemLength,
@@ -252,7 +253,7 @@ class _ProductListViewTileState extends State<_ProductListViewTile> {
   }
 
   _onItemClicked() async {
-    List<ProductData> products = await FirestoreDatabase().getProductsOfType(type: widget.type);
+    List<ProductData> products = await FirestoreManager().getProductsOfType(type: widget.type);
     if (mounted) {
       MyRouteDelegate.of(context)
           .navigateToCompany(widget.type, products, products.isNotEmpty ? products.first.userName : '');

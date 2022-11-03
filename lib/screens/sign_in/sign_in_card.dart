@@ -1,7 +1,7 @@
 library sign_in;
 
 import 'package:ad/firebase/api_response.dart';
-import 'package:ad/firebase/firestore_database.dart';
+import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/provider/update_user_details_provider.dart';
@@ -136,12 +136,12 @@ class _SignInCardState extends State<SignInCard> {
         AdWiseUser adWiseUser;
         if (isNewUser) {
           adWiseUser = AdWiseUser.newUser(userCreds.user!);
-          await FirestoreDatabase().updateNewUserDetails(adWiseUser);
+          await FirestoreManager().updateNewUserDetails(adWiseUser);
           if (mounted) {
             adWiseUser = await SignInManager().showNewUserFields(context, adWiseUser);
           }
         } else {
-          adWiseUser = await FirestoreDatabase().getCurrentUserDetails(userCreds.user!);
+          adWiseUser = await FirestoreManager().getCurrentUserDetails(userCreds.user!);
         }
         await DataManager().initialiseUserCreds(adWiseUser);
         SnackBar snackBar = const SnackBar(

@@ -12,7 +12,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../product/product_type.dart';
 
-class FirestoreDatabase {
+class FirestoreManager {
   StreamSubscription<QuerySnapshot>? productDataStream;
   StreamSubscription<QuerySnapshot>? eventsStream;
   final FirebaseFirestore _mInstance;
@@ -23,7 +23,7 @@ class FirestoreDatabase {
   static const bookedEventsCollectionName = "bookedEvents";
   static const favouriteEventsCollectionName = "favouriteEvents";
 
-  FirestoreDatabase()
+  FirestoreManager()
       : _mInstance = FirebaseFirestore.instance,
         _dataManager = DataManager();
 
@@ -275,5 +275,9 @@ class FirestoreDatabase {
       debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
     }
     return productDataToEventsMap;
+  }
+
+  listenToRecentEvents(){
+
   }
 }

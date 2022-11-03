@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:ad/constants.dart';
-import 'package:ad/firebase/firestore_database.dart';
+import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,12 +13,12 @@ class ProductDataProvider extends ChangeNotifier {
   final List<ProductData> _products = [];
   final List<ProductEvent> _productEvents = [];
   late DataManager dataManager;
-  late FirestoreDatabase firestoreDatabase;
+  late FirestoreManager firestoreDatabase;
   static ProductDataProvider? _mInstance;
 
   ProductDataProvider._internal()
       : dataManager = DataManager(),
-        firestoreDatabase = FirestoreDatabase();
+        firestoreDatabase = FirestoreManager();
 
   factory ProductDataProvider() => _mInstance ?? ProductDataProvider._internal();
 

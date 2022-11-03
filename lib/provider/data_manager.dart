@@ -1,10 +1,7 @@
 import 'package:ad/adwise_user.dart';
-import 'package:ad/firebase/firestore_database.dart';
+import 'package:ad/firebase/firestore_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-
-import '../product/product_data.dart';
-import '../product/product_event.dart';
 
 class DataManager extends ChangeNotifier {
   /// singleton class
@@ -24,17 +21,7 @@ class DataManager extends ChangeNotifier {
   /// favourite event ids of current user
   final Set<String> _favouriteEventIds = {};
 
-  /// recent events (productData to events map)
-  final List<MapEntry<ProductData, ProductEvent>> _recentEventsList = [];
-
   get favouriteEventIds => _favouriteEventIds;
-
-  List<MapEntry<ProductData, ProductEvent>>? get recentEventsList =>
-      _recentEventsList.isEmpty ? null : _recentEventsList;
-
-  set recentEventList(List<MapEntry<ProductData, ProductEvent>> data) => _recentEventsList
-    ..clear()
-    ..addAll(data);
 
   addFavouriteEventIds(List<String> eventIds) => _favouriteEventIds.addAll(eventIds);
 
@@ -44,7 +31,7 @@ class DataManager extends ChangeNotifier {
 
   initialize() async {
     if (FirebaseAuth.instance.currentUser != null) {
-      user = await FirestoreDatabase().getCurrentUserDetails(FirebaseAuth.instance.currentUser!);
+      user = await FirestoreManager().getCurrentUserDetails(FirebaseAuth.instance.currentUser!);
     }
     _listenToUser();
   }
@@ -55,9 +42,9 @@ class DataManager extends ChangeNotifier {
       if (user != null) {
         fetchingSigInDetails = true;
         notifyListeners();
-        this.user = await FirestoreDatabase().getCurrentUserDetails(user);
+        this.user = await FirestoreManager().getCurrentUserDetails(user);
         fetchingSigInDetails = false;
-        _favouriteEventIds.addAll(await FirestoreDatabase().getAllFavouriteEventIds());
+        _favouriteEventIds.addAll(await FirestoreManager().getAllFavouriteEventIds());
       }
       notifyListeners();
     });
@@ -65,7 +52,7 @@ class DataManager extends ChangeNotifier {
 
   initialiseUserCreds(AdWiseUser adWiseUser) async {
     user = adWiseUser;
-    _favouriteEventIds.addAll(await FirestoreDatabase().getAllFavouriteEventIds());
+    _favouriteEventIds.addAll(await FirestoreManager().getAllFavouriteEventIds());
     notifyListeners();
   }
 

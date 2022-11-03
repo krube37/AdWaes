@@ -2,13 +2,12 @@ library home_page;
 
 import 'dart:math';
 import 'package:ad/globals.dart';
-import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/product_widgets/bottombar.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:flutter/material.dart';
 
-import '../../firebase/firestore_database.dart';
+import '../../firebase/firestore_manager.dart';
 import '../../product/product_data.dart';
 import '../../product/product_event.dart';
 import '../../product/product_type.dart';
@@ -56,11 +55,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 FutureBuilder(
-                    future: FirestoreDatabase().getRecentEventsWithProductsName(),
-                    initialData: DataManager().recentEventsList,
+                    future: FirestoreManager().getRecentEventsWithProductsName(),
+                    initialData: null,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        DataManager().recentEventList = snapshot.data!;
                         List<MapEntry<ProductData, ProductEvent>> recentProductDataToEventsMap = snapshot.data!;
                         return _CustomHorizontalScroller(
                           itemLength: recentProductDataToEventsMap.length,

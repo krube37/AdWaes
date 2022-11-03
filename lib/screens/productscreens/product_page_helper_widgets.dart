@@ -187,9 +187,9 @@ class _HeartIconState extends State<_HeartIcon> {
       isLoading = true;
     });
     if (isFavourite) {
-      if (await FirestoreDatabase().removeFromFavourite(widget.eventId)) isFavourite = !isFavourite;
+      if (await FirestoreManager().removeFromFavourite(widget.eventId)) isFavourite = !isFavourite;
     } else {
-      if (await FirestoreDatabase().addToFavourite(widget.eventId)) isFavourite = !isFavourite;
+      if (await FirestoreManager().addToFavourite(widget.eventId)) isFavourite = !isFavourite;
     }
     debugPrint("_HeartIconState build: isFavourite now $isFavourite");
     setState(() {

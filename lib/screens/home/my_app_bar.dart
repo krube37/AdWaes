@@ -1,9 +1,7 @@
-import 'package:ad/adwise_user.dart';
+
 import 'package:ad/firebase/auth_manager.dart';
-import 'package:ad/firebase/firestore_database.dart';
 import 'package:ad/helper/custom_icons.dart';
 import 'package:ad/provider/data_manager.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -274,7 +274,7 @@ class _NewUserFieldsCardState extends State<NewUserFieldsCard> {
       businessType: _provider.businessTypeTextController.text.trim(),
     );
 
-    bool isUpdated = await FirestoreDatabase().updateUserDetails(updatedUser);
+    bool isUpdated = await FirestoreManager().updateUserDetails(updatedUser);
     if (isUpdated) {
       if (mounted) Navigator.pop(context, updatedUser);
     } else {

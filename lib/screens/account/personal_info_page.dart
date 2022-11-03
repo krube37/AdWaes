@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:ad/adwise_user.dart';
-import 'package:ad/firebase/firestore_database.dart';
+import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -210,7 +210,7 @@ class _ProfilePicState extends State<_ProfilePic> {
     if (rawPath == null) return;
 
     setState(() => isLoading = true);
-    bool isSuccess = await FirestoreDatabase().updateUserProfilePic(rawPath);
+    bool isSuccess = await FirestoreManager().updateUserProfilePic(rawPath);
     if (isSuccess) {
       setState(() => isLoading = false);
     }
@@ -219,7 +219,7 @@ class _ProfilePicState extends State<_ProfilePic> {
   _deleteProfilePic() async {
     String url = user.profilePhotoUrl!;
     setState(() => isLoading = true);
-    bool isSuccess = await FirestoreDatabase().deleteUserProfilePic();
+    bool isSuccess = await FirestoreManager().deleteUserProfilePic();
     if (isSuccess) {
       CachedNetworkImage.evictFromCache(url);
       setState(() => isLoading = false);
@@ -790,7 +790,7 @@ class _SaveButtonState extends State<_SaveButton> {
     }
     String toastMsg;
     setState(() => isLoading = true);
-    bool isSuccess = await FirestoreDatabase().updateUserDetails(user);
+    bool isSuccess = await FirestoreManager().updateUserDetails(user);
     if (isSuccess) {
       toastMsg = 'Updated the account details';
       dataManager.user = user;

@@ -1,11 +1,6 @@
-import 'package:ad/constants.dart';
-import 'package:ad/firebase/firestore_database.dart';
-import 'package:ad/main.dart';
+import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/routes/my_route_delegate.dart';
-import 'package:ad/routes/routes.dart';
-import 'package:ad/screens/home_page.dart';
-import 'package:ad/screens/second_page.dart';
 import 'package:ad/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +38,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
           });
         },
         onTap: () async {
-          List<ProductData> products = await FirestoreDatabase().getProductsOfType(type: items[i]);
+          List<ProductData> products = await FirestoreManager().getProductsOfType(type: items[i]);
           if (mounted) {
             MyRouteDelegate.of(context).navigateToCompany(items[i], products, products.first.userName);
           }
@@ -113,7 +108,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                   },
                                   onTap: () async {
                                     List<ProductData> products =
-                                        await FirestoreDatabase().getProductsOfType(type: items[i]);
+                                        await FirestoreManager().getProductsOfType(type: items[i]);
                                     if (mounted) {
                                       MyRouteDelegate.of(context)
                                           .navigateToCompany(items[i], products, products.first.userName);
@@ -168,7 +163,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                       },
                                       onTap: () async {
                                         List<ProductData> products =
-                                            await FirestoreDatabase().getProductsOfType(type: items[i]);
+                                            await FirestoreManager().getProductsOfType(type: items[i]);
                                         if (mounted) {
                                           MyRouteDelegate.of(context).navigateToCompany(
                                               items[i], products, products.isNotEmpty ? products.first.userName : '');

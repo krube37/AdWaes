@@ -87,7 +87,7 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
     });
     // todo: book event
     debugPrint("ProductEventPage build: booking implementation yet to be completed ");
-    bool isBookingSuccess = await FirestoreDatabase().bookEvent(widget.event);
+    bool isBookingSuccess = await FirestoreManager().bookEvent(widget.event);
     debugPrint("ProductEventPage build: booking success $isBookingSuccess");
     setState(() {
       isBookingBtnLoading = false;

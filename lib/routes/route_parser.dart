@@ -1,4 +1,4 @@
-import 'package:ad/firebase/firestore_database.dart';
+import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/routes/routes.dart';
@@ -42,7 +42,7 @@ class RouteParser extends RouteInformationParser<Routes> {
     ProductType? productType = ProductTypeExtention.getTypeByName(pathSegments[1]);
     String companyUserName = pathSegments[2];
     if (productType != null) {
-      List<ProductData> products = await FirestoreDatabase().getProductsOfType(type: productType);
+      List<ProductData> products = await FirestoreManager().getProductsOfType(type: productType);
       return Routes.company(productType, products, companyUserName);
     }
     return Routes.invalidProduct();
@@ -53,7 +53,7 @@ class RouteParser extends RouteInformationParser<Routes> {
     String companyUserName = pathSegments[2];
     String eventId = pathSegments[4];
     if (productType != null) {
-      ProductEvent? event = await FirestoreDatabase().getEventById(productType, companyUserName, eventId);
+      ProductEvent? event = await FirestoreManager().getEventById(productType, companyUserName, eventId);
       if (event != null) {
         return Routes.productEvent(productType, companyUserName, event);
       }
