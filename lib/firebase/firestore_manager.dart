@@ -146,7 +146,7 @@ class FirestoreManager {
     return eventsStream!;
   }
 
-  Future<ProductEvent?> getEventById(ProductType type, String companyUserName, String eventId) async {
+  Future<ProductEvent?> getEventById(String eventId) async {
     try {
       DocumentSnapshot<Map> data = await _mInstance.collection('events').doc(eventId).get();
       if (data.data() != null) {
@@ -182,17 +182,17 @@ class FirestoreManager {
     }
   }
 
-  Future<bool> addToFavourite(String eventId) async {
+  Future<bool> addToFavourite(ProductEvent event) async {
     try {
       // creating event
       await _mInstance
           .collection(usersCollectionName)
           .doc(_dataManager.user!.userId)
           .collection(favouriteEventsCollectionName)
-          .doc(eventId)
-          .set({'eventId': eventId});
+          .doc(event.eventId)
+          .set({'eventId': event.eventId});
 
-      _dataManager.addFavouriteEventIds([eventId]);
+      _dataManager.addFavouriteEvents([event]);
       return true;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase addToFavourite: error in adding to favourite $e\n$stack");
@@ -209,7 +209,7 @@ class FirestoreManager {
           .collection(favouriteEventsCollectionName)
           .doc(eventId)
           .delete();
-      _dataManager.removeFavouriteIds([eventId]);
+      _dataManager.removeFavouriteEvents([eventId]);
       return true;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase addToFavourite: error in adding to favourite $e\n$stack");
@@ -217,7 +217,7 @@ class FirestoreManager {
     }
   }
 
-  Future<Iterable<String>> getAllFavouriteEventIds() async {
+  Future<Iterable<String>> _getAllFavouriteEventIds() async {
     try {
       QuerySnapshot snapshot = await _mInstance
           .collection(usersCollectionName)
@@ -234,7 +234,7 @@ class FirestoreManager {
 
   Future<List<ProductEvent>> getAllFavouriteEvents() async {
     List<ProductEvent> productEvents = [];
-    List<String> eventIds = List.from(await getAllFavouriteEventIds());
+    List<String> eventIds = List.from(await _getAllFavouriteEventIds());
 
     try {
       QuerySnapshot<Map> eventSnapshot =
@@ -248,8 +248,8 @@ class FirestoreManager {
     return productEvents;
   }
 
-  Future<List<MapEntry<ProductData, ProductEvent>>> getRecentEventsWithProductsName() async {
-    List<MapEntry<ProductData, ProductEvent>> productDataToEventsMap = [];
+  Future<List<ProductEvent>> getRecentEventsWithProductsName() async {
+    List<ProductEvent> recentEvents = [];
     try {
       QuerySnapshot<Map> eventSnapshot =
           await _mInstance.collection(eventsCollectionName).orderBy('postedTime', descending: true).limit(10).get();
@@ -268,13 +268,13 @@ class FirestoreManager {
       }
 
       for (ProductEvent event in productEvents) {
-        productDataToEventsMap
-            .add(MapEntry(productDataList.firstWhere((element) => element.userName == event.productId), event));
+        recentEvents
+            .add(event);
       }
     } catch (e, stack) {
       debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
     }
-    return productDataToEventsMap;
+    return recentEvents;
   }
 
   listenToRecentEvents(){

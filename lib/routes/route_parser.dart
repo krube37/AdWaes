@@ -30,12 +30,14 @@ class RouteParser extends RouteInformationParser<Routes> {
       RouteInformation(location: configuration.path, state: configuration.companyUserName);
 
   Future<Routes> _parseProductSubRoute(List<String> pathSegments) async {
-    if (pathSegments.length == 3) {
-      return _getProductsRoute(pathSegments);
-    } else if (pathSegments.length == 5) {
+    String secondarySegment = pathSegments[1];
+    if (secondarySegment == 'event' && pathSegments.length > 1) {
       return _getProductEventRoute(pathSegments);
+    } else if(secondarySegment == '404'){
+      return Routes.invalidProduct();
+    } else {
+      return _getProductsRoute(pathSegments);
     }
-    return Routes.home();
   }
 
   Future<Routes> _getProductsRoute(List<String> pathSegments) async {
@@ -49,24 +51,21 @@ class RouteParser extends RouteInformationParser<Routes> {
   }
 
   Future<Routes> _getProductEventRoute(List<String> pathSegments) async {
-    ProductType? productType = ProductTypeExtention.getTypeByName(pathSegments[1]);
-    String companyUserName = pathSegments[2];
-    String eventId = pathSegments[4];
-    if (productType != null) {
-      ProductEvent? event = await FirestoreManager().getEventById(productType, companyUserName, eventId);
+    String eventId = pathSegments[2];
+      ProductEvent? event = await FirestoreManager().getEventById(eventId);
       if (event != null) {
-        return Routes.productEvent(productType, companyUserName, event);
+        return Routes.productEvent(event);
       }
-    }
-    return Routes.invalidProductEvent(productType, companyUserName);
+    return Routes.invalidProduct();
   }
 
   _parseAccountSubRoute(List<String> pathSegments) {
     if (pathSegments.length > 1) {
       String secondarySegment = pathSegments[1];
       if (secondarySegment == 'personal_info') {
-        debugPrint("RouteParser _parseAccountSubRoute: ");
         return Routes.personalInfo();
+      } else if (secondarySegment == 'favourites') {
+        return Routes.favouriteEvents();
       }
     }
     return Routes.account();

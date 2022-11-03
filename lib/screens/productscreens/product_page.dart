@@ -28,8 +28,12 @@ class ProductPage extends StatefulWidget {
   final List<ProductData> products;
   final String currentUserName;
 
-  ProductPage({Key? key, required this.productType, required this.products, required this.currentUserName})
-      : super(key: key) {
+  ProductPage({
+    Key? key,
+    required this.productType,
+    required this.products,
+    required this.currentUserName,
+  }) : super(key: key) {
     debugPrint("ProductPage ProductPage: constructor called..............................   ");
   }
 
@@ -111,56 +115,90 @@ class _ProductPageState extends State<ProductPage> {
       body: Consumer<ProductDataProvider>(
         builder: (context, productDataValue, _) {
           _fetchData();
-          return Column(
-            children: [
-              Expanded(
-                child: Row(
+          return Container(
+            constraints: const BoxConstraints(
+              maxWidth: maxScreenWidth,
+            ),
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Expanded(
-                      flex: 1,
-                      child: _productListView(),
+                    const SizedBox(width: 30.0,),
+                    const Expanded(
+                      child: Text(
+                        'Events',
+                        style: TextStyle(
+                          fontSize: 25.0,
+                        ),
+                      ),
                     ),
-                    const Divider(
-                      color: Colors.black45,
-                      thickness: 1.0,
-                      height: 100,
+                    Row(
+                      children: const [
+                        Text(
+                          'Sort by',
+                        ),
+                        Icon(Icons.arrow_drop_down)
+                      ],
                     ),
-                    Expanded(
-                      flex: 3,
-                      child: products.isEmpty || currentUserName.isEmpty
-                          ? const Center(child: Text("there are no Events available or selected "))
-                          : StreamBuilder<List<ProductEvent>>(
-                              stream: productDataProvider.listenToEvents(widget.productType, currentUserName),
-                              builder: (context, snapshot) {
-                                events.clear();
-                                debugPrint("_ProductPageState build: snapshot ${snapshot.data?.map((e) => e.eventId)}");
-                                if (!snapshot.hasData || (snapshot.data != null && snapshot.data!.isEmpty)) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                }
-                                events = snapshot.data!;
-                                return GridView.builder(
-                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: isDesktopView(context) ? 3 : 2,
-                                      childAspectRatio: isDesktopView(context) ? 3 / 4 : 3/4,
-                                    ),
-                                    itemCount: events.length,
-                                    itemBuilder: (context, index) {
-                                      return ProductEventTile(
-                                        index: index,
-                                        event: events[index],
-                                        productData: products[currentUserName]!,
-                                      );
-                                    });
-                              }),
+                    const SizedBox(
+                      width: 20.0,
                     ),
-                    // todo: remove test code
-                    // _testCode()
                   ],
                 ),
-              )
-            ],
+                const SizedBox(
+                  height: 30.0,
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: _productListView(),
+                      ),
+                      const Divider(
+                        color: Colors.black45,
+                        thickness: 1.0,
+                        height: 100,
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: products.isEmpty || currentUserName.isEmpty
+                            ? const Center(child: Text("there are no Events available or selected "))
+                            : StreamBuilder<List<ProductEvent>>(
+                                stream: productDataProvider.listenToEvents(widget.productType, currentUserName),
+                                builder: (context, snapshot) {
+                                  events.clear();
+                                  debugPrint(
+                                      "_ProductPageState build: snapshot ${snapshot.data?.map((e) => e.eventId)}");
+                                  if (!snapshot.hasData || (snapshot.data != null && snapshot.data!.isEmpty)) {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                  events = snapshot.data!;
+                                  return GridView.builder(
+                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: isDesktopView(context) ? 3 : 2,
+                                        childAspectRatio: isDesktopView(context) ? 3 / 4 : 3 / 4,
+                                      ),
+                                      itemCount: events.length,
+                                      itemBuilder: (context, index) {
+                                        return ProductEventTile(
+                                          index: index,
+                                          event: events[index],
+                                        );
+                                      });
+                                }),
+                      ),
+                      // todo: remove test code
+                      // _testCode()
+                    ],
+                  ),
+                )
+              ],
+            ),
           );
         },
       ),

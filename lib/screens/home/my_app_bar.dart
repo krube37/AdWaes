@@ -67,7 +67,7 @@ class _MyAppBarState extends State<MyAppBar> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25.0),
                   onTap: () async {
-                    await SignInManager().showNewUserFields(context, dataManager.user!);
+                    MyRouteDelegate.of(context).navigateToFavouriteEvent();
                   },
                   child: const Icon(
                     CustomIcons.heart_svgrepo_com,

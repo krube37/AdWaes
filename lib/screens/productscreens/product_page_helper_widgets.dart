@@ -3,7 +3,6 @@ part of product_page;
 class ProductEventTile extends StatefulWidget {
   final int index;
   final ProductEvent? event;
-  final ProductData? productData;
   final double? tileWidth;
   final bool isLoading;
 
@@ -11,10 +10,9 @@ class ProductEventTile extends StatefulWidget {
     Key? key,
     required this.index,
     required this.event,
-    required this.productData,
     this.tileWidth,
     this.isLoading = false,
-  })  : assert(isLoading || (productData != null && event != null),
+  })  : assert(isLoading || event != null,
             'if isLoading is false, then productData and event should not be null'),
         super(key: key);
 
@@ -49,7 +47,7 @@ class _ProductEventTileState extends State<ProductEventTile> {
               onTap: () => widget.isLoading
                   ? null
                   : MyRouteDelegate.of(context)
-                      .navigateToProductEventPage(widget.event!.type, widget.productData!.userName, widget.event!),
+                      .navigateToProductEventPage(widget.event!),
               child: SizedBox(
                 width: widget.tileWidth,
                 child: Stack(
@@ -107,7 +105,7 @@ class _ProductEventTileState extends State<ProductEventTile> {
                       Positioned(
                         right: 10,
                         top: 10,
-                        child: _HeartIcon(eventId: widget.event!.eventId),
+                        child: _HeartIcon(event: widget.event!),
                       ),
                   ],
                 ),
@@ -119,9 +117,9 @@ class _ProductEventTileState extends State<ProductEventTile> {
 }
 
 class _HeartIcon extends StatefulWidget {
-  final String eventId;
+  final ProductEvent event;
 
-  const _HeartIcon({Key? key, required this.eventId}) : super(key: key);
+  const _HeartIcon({Key? key, required this.event}) : super(key: key);
 
   @override
   State<_HeartIcon> createState() => _HeartIconState();
@@ -137,7 +135,7 @@ class _HeartIconState extends State<_HeartIcon> {
   @override
   Widget build(BuildContext context) {
     dataManager = Provider.of<DataManager>(context);
-    isFavourite = dataManager.isFavouriteId(widget.eventId);
+    isFavourite = dataManager.isFavouriteEvent(widget.event.eventId);
     return IgnorePointer(
       ignoring: isLoading,
       child: MouseRegion(
@@ -187,9 +185,9 @@ class _HeartIconState extends State<_HeartIcon> {
       isLoading = true;
     });
     if (isFavourite) {
-      if (await FirestoreManager().removeFromFavourite(widget.eventId)) isFavourite = !isFavourite;
+      if (await FirestoreManager().removeFromFavourite(widget.event.eventId)) isFavourite = !isFavourite;
     } else {
-      if (await FirestoreManager().addToFavourite(widget.eventId)) isFavourite = !isFavourite;
+      if (await FirestoreManager().addToFavourite(widget.event)) isFavourite = !isFavourite;
     }
     debugPrint("_HeartIconState build: isFavourite now $isFavourite");
     setState(() {

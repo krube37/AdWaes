@@ -1,5 +1,6 @@
 import 'package:ad/adwise_user.dart';
 import 'package:ad/firebase/firestore_manager.dart';
+import 'package:ad/product/product_event.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -19,15 +20,19 @@ class DataManager extends ChangeNotifier {
   bool fetchingSigInDetails = false;
 
   /// favourite event ids of current user
-  final Set<String> _favouriteEventIds = {};
+  final Map<String, ProductEvent> _favouriteEvents = {};
 
-  get favouriteEventIds => _favouriteEventIds;
+  List<ProductEvent> get favouriteEvents => _favouriteEvents.values.toList();
 
-  addFavouriteEventIds(List<String> eventIds) => _favouriteEventIds.addAll(eventIds);
+  addFavouriteEvents(List<ProductEvent> events) {
+    for (ProductEvent event in events) {
+      _favouriteEvents.update(event.eventId, (value) => event, ifAbsent: () => event);
+    }
+  }
 
-  removeFavouriteIds(List<String> eventIds) => _favouriteEventIds.removeAll(eventIds);
+  removeFavouriteEvents(List<String> eventIds) => _favouriteEvents.removeWhere((key, value) => eventIds.contains(key));
 
-  isFavouriteId(String eventId) => _favouriteEventIds.contains(eventId);
+  bool isFavouriteEvent(String eventId) => _favouriteEvents.containsKey(eventId);
 
   initialize() async {
     if (FirebaseAuth.instance.currentUser != null) {
@@ -44,7 +49,7 @@ class DataManager extends ChangeNotifier {
         notifyListeners();
         this.user = await FirestoreManager().getCurrentUserDetails(user);
         fetchingSigInDetails = false;
-        _favouriteEventIds.addAll(await FirestoreManager().getAllFavouriteEventIds());
+        addFavouriteEvents(await FirestoreManager().getAllFavouriteEvents());
       }
       notifyListeners();
     });
@@ -52,13 +57,13 @@ class DataManager extends ChangeNotifier {
 
   initialiseUserCreds(AdWiseUser adWiseUser) async {
     user = adWiseUser;
-    _favouriteEventIds.addAll(await FirestoreManager().getAllFavouriteEventIds());
+    addFavouriteEvents(await FirestoreManager().getAllFavouriteEvents());
     notifyListeners();
   }
 
   removeUserBelongings(BuildContext context) {
     user = null;
-    _favouriteEventIds.clear();
+    _favouriteEvents.clear();
     notifyListeners();
   }
 }

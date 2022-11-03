@@ -7,6 +7,7 @@ enum RouteState {
   home,
   account,
   personalInfo,
+  favouriteScreen,
   product,
   company,
   invalidProduct,
@@ -36,6 +37,10 @@ class Routes {
       : path = '/account/personal_info',
         state = RouteState.personalInfo;
 
+  Routes.favouriteEvents()
+      : path = '/account/favourites',
+        state = RouteState.favouriteScreen;
+
   Routes.company(this.productType, this.products, this.companyUserName)
       : path = '/p/${productType!.name}/$companyUserName',
         state = RouteState.company;
@@ -44,13 +49,13 @@ class Routes {
       : path = '/p/404',
         state = RouteState.invalidProduct;
 
-  Routes.productEvent(this.productType, this.companyUserName, ProductEvent this.event)
-      : path = '/p/${productType!.name}/$companyUserName/event/${event.eventId}',
+  Routes.productEvent(ProductEvent this.event)
+      : path = '/p/event/${event.eventId}',
         state = RouteState.productEvent;
 
-  Routes.invalidProductEvent(this.productType, this.companyUserName)
-      : path = '/p/${productType!.name}/$companyUserName/event/404',
-        state = RouteState.invalidProductEvent;
+  // Routes.invalidProductEvent(this.productType, this.companyUserName)
+  //     : path = '/p/${productType!.name}/$companyUserName/event/404',
+  //       state = RouteState.invalidProductEvent;
 
   Routes.unknown()
       : path = '/error',
@@ -73,4 +78,6 @@ class Routes {
   bool get isAccountPage => state == RouteState.account;
 
   bool get isPersonalInfoPage => state == RouteState.personalInfo;
+
+  bool get isFavouriteScreen => state == RouteState.favouriteScreen;
 }

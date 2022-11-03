@@ -4,6 +4,7 @@ import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/account/account_page.dart';
 import 'package:ad/screens/account/personal_info_page.dart';
 import 'package:ad/screens/error_page.dart';
+import 'package:ad/screens/favourite_screen.dart';
 import 'package:ad/screens/invalid_event_page.dart';
 import 'package:ad/screens/home/my_home_page.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
@@ -38,6 +39,11 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
             key: ValueKey('PersonalInfo'),
             child: PersonalInfoPage(),
           ),
+    if (_routes.isFavouriteScreen)
+      const MaterialPage(
+        key: ValueKey('FavouriteScreen'),
+        child: FavouriteScreen(),
+      ),
         if (_routes.isProductPage || _routes.isCompanyPage)
           MaterialPage(
             key: const ValueKey('Products'),
@@ -94,8 +100,8 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
   @override
   GlobalKey<NavigatorState>? get navigatorKey => _key;
 
-  navigateToProductEventPage(ProductType type, String productUserName, ProductEvent event) {
-    _routes = Routes.productEvent(type, productUserName, event);
+  navigateToProductEventPage(ProductEvent event) {
+    _routes = Routes.productEvent(event);
     notifyListeners();
   }
 
@@ -116,6 +122,11 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
 
   navigateToPersonalInfo() {
     _routes = Routes.personalInfo();
+    notifyListeners();
+  }
+
+  navigateToFavouriteEvent(){
+    _routes = Routes.favouriteEvents();
     notifyListeners();
   }
 

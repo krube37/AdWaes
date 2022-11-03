@@ -59,18 +59,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     initialData: null,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-                        List<MapEntry<ProductData, ProductEvent>> recentProductDataToEventsMap = snapshot.data!;
+                        List<ProductEvent> recentEvents = snapshot.data!;
                         return _CustomHorizontalScroller(
-                          itemLength: recentProductDataToEventsMap.length,
+                          itemLength: recentEvents.length,
                           height: 400,
                           scrollingArrowSize: 50.0,
                           scrollPixelsPerClick: (screenSize.width / 300) * 200,
                           itemBuilder: (index) {
-                            return recentProductDataToEventsMap.isNotEmpty
+                            return recentEvents.isNotEmpty
                                 ? ProductEventTile(
                                     index: index,
-                                    event: recentProductDataToEventsMap[index].value,
-                                    productData: recentProductDataToEventsMap[index].key,
+                                    event: recentEvents[index],
                                     tileWidth: 300,
                                   )
                                 : const SizedBox(
@@ -91,7 +90,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               return ProductEventTile(
                                 index: index,
                                 event: null,
-                                productData: null,
                                 isLoading: true,
                                 tileWidth: 300,
                               );
