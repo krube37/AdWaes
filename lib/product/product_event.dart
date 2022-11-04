@@ -70,6 +70,19 @@ class ProductEvent {
         bookedUserId: bookedUserId ?? this.bookedUserId,
       );
 
+  ProductEvent canceledInstance() => ProductEvent(
+        eventId: eventId,
+        eventName: eventName,
+        description: description,
+        price: price,
+        eventTime: eventTime,
+        postedTime: postedTime,
+        type: type,
+        productId: productId,
+        isBooked: false,
+        bookedUserId: null,
+      );
+
   String get eventId => _eventId;
 
   String get eventName => _eventName;

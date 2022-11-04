@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 FutureBuilder(
-                    future: FirestoreManager().getRecentEventsWithProductsName(),
+                    future: FirestoreManager().getRecentEvents(),
                     initialData: null,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {

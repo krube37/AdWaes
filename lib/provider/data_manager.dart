@@ -34,6 +34,19 @@ class DataManager extends ChangeNotifier {
 
   bool isFavouriteEvent(String eventId) => _favouriteEvents.containsKey(eventId);
 
+  /// events booked by current user
+  final Map<String, ProductEvent> _bookedEvents = {};
+
+  List<ProductEvent> get bookedEvents => _bookedEvents.values.toList();
+
+  addBookedEvents(List<ProductEvent> events) {
+    for(ProductEvent event in events){
+      _bookedEvents.update(event.eventId, (value) => event, ifAbsent: ()=> event);
+    }
+  }
+
+  removeBookedEvents(List<String> eventIds) => _bookedEvents.removeWhere((key, value) => eventIds.contains(key));
+
   initialize() async {
     if (FirebaseAuth.instance.currentUser != null) {
       user = await FirestoreManager().getCurrentUserDetails(FirebaseAuth.instance.currentUser!);
@@ -50,6 +63,7 @@ class DataManager extends ChangeNotifier {
         this.user = await FirestoreManager().getCurrentUserDetails(user);
         fetchingSigInDetails = false;
         addFavouriteEvents(await FirestoreManager().getAllFavouriteEvents());
+        addBookedEvents(await FirestoreManager().getAllBookedEvents());
       }
       notifyListeners();
     });
@@ -58,12 +72,14 @@ class DataManager extends ChangeNotifier {
   initialiseUserCreds(AdWiseUser adWiseUser) async {
     user = adWiseUser;
     addFavouriteEvents(await FirestoreManager().getAllFavouriteEvents());
+    addBookedEvents(await FirestoreManager().getAllBookedEvents());
     notifyListeners();
   }
 
   removeUserBelongings(BuildContext context) {
     user = null;
     _favouriteEvents.clear();
+    _bookedEvents.clear();
     notifyListeners();
   }
 }

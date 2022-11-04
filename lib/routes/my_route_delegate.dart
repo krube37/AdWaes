@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../product/product_type.dart';
 import '../provider/product_data_provider.dart';
+import '../screens/booked_events_page.dart';
 import '../screens/product_event_screen/product_event_page.dart';
 
 class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNavigatorRouterDelegateMixin<Routes> {
@@ -39,11 +40,16 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
             key: ValueKey('PersonalInfo'),
             child: PersonalInfoPage(),
           ),
-    if (_routes.isFavouriteScreen)
-      const MaterialPage(
-        key: ValueKey('FavouriteScreen'),
-        child: FavouriteScreen(),
-      ),
+        if (_routes.isFavouriteScreen)
+          const MaterialPage(
+            key: ValueKey('Favourite'),
+            child: FavouriteScreen(),
+          ),
+        if (_routes.isBookedEventsPage)
+          const MaterialPage(
+            key: ValueKey('BookedEvents'),
+            child: BookedEventsPage(),
+          ),
         if (_routes.isProductPage || _routes.isCompanyPage)
           MaterialPage(
             key: const ValueKey('Products'),
@@ -79,14 +85,14 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
       ];
 
   bool _onPopPage(Route<dynamic> route, result) {
-    print("RouteDelegate _onPopPage: ${route.didPop(result)}, result $result");
+    debugPrint("RouteDelegate _onPopPage: ${route.didPop(result)}, result $result");
     return route.didPop(result);
   }
 
   @override
   Widget build(BuildContext context) {
     List<Page> pages = _pageStack;
-    print("RouteDelegate build: ${pages.length} and ${_routes.state}");
+    debugPrint("RouteDelegate build: ${pages.length} and ${_routes.state}");
 
     if (pages.isEmpty) _routes = Routes.home();
 
@@ -125,7 +131,12 @@ class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNav
     notifyListeners();
   }
 
-  navigateToFavouriteEvent(){
+  navigateToBookedEventsPage() {
+    _routes = Routes.bookedEventsPage();
+    notifyListeners();
+  }
+
+  navigateToFavouriteEvent() {
     _routes = Routes.favouriteEvents();
     notifyListeners();
   }

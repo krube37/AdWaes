@@ -76,11 +76,11 @@ class FirestoreManager {
     AdWiseUser user = DataManager().user!;
     FirebaseStorage storage = FirebaseStorage.instance;
     Reference reference = storage.ref().child('userProfilePic/${user.userId}');
-    try{
+    try {
       await reference.delete();
       user = user.copyWith(deleteProfilePic: true);
       return await updateUserDetails(user);
-    }catch(e){
+    } catch (e) {
       debugPrint("FirestoreDatabase deleteUserProfilePic: exception in deleting profile pic ");
     }
     return false;
@@ -162,7 +162,8 @@ class FirestoreManager {
 
   /// first creates same [event] in user bookedEvents location (users/userId/bookedEvents/eventsId)
   /// if success, then updates the [event] at (productName/productCompanyId/events/eventId)
-  Future<bool> bookEvent(ProductEvent event) async {
+  /// return new instance of booked [ProductEvent] is booking succeed, or else null will be returned
+  Future<ProductEvent?> bookEvent(ProductEvent event) async {
     try {
       ProductEvent newEvent = event.copyWith(isBooked: true, bookedUserId: FirebaseAuth.instance.currentUser!.uid);
       // creating event
@@ -175,11 +176,51 @@ class FirestoreManager {
 
       // updating event
       await _mInstance.collection(eventsCollectionName).doc(event.eventId).update(newEvent.map);
-      return true;
+      _dataManager.addBookedEvents([event]);
+      return newEvent;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase updateBookingDetails: error booking event $e\n$stack");
+      return null;
+    }
+  }
+
+  Future<bool> cancelBookedEvent(ProductEvent event) async {
+    try {
+      ProductEvent canceledEvent = event.canceledInstance();
+      // removing event
+      await _mInstance
+          .collection(usersCollectionName)
+          .doc(_dataManager.user!.userId)
+          .collection(bookedEventsCollectionName)
+          .doc(event.eventId)
+          .delete();
+
+      // updating event
+      await _mInstance.collection(eventsCollectionName).doc(event.eventId).update(canceledEvent.map);
+      _dataManager.removeBookedEvents([event.eventId]);
+      return true;
+    } catch (e, stack) {
+      debugPrint("FirestoreManager unBookEvent: error cancelling booked event $e\n$stack");
       return false;
     }
+  }
+
+  Future<List<ProductEvent>> getAllBookedEvents() async {
+    List<ProductEvent> bookedEvents = [];
+    try {
+      QuerySnapshot<Map> snapshot = await _mInstance
+          .collection(usersCollectionName)
+          .doc(_dataManager.user!.userId)
+          .collection(bookedEventsCollectionName)
+          .get();
+
+      for (QueryDocumentSnapshot<Map> docSnapshot in snapshot.docs) {
+        bookedEvents.add(ProductEvent.fromFirestore(docSnapshot.data()));
+      }
+    } catch (e, stack) {
+      debugPrint("FirestoreManager getAllBookedEvents: error in getting booked event $e\n$stack");
+    }
+    return bookedEvents;
   }
 
   Future<bool> addToFavourite(ProductEvent event) async {
@@ -237,8 +278,11 @@ class FirestoreManager {
     List<String> eventIds = List.from(await _getAllFavouriteEventIds());
 
     try {
-      QuerySnapshot<Map> eventSnapshot =
-          await _mInstance.collection(eventsCollectionName).where('eventId', whereIn: eventIds).get();
+      QuerySnapshot<Map> eventSnapshot = await _mInstance
+          .collection(eventsCollectionName)
+          .where('isBooked', isEqualTo: false)
+          .where('eventId', whereIn: eventIds)
+          .get();
       for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
         productEvents.add(ProductEvent.fromFirestore(doc.data()));
       }
@@ -248,11 +292,15 @@ class FirestoreManager {
     return productEvents;
   }
 
-  Future<List<ProductEvent>> getRecentEventsWithProductsName() async {
+  Future<List<ProductEvent>> getRecentEvents() async {
     List<ProductEvent> recentEvents = [];
     try {
-      QuerySnapshot<Map> eventSnapshot =
-          await _mInstance.collection(eventsCollectionName).orderBy('postedTime', descending: true).limit(10).get();
+      QuerySnapshot<Map> eventSnapshot = await _mInstance
+          .collection(eventsCollectionName)
+          .where('isBooked', isEqualTo: false)
+          .orderBy('postedTime', descending: true)
+          .limit(10)
+          .get();
       List<ProductEvent> productEvents = [];
       for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
         productEvents.add(ProductEvent.fromFirestore(doc.data()));
@@ -268,8 +316,7 @@ class FirestoreManager {
       }
 
       for (ProductEvent event in productEvents) {
-        recentEvents
-            .add(event);
+        recentEvents.add(event);
       }
     } catch (e, stack) {
       debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
@@ -277,7 +324,5 @@ class FirestoreManager {
     return recentEvents;
   }
 
-  listenToRecentEvents(){
-
-  }
+  listenToRecentEvents() {}
 }

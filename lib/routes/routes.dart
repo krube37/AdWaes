@@ -7,6 +7,7 @@ enum RouteState {
   home,
   account,
   personalInfo,
+  bookedEvents,
   favouriteScreen,
   product,
   company,
@@ -36,6 +37,10 @@ class Routes {
   Routes.personalInfo()
       : path = '/account/personal_info',
         state = RouteState.personalInfo;
+
+  Routes.bookedEventsPage()
+      : path = '/account/booked_events',
+        state = RouteState.bookedEvents;
 
   Routes.favouriteEvents()
       : path = '/account/favourites',
@@ -80,4 +85,6 @@ class Routes {
   bool get isPersonalInfoPage => state == RouteState.personalInfo;
 
   bool get isFavouriteScreen => state == RouteState.favouriteScreen;
+
+  bool get isBookedEventsPage => state == RouteState.bookedEvents;
 }

@@ -33,7 +33,7 @@ class RouteParser extends RouteInformationParser<Routes> {
     String secondarySegment = pathSegments[1];
     if (secondarySegment == 'event' && pathSegments.length > 1) {
       return _getProductEventRoute(pathSegments);
-    } else if(secondarySegment == '404'){
+    } else if (secondarySegment == '404') {
       return Routes.invalidProduct();
     } else {
       return _getProductsRoute(pathSegments);
@@ -52,10 +52,10 @@ class RouteParser extends RouteInformationParser<Routes> {
 
   Future<Routes> _getProductEventRoute(List<String> pathSegments) async {
     String eventId = pathSegments[2];
-      ProductEvent? event = await FirestoreManager().getEventById(eventId);
-      if (event != null) {
-        return Routes.productEvent(event);
-      }
+    ProductEvent? event = await FirestoreManager().getEventById(eventId);
+    if (event != null) {
+      return Routes.productEvent(event);
+    }
     return Routes.invalidProduct();
   }
 
@@ -66,6 +66,8 @@ class RouteParser extends RouteInformationParser<Routes> {
         return Routes.personalInfo();
       } else if (secondarySegment == 'favourites') {
         return Routes.favouriteEvents();
+      } else if (secondarySegment == 'booked_events') {
+        return Routes.bookedEventsPage();
       }
     }
     return Routes.account();

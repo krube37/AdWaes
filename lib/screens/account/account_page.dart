@@ -31,7 +31,7 @@ class _AccountPageState extends State<AccountPage> {
                 child: Container(
                   constraints: const BoxConstraints(
                     maxWidth: 1100.0,
-                    ),
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -68,9 +68,8 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
-                                  header: "Card Header",
-                                  description: "Card description",
-                                  onTap: () {},
+                                  header: "Booked Events",
+                                  onTap: _navigateToBookedEventsPage,
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
@@ -108,8 +107,8 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                                 _AccountMobileTile(
                                   user: user,
-                                  header: "Header",
-                                  onTap: () {},
+                                  header: "Booked Events",
+                                  onTap: _navigateToBookedEventsPage,
                                 ),
                                 _AccountMobileTile(
                                   user: user,
@@ -148,6 +147,10 @@ class _AccountPageState extends State<AccountPage> {
 
   _navigateToPersonalInfoPage() {
     MyRouteDelegate.of(context).navigateToPersonalInfo();
+  }
+
+  _navigateToBookedEventsPage() {
+    MyRouteDelegate.of(context).navigateToBookedEventsPage();
   }
 }
 
@@ -190,7 +193,9 @@ class _AccountDesktopTile extends StatelessWidget {
                   color: Colors.grey,
                   size: 50.0,
                 ),
-                const SizedBox(height: 20.0),
+                SizedBox(
+                  height: description == null ? 30.0 : 20.0,
+                ),
                 Text(
                   header,
                   style: const TextStyle(
