@@ -2,10 +2,12 @@ library home_page;
 
 import 'dart:math';
 import 'package:ad/globals.dart';
+import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/product_widgets/bottombar.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../firebase/firestore_manager.dart';
 import '../../product/product_data.dart';
@@ -26,6 +28,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
+    Provider.of<DataManager>(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -64,6 +67,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           itemLength: recentEvents.length,
                           height: 400,
                           scrollingArrowSize: 50.0,
+                          alignItemBuilder: Alignment.centerLeft,
                           scrollPixelsPerClick: (screenSize.width / 300) * 200,
                           itemBuilder: (index) {
                             return recentEvents.isNotEmpty

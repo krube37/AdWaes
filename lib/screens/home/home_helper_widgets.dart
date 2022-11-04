@@ -5,6 +5,7 @@ class _CustomHorizontalScroller extends StatefulWidget {
   final int itemLength;
   final double height, scrollingArrowSize;
   final double? scrollPixelsPerClick;
+  final Alignment alignItemBuilder;
 
   const _CustomHorizontalScroller({
     Key? key,
@@ -13,6 +14,7 @@ class _CustomHorizontalScroller extends StatefulWidget {
     required this.height,
     required this.scrollingArrowSize,
     this.scrollPixelsPerClick,
+    this.alignItemBuilder = Alignment.center,
   }) : super(key: key);
 
   @override
@@ -44,7 +46,8 @@ class _CustomHorizontalScrollerState extends State<_CustomHorizontalScroller> {
         height: widget.height,
         child: Stack(
           children: [
-            Center(
+            Align(
+              alignment: widget.alignItemBuilder,
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: widget.scrollingArrowSize / 2),
                 child: ListView.builder(

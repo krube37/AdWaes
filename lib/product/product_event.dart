@@ -1,12 +1,16 @@
 import 'package:ad/product/product_type.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 
 class ProductEvent {
   final String _eventId, _eventName, _description, _productId;
   final int _price;
   final DateTime _eventTime, _postedTime;
+  final DateTime? _bookedTime;
   final ProductType _type;
   final bool _isBooked;
-  final String? _bookedUserId;
+  final String? _bookedUserId, _photoUrl;
+  final ImageProvider? photoImageProvider;
 
   ProductEvent({
     required String eventId,
@@ -19,6 +23,8 @@ class ProductEvent {
     required productId,
     isBooked = false,
     String? bookedUserId,
+    DateTime? bookedTime,
+    String? photoUrl,
   })  : assert((!isBooked || bookedUserId != null),
             'if the event is booked, then should provide the [bookedUserId] who booked this event'),
         _eventId = eventId,
@@ -30,7 +36,10 @@ class ProductEvent {
         _type = type,
         _productId = productId,
         _isBooked = isBooked,
-        _bookedUserId = bookedUserId;
+        _bookedUserId = bookedUserId,
+        _bookedTime = bookedTime,
+        _photoUrl = photoUrl,
+        photoImageProvider = (photoUrl != null) ? CachedNetworkImageProvider(photoUrl) : null;
 
   factory ProductEvent.fromFirestore(Map json) => ProductEvent(
         eventId: json['eventId'],
@@ -43,6 +52,8 @@ class ProductEvent {
         productId: json['productId'],
         isBooked: json['isBooked'],
         bookedUserId: json['bookedUserId'],
+        bookedTime: json['bookedTime'],
+        photoUrl: json['photoUrl'],
       );
 
   ProductEvent copyWith({
@@ -56,6 +67,8 @@ class ProductEvent {
     int? productId,
     bool? isBooked,
     String? bookedUserId,
+    DateTime? bookedTime,
+    String? photoUrl,
   }) =>
       ProductEvent(
         eventId: eventId ?? this.eventId,
@@ -68,6 +81,8 @@ class ProductEvent {
         productId: productId ?? this.productId,
         isBooked: isBooked ?? this.isBooked,
         bookedUserId: bookedUserId ?? this.bookedUserId,
+        bookedTime: bookedTime ?? this.bookedTime,
+        photoUrl: photoUrl ?? this.photoUrl,
       );
 
   ProductEvent canceledInstance() => ProductEvent(
@@ -81,6 +96,8 @@ class ProductEvent {
         productId: productId,
         isBooked: false,
         bookedUserId: null,
+        bookedTime: null,
+        photoUrl: photoUrl,
       );
 
   String get eventId => _eventId;
@@ -103,6 +120,10 @@ class ProductEvent {
 
   String? get bookedUserId => _bookedUserId;
 
+  DateTime? get bookedTime => _bookedTime;
+
+  String? get photoUrl => _photoUrl;
+
   get map => {
         'eventId': eventId,
         'eventName': eventName,
@@ -114,5 +135,7 @@ class ProductEvent {
         'productId': productId,
         'isBooked': isBooked,
         'bookedUserId': bookedUserId,
+        'bookedTime': bookedTime?.millisecondsSinceEpoch,
+        'photoUrl': photoUrl,
       };
 }

@@ -165,7 +165,11 @@ class FirestoreManager {
   /// return new instance of booked [ProductEvent] is booking succeed, or else null will be returned
   Future<ProductEvent?> bookEvent(ProductEvent event) async {
     try {
-      ProductEvent newEvent = event.copyWith(isBooked: true, bookedUserId: FirebaseAuth.instance.currentUser!.uid);
+      ProductEvent newEvent = event.copyWith(
+        isBooked: true,
+        bookedUserId: FirebaseAuth.instance.currentUser!.uid,
+        bookedTime: DateTime.now(),
+      );
       // creating event
       await _mInstance
           .collection(usersCollectionName)
@@ -176,7 +180,7 @@ class FirestoreManager {
 
       // updating event
       await _mInstance.collection(eventsCollectionName).doc(event.eventId).update(newEvent.map);
-      _dataManager.addBookedEvents([event]);
+      _dataManager.addBookedEvent(event);
       return newEvent;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase updateBookingDetails: error booking event $e\n$stack");
@@ -220,7 +224,9 @@ class FirestoreManager {
     } catch (e, stack) {
       debugPrint("FirestoreManager getAllBookedEvents: error in getting booked event $e\n$stack");
     }
-    return bookedEvents;
+    List<ProductEvent> sortedEvents =
+        List.from(bookedEvents..sort((e1, e2) => e2.bookedTime!.compareTo(e1.bookedTime!)));
+    return sortedEvents;
   }
 
   Future<bool> addToFavourite(ProductEvent event) async {
@@ -231,9 +237,12 @@ class FirestoreManager {
           .doc(_dataManager.user!.userId)
           .collection(favouriteEventsCollectionName)
           .doc(event.eventId)
-          .set({'eventId': event.eventId});
+          .set({
+        'eventId': event.eventId,
+        'addedTime': DateTime.now().millisecondsSinceEpoch,
+      });
 
-      _dataManager.addFavouriteEvents([event]);
+      _dataManager.addFavouriteEvent(event);
       return true;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase addToFavourite: error in adding to favourite $e\n$stack");
@@ -258,38 +267,51 @@ class FirestoreManager {
     }
   }
 
-  Future<Iterable<String>> _getAllFavouriteEventIds() async {
+  Future<Map<String, int>> _getAllFavouriteEventIds() async {
+    Map<String, int> eventsToTimeMap = {};
     try {
-      QuerySnapshot snapshot = await _mInstance
+      QuerySnapshot<Map> snapshot = await _mInstance
           .collection(usersCollectionName)
           .doc(_dataManager.user!.userId)
           .collection(favouriteEventsCollectionName)
           .get();
 
-      return snapshot.docs.map((e) => e.id);
-    } catch (e) {
-      debugPrint("FirestoreDatabase getAllFavouriteEventIds: Exception in fetching favourite Ids $e");
+      for (QueryDocumentSnapshot<Map> docSnapshot in snapshot.docs) {
+        eventsToTimeMap.update(docSnapshot['eventId'], (value) => docSnapshot['addedTime'],
+            ifAbsent: () => docSnapshot['addedTime']);
+      }
+    } catch (e, stack) {
+      debugPrint("FirestoreDatabase getAllFavouriteEventIds: Exception in fetching favourite Ids $e\n$stack");
     }
-    return [];
+    return eventsToTimeMap;
   }
 
+  /// returns the list of [ProductEvent] sorted by addedTime in descending order'
+  ///
   Future<List<ProductEvent>> getAllFavouriteEvents() async {
-    List<ProductEvent> productEvents = [];
-    List<String> eventIds = List.from(await _getAllFavouriteEventIds());
+    Map<ProductEvent, int> productEventsToTimeMap = {};
+    Map<String, int> eventIdsToTimeMap = Map.from(await _getAllFavouriteEventIds());
 
     try {
       QuerySnapshot<Map> eventSnapshot = await _mInstance
           .collection(eventsCollectionName)
           .where('isBooked', isEqualTo: false)
-          .where('eventId', whereIn: eventIds)
+          .where('eventId', whereIn: eventIdsToTimeMap.keys.toList())
           .get();
       for (QueryDocumentSnapshot<Map> doc in eventSnapshot.docs) {
-        productEvents.add(ProductEvent.fromFirestore(doc.data()));
+        ProductEvent event = ProductEvent.fromFirestore(doc.data());
+        if (eventIdsToTimeMap[event.eventId] != null) {
+          productEventsToTimeMap.putIfAbsent(event, () => eventIdsToTimeMap[event.eventId]!);
+        }
       }
     } catch (e, stack) {
       debugPrint("FirestoreDatabase getAllFavouriteEvents: error in getting the favourite events $e\n$stack");
     }
-    return productEvents;
+    List<ProductEvent> sortedEvents =
+        Map.fromEntries(productEventsToTimeMap.entries.toList()..sort((e1, e2) => e2.value.compareTo(e1.value)))
+            .keys
+            .toList();
+    return sortedEvents;
   }
 
   Future<List<ProductEvent>> getRecentEvents() async {

@@ -20,32 +20,51 @@ class DataManager extends ChangeNotifier {
   bool fetchingSigInDetails = false;
 
   /// favourite event ids of current user
-  final Map<String, ProductEvent> _favouriteEvents = {};
+  final List<ProductEvent> _favouriteEvents = [];
 
-  List<ProductEvent> get favouriteEvents => _favouriteEvents.values.toList();
+  List<ProductEvent> get favouriteEvents => _favouriteEvents;
 
-  addFavouriteEvents(List<ProductEvent> events) {
-    for (ProductEvent event in events) {
-      _favouriteEvents.update(event.eventId, (value) => event, ifAbsent: () => event);
-    }
+  /// [_favouriteEvents] are arranged in descending order by added time
+  /// this method will insert the new element at 0th position, as the event adding now is the latest
+  addFavouriteEvent(ProductEvent event) {
+    _favouriteEvents.insert(0, event);
   }
 
-  removeFavouriteEvents(List<String> eventIds) => _favouriteEvents.removeWhere((key, value) => eventIds.contains(key));
+  /// clears and re-adds all the favourite event
+  ///
+  refreshFavouriteEventList(List<ProductEvent> events) {
+    _favouriteEvents
+      ..clear()
+      ..addAll(events);
+    if (events.isNotEmpty) notifyListeners();
+  }
 
-  bool isFavouriteEvent(String eventId) => _favouriteEvents.containsKey(eventId);
+  removeFavouriteEvents(List<String> eventIds) =>
+      _favouriteEvents.removeWhere((element) => eventIds.contains(element.eventId));
+
+  bool isFavouriteEvent(String eventId) => _favouriteEvents.map((e) => e.eventId).toList().contains(eventId);
 
   /// events booked by current user
-  final Map<String, ProductEvent> _bookedEvents = {};
+  final List<ProductEvent> _bookedEvents = [];
 
-  List<ProductEvent> get bookedEvents => _bookedEvents.values.toList();
+  List<ProductEvent> get bookedEvents => _bookedEvents;
 
-  addBookedEvents(List<ProductEvent> events) {
-    for(ProductEvent event in events){
-      _bookedEvents.update(event.eventId, (value) => event, ifAbsent: ()=> event);
-    }
+  /// [_bookedEvents] are arranged in descending order by booked time
+  /// this method will insert the new element at 0th position, as the event booking now is the latest
+  addBookedEvent(ProductEvent event) {
+    _bookedEvents.insert(0, event);
+    notifyListeners();
   }
 
-  removeBookedEvents(List<String> eventIds) => _bookedEvents.removeWhere((key, value) => eventIds.contains(key));
+  refreshBookedEventsList(List<ProductEvent> events) {
+    _bookedEvents
+      ..clear()
+      ..addAll(events);
+    if (events.isNotEmpty) notifyListeners();
+  }
+
+  removeBookedEvents(List<String> eventIds) =>
+      _bookedEvents.removeWhere((element) => eventIds.contains(element.eventId));
 
   initialize() async {
     if (FirebaseAuth.instance.currentUser != null) {
@@ -62,8 +81,8 @@ class DataManager extends ChangeNotifier {
         notifyListeners();
         this.user = await FirestoreManager().getCurrentUserDetails(user);
         fetchingSigInDetails = false;
-        addFavouriteEvents(await FirestoreManager().getAllFavouriteEvents());
-        addBookedEvents(await FirestoreManager().getAllBookedEvents());
+        refreshFavouriteEventList(await FirestoreManager().getAllFavouriteEvents());
+        refreshBookedEventsList(await FirestoreManager().getAllBookedEvents());
       }
       notifyListeners();
     });
@@ -71,8 +90,8 @@ class DataManager extends ChangeNotifier {
 
   initialiseUserCreds(AdWiseUser adWiseUser) async {
     user = adWiseUser;
-    addFavouriteEvents(await FirestoreManager().getAllFavouriteEvents());
-    addBookedEvents(await FirestoreManager().getAllBookedEvents());
+    refreshFavouriteEventList(await FirestoreManager().getAllFavouriteEvents());
+    refreshBookedEventsList(await FirestoreManager().getAllBookedEvents());
     notifyListeners();
   }
 

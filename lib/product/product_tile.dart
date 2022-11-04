@@ -6,8 +6,12 @@ class ProductTile extends StatelessWidget {
   final Function()? onClick;
   final bool isTileSelected;
 
-  const ProductTile({Key? key, required this.productData, this.onClick, this.isTileSelected = false})
-      : super(key: key);
+  const ProductTile({
+    Key? key,
+    required this.productData,
+    this.onClick,
+    this.isTileSelected = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +31,25 @@ class ProductTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
             child: Row(
               children: [
+                CircleAvatar(
+                  backgroundColor: Colors.grey.shade400,
+                  backgroundImage: productData.profilePhotoImageProvider,
+                  child: productData.profilePhotoImageProvider == null
+                      ? const Icon(
+                          Icons.person_sharp,
+                          color: Colors.white,
+                        )
+                      : null,
+                ),
+                const SizedBox(
+                  width: 10.0,
+                ),
                 Expanded(
-                    child: Text(
-                      productData.name,
-                      overflow: TextOverflow.ellipsis,
-                    )),
-                Text(
-                  productData.totalEvents.toString(),
-                )
+                  child: Text(
+                    productData.name,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
           ),
