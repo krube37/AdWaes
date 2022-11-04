@@ -16,22 +16,33 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          height: 450.0,
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 0.2,
-              color: Colors.grey,
+        Stack(
+          children: [
+            Container(
+              height: 450.0,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 0.2,
+                  color: Colors.grey,
+                ),
+                borderRadius: BorderRadius.circular(2.0),
+              ),
+              // todo : put event image here
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  '../assets/images/photography.jpeg',
+                ),
+              ),
             ),
-            borderRadius: BorderRadius.circular(2.0),
-          ),
-          // todo : put event image here
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.asset(
-              '../assets/images/photography.jpeg',
+            Positioned(
+              top: 10.0,
+              right: 10.0,
+              child: FavouriteHeartIconWidget(
+                event: widget.event,
+              ),
             ),
-          ),
+          ],
         ),
         const SizedBox(height: 20.0),
         Row(
@@ -90,9 +101,9 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
     });
     debugPrint("ProductEventPage build: booking implementation yet to be completed ");
     ProductEvent? bookedEvent = await FirestoreManager().bookEvent(widget.event);
-    if(bookedEvent != null){
+    if (bookedEvent != null) {
       debugPrint("ProductEventPage build: booking success");
-      if(mounted) {
+      if (mounted) {
         MyRouteDelegate.of(context).navigateToProductEventPage(bookedEvent);
       }
     }
@@ -125,6 +136,8 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
         setState(() {
           isBookingBtnLoading = false;
         });
+        // todo: pop screen.....
+        MyRouteDelegate.of(context).navigateToBookedEventsPage();
       }
     }
   }

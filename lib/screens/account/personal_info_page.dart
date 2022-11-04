@@ -301,7 +301,7 @@ class _InfoContentState extends State<_InfoContent> {
       children: [
         _InfoContentTile(
           title: 'Name',
-          value: user.displayName,
+          value: user.fullName,
           isEditMode: editMode[0],
           onEditMode: (isEditMode) => setState(() => editMode[0] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
@@ -762,9 +762,7 @@ class _SaveButtonState extends State<_SaveButton> {
 
     switch (widget.title) {
       case 'Name':
-        String lastName = widget.lastName?.call();
-        String firstName = value.isEmpty && lastName.isEmpty ? 'User_${user.userId}' : value;
-        user = user.copyWith(firstName: firstName, lastName: widget.lastName?.call());
+        user = user.copyWith(firstName: value, lastName: widget.lastName?.call());
         break;
       case AdWiseUser.dobTitle:
         user = user.copyWith(age: DateTime.fromMillisecondsSinceEpoch(int.parse(value)));

@@ -165,7 +165,7 @@ class FirestoreManager {
   /// return new instance of booked [ProductEvent] is booking succeed, or else null will be returned
   Future<ProductEvent?> bookEvent(ProductEvent event) async {
     try {
-      ProductEvent newEvent = event.copyWith(
+      event = event.copyWith(
         isBooked: true,
         bookedUserId: FirebaseAuth.instance.currentUser!.uid,
         bookedTime: DateTime.now(),
@@ -176,12 +176,12 @@ class FirestoreManager {
           .doc(_dataManager.user!.userId)
           .collection(bookedEventsCollectionName)
           .doc(event.eventId)
-          .set(newEvent.map);
+          .set(event.map);
 
       // updating event
-      await _mInstance.collection(eventsCollectionName).doc(event.eventId).update(newEvent.map);
+      await _mInstance.collection(eventsCollectionName).doc(event.eventId).update(event.map);
       _dataManager.addBookedEvent(event);
-      return newEvent;
+      return event;
     } catch (e, stack) {
       debugPrint("FirestoreDatabase updateBookingDetails: error booking event $e\n$stack");
       return null;
@@ -190,7 +190,7 @@ class FirestoreManager {
 
   Future<bool> cancelBookedEvent(ProductEvent event) async {
     try {
-      ProductEvent canceledEvent = event.canceledInstance();
+      event = event.canceledInstance();
       // removing event
       await _mInstance
           .collection(usersCollectionName)
@@ -200,7 +200,7 @@ class FirestoreManager {
           .delete();
 
       // updating event
-      await _mInstance.collection(eventsCollectionName).doc(event.eventId).update(canceledEvent.map);
+      await _mInstance.collection(eventsCollectionName).doc(event.eventId).update(event.map);
       _dataManager.removeBookedEvents([event.eventId]);
       return true;
     } catch (e, stack) {

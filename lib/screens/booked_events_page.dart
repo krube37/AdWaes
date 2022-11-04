@@ -26,7 +26,7 @@ class BookedEventsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Favourite Events',
+                'Booked Events',
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -149,6 +149,13 @@ class _BookedEventTileState extends State<_BookedEventTile> {
                   child: _getTimeWidget(
                     'Posted Time',
                     widget.event.postedTime.toString(),
+                  ),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: _getTimeWidget(
+                    'Booked Time',
+                    widget.event.bookedTime.toString(),
                   ),
                 ),
                 Expanded(

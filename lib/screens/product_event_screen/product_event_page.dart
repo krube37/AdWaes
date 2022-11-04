@@ -9,6 +9,7 @@ import 'package:ad/globals.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
+import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:ad/widgets/primary_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -12,8 +12,7 @@ class ProductEventTile extends StatefulWidget {
     required this.event,
     this.tileWidth,
     this.isLoading = false,
-  })  : assert(isLoading || event != null,
-            'if isLoading is false, then productData and event should not be null'),
+  })  : assert(isLoading || event != null, 'if isLoading is false, then productData and event should not be null'),
         super(key: key);
 
   @override
@@ -44,10 +43,8 @@ class _ProductEventTileState extends State<ProductEventTile> {
               borderRadius: BorderRadius.circular(10),
               hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
-              onTap: () => widget.isLoading
-                  ? null
-                  : MyRouteDelegate.of(context)
-                      .navigateToProductEventPage(widget.event!),
+              onTap: () =>
+                  widget.isLoading ? null : MyRouteDelegate.of(context).navigateToProductEventPage(widget.event!),
               child: SizedBox(
                 width: widget.tileWidth,
                 child: Stack(
@@ -105,7 +102,7 @@ class _ProductEventTileState extends State<ProductEventTile> {
                       Positioned(
                         right: 10,
                         top: 10,
-                        child: _HeartIcon(event: widget.event!),
+                        child: FavouriteHeartIconWidget(event: widget.event!),
                       ),
                   ],
                 ),
@@ -116,16 +113,19 @@ class _ProductEventTileState extends State<ProductEventTile> {
   }
 }
 
-class _HeartIcon extends StatefulWidget {
+class FavouriteHeartIconWidget extends StatefulWidget {
   final ProductEvent event;
 
-  const _HeartIcon({Key? key, required this.event}) : super(key: key);
+  const FavouriteHeartIconWidget({
+    Key? key,
+    required this.event,
+  }) : super(key: key);
 
   @override
-  State<_HeartIcon> createState() => _HeartIconState();
+  State<FavouriteHeartIconWidget> createState() => _FavouriteHeartIconWidgetState();
 }
 
-class _HeartIconState extends State<_HeartIcon> {
+class _FavouriteHeartIconWidgetState extends State<FavouriteHeartIconWidget> {
   double iconSize = 25.0;
   bool isHovering = false;
   bool isLoading = false;

@@ -45,7 +45,7 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                       const SizedBox(height: 20.0),
                       Text(
-                        "Hi ${user.firstName ?? user.lastName ?? user.userId},",
+                        "Hi ${user.displayName},",
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 20.0,

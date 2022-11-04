@@ -52,7 +52,7 @@ class ProductEvent {
         productId: json['productId'],
         isBooked: json['isBooked'],
         bookedUserId: json['bookedUserId'],
-        bookedTime: json['bookedTime'],
+        bookedTime: json['bookedTime'] != null ? DateTime.fromMillisecondsSinceEpoch(json['bookedTime']) : null,
         photoUrl: json['photoUrl'],
       );
 

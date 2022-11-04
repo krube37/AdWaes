@@ -54,7 +54,6 @@ class AdWiseUser {
   factory AdWiseUser.newUser(User user) => AdWiseUser(
         user.uid,
         user.phoneNumber!,
-        firstName: 'User_${user.uid}',
         emailId: user.email,
         isEmailVerified: user.emailVerified,
         profilePhotoUrl: user.photoURL,
@@ -107,12 +106,14 @@ class AdWiseUser {
     );
   }
 
-  String get displayName {
+  String get fullName {
     String displayName = '';
     if (firstName != null) displayName = '$firstName ';
     if (lastName != null) displayName = displayName + lastName!;
     return displayName;
   }
+
+  String get displayName => fullName.isEmpty ? phoneNumber : fullName;
 
   String get ageAsString => age != null ? (DateTime.now().year - age!.year).toString() : '';
 }
