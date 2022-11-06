@@ -44,7 +44,7 @@ class _ProductEventTileState extends State<ProductEventTile> {
               hoverColor: Colors.transparent,
               splashColor: Colors.transparent,
               onTap: () =>
-                  widget.isLoading ? null : MyRouteDelegate.of(context).navigateToProductEventPage(widget.event!),
+                  widget.isLoading ? null : PageManager.of(context).navigateToProductEventPage(widget.event!.eventId),
               child: SizedBox(
                 width: widget.tileWidth,
                 child: Stack(

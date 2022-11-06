@@ -7,7 +7,6 @@ import 'package:ad/constants.dart';
 import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/globals.dart';
 import 'package:ad/product/product_event.dart';
-import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
@@ -16,15 +15,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../routes/route_page_manager.dart';
 import '../../widgets/custom_sliver.dart';
 
 part 'product_event_helper_widgets.dart';
 
 class ProductEventPage extends StatelessWidget {
-  final ProductEvent _event;
+  final String _eventId;
 
-  const ProductEventPage({Key? key, required ProductEvent event})
-      : _event = event,
+  const ProductEventPage({Key? key, required String eventId})
+      : _eventId = eventId,
         super(key: key);
 
   @override
@@ -41,14 +41,39 @@ class ProductEventPage extends StatelessWidget {
           constraints: const BoxConstraints(
             maxWidth: maxScreenWidth,
           ),
-          child: CustomSliver(
-            leftSideWidget: _EventImageWidget(event: _event),
-            rightSideWidget: _EventContentWidget(event: _event),
-            leftSideWidth: (min(screenSize.width, maxScreenWidth)) * 0.40,
-            rightSideWidth: (min(screenSize.width, maxScreenWidth)) * 0.60,
+          child: FutureBuilder(
+            future: _getProductEvent(),
+            builder: (context, snapshot) {
+              debugPrint("ProductEventPage build: checkzzzz building ${snapshot.hasData} and ${snapshot.data} and ${snapshot.hasError} and ${snapshot.error}");
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text(
+                    'no even available',
+                  ),
+                );
+              }
+
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
+              ProductEvent event = snapshot.data!;
+              return CustomSliver(
+                leftSideWidget: _EventImageWidget(event: event),
+                rightSideWidget: _EventContentWidget(event: event),
+                leftSideWidth: (min(screenSize.width, maxScreenWidth)) * 0.40,
+                rightSideWidth: (min(screenSize.width, maxScreenWidth)) * 0.60,
+              );
+            },
           ),
         ),
       ),
     );
+  }
+
+  Future<ProductEvent?> _getProductEvent() async {
+    ProductEvent? event = await FirestoreManager().getEventById(_eventId);
+    if(event != null) return event;
+
+    throw Exception('no Event Available');
   }
 }

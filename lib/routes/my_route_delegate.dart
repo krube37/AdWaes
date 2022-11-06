@@ -1,149 +1,45 @@
-import 'package:ad/product/product_data.dart';
-import 'package:ad/product/product_event.dart';
-import 'package:ad/routes/routes.dart';
-import 'package:ad/screens/account/account_page.dart';
-import 'package:ad/screens/account/personal_info_page.dart';
-import 'package:ad/screens/error_page.dart';
-import 'package:ad/screens/favourite_screen.dart';
-import 'package:ad/screens/invalid_event_page.dart';
-import 'package:ad/screens/home/my_home_page.dart';
-import 'package:ad/screens/productscreens/product_page.dart';
+import 'package:ad/routes/route_page_manager.dart';
+import 'package:ad/routes/route_path.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../product/product_type.dart';
-import '../provider/product_data_provider.dart';
-import '../screens/booked_events_page.dart';
-import '../screens/product_event_screen/product_event_page.dart';
-
-class MyRouteDelegate extends RouterDelegate<Routes> with ChangeNotifier, PopNavigatorRouterDelegateMixin<Routes> {
-  MyRouteDelegate() : _routes = Routes.home();
+class MyRouteDelegate extends RouterDelegate<RoutePath>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin<RoutePath> {
+  MyRouteDelegate() {
+    pageManager.addListener(notifyListeners);
+  }
 
   factory MyRouteDelegate.of(BuildContext context) => (Router.of(context).routerDelegate as MyRouteDelegate);
 
-  late Routes _routes;
-  final GlobalKey<NavigatorState> _key = GlobalKey();
+  final PageManager pageManager = PageManager();
 
-  List<Page> get _pageStack => [
-        if (_routes.isHomePage)
-          const MaterialPage(
-            key: ValueKey('Home'),
-            child: MyHomePage(),
-          ),
-        if (_routes.isAccountPage)
-          const MaterialPage(
-            key: ValueKey('Account'),
-            child: AccountPage(),
-          ),
-        if (_routes.isPersonalInfoPage)
-          const MaterialPage(
-            key: ValueKey('PersonalInfo'),
-            child: PersonalInfoPage(),
-          ),
-        if (_routes.isFavouriteScreen)
-          const MaterialPage(
-            key: ValueKey('Favourite'),
-            child: FavouriteScreen(),
-          ),
-        if (_routes.isBookedEventsPage)
-          const MaterialPage(
-            key: ValueKey('BookedEvents'),
-            child: BookedEventsPage(),
-          ),
-        if (_routes.isProductPage || _routes.isCompanyPage)
-          MaterialPage(
-            key: const ValueKey('Products'),
-            child: ChangeNotifierProvider<ProductDataProvider>(
-              create: (_) => ProductDataProvider(),
-              child: ProductPage(
-                productType: _routes.productType!,
-                currentUserName: _routes.companyUserName != null ? _routes.companyUserName! : '',
-                products: _routes.products ?? [],
-              ),
-            ),
-          ),
-        if (_routes.isProductErrorPage)
-          const MaterialPage(
-            key: ValueKey('ProductsError'),
-            child: ErrorPage(),
-          ),
-        if (_routes.isProductEventPage)
-          MaterialPage(
-            key: const ValueKey('ProductEvent'),
-            child: ProductEventPage(event: _routes.event!),
-          ),
-        if (_routes.isProductEventErrorPage)
-          const MaterialPage(
-            key: ValueKey('ProductEventError'),
-            child: InvalidEventPage(),
-          ),
-        if (_routes.isErrorPage)
-          const MaterialPage(
-            key: ValueKey('ErrorPage'),
-            child: ErrorPage(),
-          ),
-      ];
-
-  bool _onPopPage(Route<dynamic> route, result) {
-    debugPrint("RouteDelegate _onPopPage: ${route.didPop(result)}, result $result");
+  bool _onPopPage(Route<dynamic> route, dynamic result) {
+    debugPrint("MyRouteDelegate _onPopPage: ");
     return route.didPop(result);
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Page> pages = _pageStack;
-    debugPrint("RouteDelegate build: ${pages.length} and ${_routes.state}");
-
-    if (pages.isEmpty) _routes = Routes.home();
-
-    return Navigator(
-      key: navigatorKey,
-      pages: pages,
-      onPopPage: _onPopPage,
+    return ChangeNotifierProvider.value(
+      value: pageManager,
+      child: Consumer<PageManager>(
+        builder: (context, pageManager, child) {
+          return Navigator(
+            key: navigatorKey,
+            pages: [pageManager.currentPage],
+            onPopPage: _onPopPage,
+          );
+        },
+      ),
     );
   }
 
   @override
-  GlobalKey<NavigatorState>? get navigatorKey => _key;
-
-  navigateToProductEventPage(ProductEvent event) {
-    _routes = Routes.productEvent(event);
-    notifyListeners();
-  }
-
-  navigateToCompany(ProductType type, List<ProductData> products, String companyUserName) {
-    _routes = Routes.company(type, products, companyUserName);
-    notifyListeners();
-  }
-
-  navigateToHome() {
-    _routes = Routes.home();
-    notifyListeners();
-  }
-
-  navigateToAccount() {
-    _routes = Routes.account();
-    notifyListeners();
-  }
-
-  navigateToPersonalInfo() {
-    _routes = Routes.personalInfo();
-    notifyListeners();
-  }
-
-  navigateToBookedEventsPage() {
-    _routes = Routes.bookedEventsPage();
-    notifyListeners();
-  }
-
-  navigateToFavouriteEvent() {
-    _routes = Routes.favouriteEvents();
-    notifyListeners();
-  }
+  GlobalKey<NavigatorState>? get navigatorKey => pageManager.navigatorKey;
 
   @override
-  Future<void> setNewRoutePath(Routes configuration) async => _routes = configuration;
+  Future<void> setNewRoutePath(RoutePath configuration) async => await pageManager.setNewRoutePath(configuration);
 
   @override
-  Routes? get currentConfiguration => _routes;
+  RoutePath? get currentConfiguration => pageManager.currentPath;
 }

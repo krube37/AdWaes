@@ -1,10 +1,8 @@
-import 'package:ad/firebase/firestore_manager.dart';
-import 'package:ad/product/product_data.dart';
-import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/widgets/responsive.dart';
 import 'package:flutter/material.dart';
 
 import '../product/product_type.dart';
+import '../routes/route_page_manager.dart';
 
 class FloatingQuickAccessBar extends StatefulWidget {
   const FloatingQuickAccessBar({
@@ -37,12 +35,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
             value ? _isHovering[i] = true : _isHovering[i] = false;
           });
         },
-        onTap: () async {
-          List<ProductData> products = await FirestoreManager().getProductsOfType(type: items[i]);
-          if (mounted) {
-            MyRouteDelegate.of(context).navigateToCompany(items[i], products, products.first.userName);
-          }
-        },
+        onTap: () => PageManager.of(context).navigateToProduct(items[i]),
         child: Text(
           items[i].getDisplayName(),
           style: TextStyle(
@@ -106,14 +99,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                       value ? _isHovering[i] = true : _isHovering[i] = false;
                                     });
                                   },
-                                  onTap: () async {
-                                    List<ProductData> products =
-                                        await FirestoreManager().getProductsOfType(type: items[i]);
-                                    if (mounted) {
-                                      MyRouteDelegate.of(context)
-                                          .navigateToCompany(items[i], products, products.first.userName);
-                                    }
-                                  },
+                                  onTap: () => PageManager.of(context).navigateToProduct(items[i]),
                                   child: Text(
                                     items[i].getDisplayName(),
                                     style: TextStyle(
@@ -161,14 +147,7 @@ class _FloatingQuickAccessBarState extends State<FloatingQuickAccessBar> {
                                           value ? _isHovering[i] = true : _isHovering[i] = false;
                                         });
                                       },
-                                      onTap: () async {
-                                        List<ProductData> products =
-                                            await FirestoreManager().getProductsOfType(type: items[i]);
-                                        if (mounted) {
-                                          MyRouteDelegate.of(context).navigateToCompany(
-                                              items[i], products, products.isNotEmpty ? products.first.userName : '');
-                                        }
-                                      },
+                                      onTap: () => PageManager.of(context).navigateToProduct(items[i]),
                                       child: Text(
                                         items[i].getDisplayName(),
                                         style: TextStyle(

@@ -1,6 +1,3 @@
-import 'package:ad/product/product_event.dart';
-
-import '../product/product_data.dart';
 import '../product/product_type.dart';
 
 enum RouteState {
@@ -11,60 +8,48 @@ enum RouteState {
   favouriteScreen,
   product,
   company,
-  invalidProduct,
   productEvent,
-  invalidProductEvent,
-  error,
 }
 
-class Routes {
+class RoutePath {
   final String path;
   final RouteState state;
 
-  ProductEvent? event;
+  String? eventId;
   ProductType? productType;
   String? companyUserName;
-  List<ProductData>? products;
 
-  Routes.home()
+  RoutePath.home()
       : path = '/',
         state = RouteState.home;
 
-  Routes.account()
+  RoutePath.account()
       : path = '/account',
         state = RouteState.account;
 
-  Routes.personalInfo()
+  RoutePath.personalInfo()
       : path = '/account/personal_info',
         state = RouteState.personalInfo;
 
-  Routes.bookedEventsPage()
+  RoutePath.bookedEventsPage()
       : path = '/account/booked_events',
         state = RouteState.bookedEvents;
 
-  Routes.favouriteEvents()
+  RoutePath.favouriteEvents()
       : path = '/account/favourites',
         state = RouteState.favouriteScreen;
 
-  Routes.company(this.productType, this.products, this.companyUserName)
+  RoutePath.company(this.productType, this.companyUserName)
       : path = '/p/${productType!.name}/$companyUserName',
         state = RouteState.company;
 
-  Routes.invalidProduct()
-      : path = '/p/404',
-        state = RouteState.invalidProduct;
+  RoutePath.product(this.productType)
+      : path = '/p/${productType!.name}',
+        state = RouteState.product;
 
-  Routes.productEvent(ProductEvent this.event)
-      : path = '/p/event/${event.eventId}',
+  RoutePath.productEvent(String this.eventId)
+      : path = '/p/event/$eventId',
         state = RouteState.productEvent;
-
-  // Routes.invalidProductEvent(this.productType, this.companyUserName)
-  //     : path = '/p/${productType!.name}/$companyUserName/event/404',
-  //       state = RouteState.invalidProductEvent;
-
-  Routes.unknown()
-      : path = '/error',
-        state = RouteState.error;
 
   bool get isHomePage => state == RouteState.home;
 
@@ -72,13 +57,7 @@ class Routes {
 
   bool get isCompanyPage => (state == RouteState.company && companyUserName != null);
 
-  bool get isProductErrorPage => (state == RouteState.product && productType == null);
-
-  bool get isProductEventPage => (state == RouteState.productEvent && event != null);
-
-  bool get isProductEventErrorPage => (state == RouteState.productEvent && event == null);
-
-  bool get isErrorPage => state == RouteState.error;
+  bool get isProductEventPage => (state == RouteState.productEvent && eventId != null);
 
   bool get isAccountPage => state == RouteState.account;
 

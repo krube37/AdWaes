@@ -1,13 +1,12 @@
 import 'package:ad/firebase/auth_manager.dart';
 import 'package:ad/provider/data_manager.dart';
-import 'package:ad/routes/routes.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:flutter/material.dart';
 
 class TopBarContents extends StatefulWidget {
   final double opacity;
 
-  const TopBarContents({this.opacity = 1});
+  const TopBarContents({super.key, this.opacity = 1});
 
   @override
   _TopBarContentsState createState() => _TopBarContentsState();

@@ -1,12 +1,10 @@
-
-import 'package:ad/firebase/auth_manager.dart';
 import 'package:ad/helper/custom_icons.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../globals.dart';
-import '../../routes/my_route_delegate.dart';
+import '../../routes/route_page_manager.dart';
 import '../sign_in/sign_in_card.dart';
 
 /// default height of app bar is 56.0...
@@ -36,7 +34,7 @@ class _MyAppBarState extends State<MyAppBar> {
         padding: const EdgeInsets.only(left: 30.0),
         child: Center(
           child: InkWell(
-            onTap: () => MyRouteDelegate.of(context).navigateToHome(),
+            onTap: () => PageManager.of(context).navigateToHome(),
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -66,9 +64,7 @@ class _MyAppBarState extends State<MyAppBar> {
                 width: 50.0,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25.0),
-                  onTap: () async {
-                    MyRouteDelegate.of(context).navigateToFavouriteEvent();
-                  },
+                  onTap: () => PageManager.of(context).navigateToFavouriteEvent(),
                   child: const Icon(
                     CustomIcons.heart_svgrepo_com,
                     color: Colors.black,
@@ -82,7 +78,6 @@ class _MyAppBarState extends State<MyAppBar> {
                 children: [
                   InkWell(
                     onTap: _navigateToAccountsPage,
-                    onDoubleTap: () => AuthManager().signOut(context),
                     borderRadius: BorderRadius.circular(18.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.grey.shade400,
@@ -141,7 +136,7 @@ class _MyAppBarState extends State<MyAppBar> {
   }
 
   _navigateToAccountsPage() {
-    MyRouteDelegate.of(context).navigateToAccount();
+    PageManager.of(context).navigateToAccount();
   }
 }
 

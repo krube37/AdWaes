@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import '../product/product_event.dart';
 import '../provider/data_manager.dart';
-import '../routes/my_route_delegate.dart';
+import '../routes/route_page_manager.dart';
 
 class BookedEventsPage extends StatelessWidget {
   const BookedEventsPage({Key? key}) : super(key: key);
@@ -92,7 +92,7 @@ class _BookedEventTileState extends State<_BookedEventTile> {
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      onTap: () => MyRouteDelegate.of(context).navigateToProductEventPage(widget.event),
+      onTap: () => PageManager.of(context).navigateToProductEventPage(widget.event.eventId),
       child: MouseRegion(
         onEnter: (_) => setState(() => isHovering = true),
         onExit: (_) => setState(() => isHovering = false),

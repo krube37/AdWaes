@@ -10,10 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../firebase/firestore_manager.dart';
-import '../../product/product_data.dart';
 import '../../product/product_event.dart';
 import '../../product/product_type.dart';
-import '../../routes/my_route_delegate.dart';
+import '../../routes/route_page_manager.dart';
 
 part 'home_helper_widgets.dart';
 

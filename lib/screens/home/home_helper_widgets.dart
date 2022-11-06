@@ -255,11 +255,9 @@ class _ProductListViewTileState extends State<_ProductListViewTile> {
     );
   }
 
-  _onItemClicked() async {
-    List<ProductData> products = await FirestoreManager().getProductsOfType(type: widget.type);
-    if (mounted) {
-      MyRouteDelegate.of(context)
-          .navigateToCompany(widget.type, products, products.isNotEmpty ? products.first.userName : '');
-    }
+  _onItemClicked() {
+      PageManager.of(context)
+          .navigateToProduct(widget.type);
+
   }
 }

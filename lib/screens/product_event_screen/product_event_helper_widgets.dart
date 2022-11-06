@@ -104,7 +104,7 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
     if (bookedEvent != null) {
       debugPrint("ProductEventPage build: booking success");
       if (mounted) {
-        MyRouteDelegate.of(context).navigateToProductEventPage(bookedEvent);
+        PageManager.of(context).navigateToBookedEventsPage();
       }
     }
     if (mounted) {
@@ -137,7 +137,7 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
           isBookingBtnLoading = false;
         });
         // todo: pop screen.....
-        MyRouteDelegate.of(context).navigateToBookedEventsPage();
+        PageManager.of(context).navigateToBookedEventsPage();
       }
     }
   }

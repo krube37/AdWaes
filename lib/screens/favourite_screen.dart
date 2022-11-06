@@ -3,9 +3,10 @@ import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/product/product_type.dart';
 import 'package:ad/provider/data_manager.dart';
-import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:flutter/material.dart';
+
+import '../routes/route_page_manager.dart';
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({Key? key}) : super(key: key);
@@ -88,7 +89,7 @@ class _FavouriteEventTileState extends State<_FavouriteEventTile> {
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      onTap: () => MyRouteDelegate.of(context).navigateToProductEventPage(widget.event),
+      onTap: () => PageManager.of(context).navigateToProductEventPage(widget.event.eventId),
       child: MouseRegion(
         onEnter: (_) => setState(() => isHovering = true),
         onExit: (_) => setState(() => isHovering = false),

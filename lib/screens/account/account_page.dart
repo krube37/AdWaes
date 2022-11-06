@@ -5,7 +5,8 @@ import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/product_widgets/bottombar.dart';
 import 'package:flutter/material.dart';
 
-import '../../routes/my_route_delegate.dart';
+import '../../firebase/auth_manager.dart';
+import '../../routes/route_page_manager.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -65,35 +66,65 @@ class _AccountPageState extends State<AccountPage> {
                                   header: "Personal Information",
                                   description: "Manage your personal Information",
                                   onTap: _navigateToPersonalInfoPage,
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                    size: 50.0,
+                                  ),
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
                                   header: "Booked Events",
                                   onTap: _navigateToBookedEventsPage,
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                    size: 50.0,
+                                  ),
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
                                   header: "Card Header",
                                   description: "Card description",
                                   onTap: () {},
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                    size: 50.0,
+                                  ),
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
                                   header: "Card Header",
                                   description: "Card description",
                                   onTap: () {},
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                    size: 50.0,
+                                  ),
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
                                   header: "Card Header",
                                   description: "Card description",
                                   onTap: () {},
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                    size: 50.0,
+                                  ),
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
-                                  header: "Card Header",
-                                  description: "Card description",
-                                  onTap: () {},
+                                  header: "Logout",
+                                  onTap: _logout,
+                                  headerColor: Colors.red,
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.red,
+                                    size: 50.0,
+                                  ),
                                 )
                               ],
                             )
@@ -104,31 +135,56 @@ class _AccountPageState extends State<AccountPage> {
                                   user: user,
                                   header: "Personal Info",
                                   onTap: _navigateToPersonalInfoPage,
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                                 _AccountMobileTile(
                                   user: user,
                                   header: "Booked Events",
                                   onTap: _navigateToBookedEventsPage,
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                                 _AccountMobileTile(
                                   user: user,
                                   header: "Header",
                                   onTap: () {},
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                                 _AccountMobileTile(
                                   user: user,
                                   header: "Header",
                                   onTap: () {},
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                                 _AccountMobileTile(
                                   user: user,
                                   header: "Header",
                                   onTap: () {},
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                                 _AccountMobileTile(
                                   user: user,
-                                  header: "Header",
-                                  onTap: () {},
+                                  header: "Logout",
+                                  headerColor: Colors.red,
+                                  onTap: _logout,
+                                  icon: const Icon(
+                                    Icons.account_circle_rounded,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             ),
@@ -146,26 +202,32 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   _navigateToPersonalInfoPage() {
-    MyRouteDelegate.of(context).navigateToPersonalInfo();
+    PageManager.of(context).navigateToPersonalInfo();
   }
 
   _navigateToBookedEventsPage() {
-    MyRouteDelegate.of(context).navigateToBookedEventsPage();
+    PageManager.of(context).navigateToBookedEventsPage();
   }
+
+  _logout() => AuthManager().signOut(context);
 }
 
 class _AccountDesktopTile extends StatelessWidget {
+  final Icon icon;
   final AdWiseUser user;
   final String header;
   final String? description;
   final Function? onTap;
+  final Color headerColor;
 
   const _AccountDesktopTile({
     Key? key,
+    required this.icon,
     required this.user,
     required this.header,
     this.description,
     this.onTap,
+    this.headerColor = Colors.black87,
   }) : super(key: key);
 
   @override
@@ -188,27 +250,30 @@ class _AccountDesktopTile extends StatelessWidget {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
-                const Icon(
-                  Icons.account_circle_rounded,
-                  color: Colors.grey,
-                  size: 50.0,
+                Expanded(
+                  child: icon,
                 ),
-                SizedBox(
-                  height: description == null ? 30.0 : 20.0,
-                ),
-                Text(
-                  header,
-                  style: const TextStyle(
-                    fontSize: 18.0,
-                    color: Colors.black,
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      header,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: headerColor,
+                      ),
+                    ),
                   ),
                 ),
-                if (description != null) const SizedBox(height: 15.0),
-                if (description != null)
-                  Text(
-                    description!,
-                    style: const TextStyle(fontSize: 13.0),
-                  ),
+                Expanded(
+                  child: description != null
+                      ? Center(
+                          child: Text(
+                            description!,
+                            style: const TextStyle(fontSize: 13.0),
+                          ),
+                        )
+                      : const SizedBox(),
+                ),
               ],
             ),
           ),
@@ -219,15 +284,19 @@ class _AccountDesktopTile extends StatelessWidget {
 }
 
 class _AccountMobileTile extends StatelessWidget {
+  final Icon icon;
   final AdWiseUser user;
   final String header;
   final Function? onTap;
+  final Color headerColor;
 
   const _AccountMobileTile({
     Key? key,
+    required this.icon,
     required this.user,
     required this.header,
     this.onTap,
+    this.headerColor = Colors.black87,
   }) : super(key: key);
 
   @override
@@ -248,23 +317,20 @@ class _AccountMobileTile extends StatelessWidget {
           ),
           child: Row(
             children: [
-              const Icon(
-                Icons.account_circle_rounded,
-                color: Colors.grey,
-              ),
+              icon,
               const SizedBox(width: 15.0),
               Expanded(
                 child: Text(
                   header,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18.0,
-                    color: Colors.black,
+                    color: headerColor,
                   ),
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.arrow_forward_ios_outlined,
-                color: Colors.grey,
+                color: headerColor,
                 size: 14.0,
               ),
             ],
