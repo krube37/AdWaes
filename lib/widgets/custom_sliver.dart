@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
-import '../screens/product_widgets/bottombar.dart';
+import 'bottombar.dart';
 
 class CustomSliver extends StatefulWidget {
   final Widget leftSideWidget, rightSideWidget;

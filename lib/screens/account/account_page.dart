@@ -1,8 +1,8 @@
 import 'package:ad/adwise_user.dart';
-import 'package:ad/globals.dart';
+import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
-import 'package:ad/screens/product_widgets/bottombar.dart';
+import 'package:ad/widgets/bottombar.dart';
 import 'package:flutter/material.dart';
 
 import '../../firebase/auth_manager.dart';
@@ -18,7 +18,6 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
     AdWiseUser user = DataManager().user!;
     return Scaffold(
       backgroundColor: Colors.white,

@@ -2,10 +2,10 @@ import 'package:ad/product/product_type.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
-import '../product/product_event.dart';
-import '../provider/data_manager.dart';
-import '../routes/route_page_manager.dart';
+import '../../utils/constants.dart';
+import '../../product/product_event.dart';
+import '../../provider/data_manager.dart';
+import '../../routes/route_page_manager.dart';
 
 class BookedEventsPage extends StatelessWidget {
   const BookedEventsPage({Key? key}) : super(key: key);
@@ -64,9 +64,6 @@ class BookedEventsPage extends StatelessWidget {
     );
   }
 }
-
-
-
 
 class _BookedEventTile extends StatefulWidget {
   final ProductEvent event;
@@ -184,16 +181,16 @@ class _BookedEventTileState extends State<_BookedEventTile> {
   }
 
   _getTimeWidget(String title, String time) => Column(
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Text(
-        title,
-        style: const TextStyle(fontSize: 18.0),
-      ),
-      const SizedBox(
-        height: 10.0,
-      ),
-      Text(time)
-    ],
-  );
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 18.0),
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          Text(time)
+        ],
+      );
 }

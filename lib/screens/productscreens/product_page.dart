@@ -3,13 +3,12 @@ library product_page;
 import 'dart:math';
 
 import 'package:ad/adwise_user.dart';
-import 'package:ad/constants.dart';
+import 'package:ad/utils/constants.dart';
 import 'package:ad/firebase/firestore_manager.dart';
-import 'package:ad/globals.dart';
+import 'package:ad/utils/globals.dart';
 import 'package:ad/helper/custom_icons.dart';
 import 'package:ad/product/product_data.dart';
 import 'package:ad/provider/data_manager.dart';
-import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,6 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../product/product_event.dart';
-import '../../product/product_tile.dart';
 import '../../product/product_type.dart';
 import '../../provider/product_data_provider.dart';
 import '../../routes/route_page_manager.dart';
@@ -229,7 +227,7 @@ class _ProductPageState extends State<ProductPage> {
       itemCount: products.length,
       itemBuilder: (context, index) {
         ProductData currentProductData = products.values.toList()[index];
-        return ProductTile(
+        return _ProductTile(
             productData: currentProductData,
             isTileSelected: currentUserName == currentProductData.userName,
             onClick: () {

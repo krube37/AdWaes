@@ -1,15 +1,8 @@
-import 'package:ad/constants.dart';
 import 'package:ad/firebase/api_response.dart';
-import 'package:ad/firebase_options.dart';
-import 'package:ad/provider/firebase_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase_recaptcha/firebase_recaptcha_verifier_modal.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 import '../provider/data_manager.dart';
-import 'local_user.dart';
 
 class AuthManager {
   /// singleton class
@@ -20,9 +13,6 @@ class AuthManager {
   factory AuthManager() => mInstance;
 
   final FirebaseAuth auth = FirebaseAuth.instance;
-
-  /// can use globally
-  LocalUser? user;
 
   // Stream<LocalUser?> get onAuthStateChange =>
   //     auth.authStateChanges().map((event) => event != null ? LocalUser.fromFirebaseUser(event) : null);

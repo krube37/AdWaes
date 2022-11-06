@@ -13,8 +13,6 @@ import 'package:flutter/cupertino.dart';
 import '../product/product_type.dart';
 
 class FirestoreManager {
-  StreamSubscription<QuerySnapshot>? productDataStream;
-  StreamSubscription<QuerySnapshot>? eventsStream;
   final FirebaseFirestore _mInstance;
   final DataManager _dataManager;
 
@@ -27,7 +25,9 @@ class FirestoreManager {
       : _mInstance = FirebaseFirestore.instance,
         _dataManager = DataManager();
 
-  Future<AdWiseUser> getCurrentUserDetails(User user) async {
+  /// returns [AdWiseUser] for the corresponding firebase [User]
+  Future<AdWiseUser?> getCurrentUserDetails(User user) async {
+    if (FirebaseAuth.instance.currentUser == null) return null;
     DocumentReference<Map<String, dynamic>> ref =
         FirebaseFirestore.instance.collection(usersCollectionName).doc(user.uid);
     DocumentSnapshot<Map<String, dynamic>> snapshot = await ref.get();
@@ -39,6 +39,8 @@ class FirestoreManager {
     return AdWiseUser.fromFirestoreDB(snapshot.data()!);
   }
 
+  /// updates the user details to firestore database
+  /// returns true if succeed else false will be returned
   Future<bool> updateUserDetails(AdWiseUser user) async {
     debugPrint("FirestoreDatabase updateUserDetails: ");
     DocumentReference<Map> ref = FirebaseFirestore.instance.collection(usersCollectionName).doc(user.userId);
@@ -51,6 +53,8 @@ class FirestoreManager {
     return true;
   }
 
+  /// updates the user profile picture to firebase storage
+  /// returns true if succeed, else false will be returned
   Future<bool> updateUserProfilePic(Uint8List image) async {
     debugPrint("FirestoreDatabase updateUserProfilePic: ");
     AdWiseUser user = DataManager().user!;
@@ -71,6 +75,8 @@ class FirestoreManager {
     return isSuccess;
   }
 
+  /// deletes the user profile picture stored in firebase storage
+  /// returns true if succeeds, else false will be returned
   Future<bool> deleteUserProfilePic() async {
     debugPrint("FirestoreDatabase deleteUserProfilePic: ");
     AdWiseUser user = DataManager().user!;
@@ -86,23 +92,26 @@ class FirestoreManager {
     return false;
   }
 
-  // Future downloadUserProfilePic(String url) async{
-  //   FirebaseStorage storage = FirebaseStorage.instance;
-  //   Reference reference = storage.ref().child('userProfilePic/${user.userId}');
-  // }
-
-  Future<bool> updateNewUserDetails(AdWiseUser user) async => await updateUserDetails(user);
-
+  /// fetches and returns list of [ProductData] of the given [ProductType]
+  /// returns empty list if not exists or error occurs
   Future<List<ProductData>> getProductsOfType({required ProductType type}) async {
-    final CollectionReference<Map> collectionRef = _mInstance.collection('productData');
-    QuerySnapshot<Map> productCollectionData = await collectionRef.where('type', isEqualTo: type.index).get();
     List<ProductData> products = [];
-    for (QueryDocumentSnapshot<Map> value in productCollectionData.docs) {
-      products.add(ProductData.fromFirestore(value.data()));
+    try {
+      final CollectionReference<Map> collectionRef = _mInstance.collection('productData');
+      QuerySnapshot<Map> productCollectionData = await collectionRef.where('type', isEqualTo: type.index).get();
+      for (QueryDocumentSnapshot<Map> value in productCollectionData.docs) {
+        products.add(ProductData.fromFirestore(value.data()));
+      }
+    } catch (e) {
+      debugPrint("FirestoreManager getProductsOfType: exception in getting list of product data $e");
     }
     return products;
   }
 
+  StreamSubscription<QuerySnapshot>? productDataStream;
+
+  /// listens to the change of [ProductData] in firestore
+  /// if any changes occurs in firestore, returns [productDataStream] which contains new list of [ProductData]
   StreamSubscription<QuerySnapshot> listenToProductData(
     ProductType productType,
     Function(List<ProductData> productData)? onUpdate,
@@ -122,6 +131,10 @@ class FirestoreManager {
     return productDataStream!;
   }
 
+  StreamSubscription<QuerySnapshot>? eventsStream;
+
+  /// listens to the change of [ProductEvent] in firestore
+  /// if any changes occurs in firestore, returns [eventsStream] which contains new list of [ProductData]
   StreamSubscription<QuerySnapshot> listenToEvents(
     ProductType type,
     String companyUserName,
@@ -146,6 +159,9 @@ class FirestoreManager {
     return eventsStream!;
   }
 
+  /// fetches the details of [eventId]
+  /// Returns the event in the instance of [ProductEvent]
+  /// returns null if there is no details for the given [eventId] in firestore
   Future<ProductEvent?> getEventById(String eventId) async {
     try {
       DocumentSnapshot<Map> data = await _mInstance.collection('events').doc(eventId).get();
@@ -188,6 +204,9 @@ class FirestoreManager {
     }
   }
 
+  /// first removes the [event] in user bookedEvents location (users/userId/bookedEvents/eventsId)
+  /// if success, then updates the [event] at (productName/productCompanyId/events/eventId)
+  /// return true if booking cancelled, or else null will be returned
   Future<bool> cancelBookedEvent(ProductEvent event) async {
     try {
       event = event.canceledInstance();
@@ -209,6 +228,8 @@ class FirestoreManager {
     }
   }
 
+  /// returns all the booked events of the current user
+  /// returns empty list if user not exist or unable to fetch data from firestore
   Future<List<ProductEvent>> getAllBookedEvents() async {
     List<ProductEvent> bookedEvents = [];
     try {
@@ -229,6 +250,8 @@ class FirestoreManager {
     return sortedEvents;
   }
 
+  /// adds the provided [event] in the current user's favourite events list in firestore
+  /// returns true if success, or else false will be returned
   Future<bool> addToFavourite(ProductEvent event) async {
     try {
       // creating event
@@ -250,6 +273,8 @@ class FirestoreManager {
     }
   }
 
+  /// removes the [ProductEvent] of [eventId] from the current user's favourite events list in firestore
+  /// returns true if successfully removed, or else false will be returned
   Future<bool> removeFromFavourite(String eventId) async {
     try {
       // creating event
@@ -267,6 +292,9 @@ class FirestoreManager {
     }
   }
 
+  /// returns map of favourite eventIds of current user
+  /// to the time the event has been added to the favourite list
+  /// returns empty map if no events exist or error while fetching the events
   Future<Map<String, int>> _getAllFavouriteEventIds() async {
     Map<String, int> eventsToTimeMap = {};
     try {
@@ -286,8 +314,8 @@ class FirestoreManager {
     return eventsToTimeMap;
   }
 
-  /// returns the list of [ProductEvent] sorted by addedTime in descending order'
-  ///
+  /// returns the list of [ProductEvent] sorted by addedTime in descending order
+  /// returns empty list if no events are there or error occurs while fetching the events in firestore
   Future<List<ProductEvent>> getAllFavouriteEvents() async {
     Map<ProductEvent, int> productEventsToTimeMap = {};
     Map<String, int> eventIdsToTimeMap = Map.from(await _getAllFavouriteEventIds());
@@ -314,6 +342,8 @@ class FirestoreManager {
     return sortedEvents;
   }
 
+  /// fetches and returns the events recently posted in all [ProductType] category
+  /// returns empty if no recent events or any error while fetching from firestore
   Future<List<ProductEvent>> getRecentEvents() async {
     List<ProductEvent> recentEvents = [];
     try {
@@ -345,6 +375,4 @@ class FirestoreManager {
     }
     return recentEvents;
   }
-
-  listenToRecentEvents() {}
 }

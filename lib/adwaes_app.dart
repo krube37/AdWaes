@@ -1,7 +1,7 @@
 import 'package:ad/routes/my_route_delegate.dart';
 import 'package:ad/routes/route_parser.dart';
 import 'package:flutter/material.dart';
-import 'package:ad/globals.dart';
+import 'package:ad/utils/globals.dart';
 
 class AdWaesApp extends StatefulWidget {
   const AdWaesApp({super.key});

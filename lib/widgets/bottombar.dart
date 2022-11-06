@@ -1,7 +1,8 @@
-import 'package:ad/widgets/bottom_bar_column.dart';
-import 'package:ad/widgets/info_text.dart';
-import 'package:ad/widgets/responsive.dart';
+library bottom_bar;
+
 import 'package:flutter/material.dart';
+
+part 'bottom_bar_helper_widgets.dart';
 
 class BottomBar extends StatelessWidget {
   const BottomBar({
@@ -12,7 +13,7 @@ class BottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration:  BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(0.0)),
           /*gradient: LinearGradient(
             colors: [gradientStartColor, gradientEndColor],
@@ -20,9 +21,10 @@ class BottomBar extends StatelessWidget {
             end: FractionalOffset(1.0, 1.0),
             stops: [0.0, 1.0],
             tileMode: TileMode.clamp),*/
-          color: Colors.black),
+          color: Colors.grey.shade100),
       padding: const EdgeInsets.all(30),
       //color: Colors.blueGrey[900],
+
       child: MediaQuery.of(context).size.width < 800
           ? Column(
               children: [
@@ -30,19 +32,19 @@ class BottomBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: const [
-                    BottomBarColumn(
+                    _BottomBarColumn(
                       heading: 'ABOUT',
                       s1: 'contact Us',
                       s2: 'about Us',
                       s3: 'careers',
                     ),
-                    BottomBarColumn(
+                    _BottomBarColumn(
                       heading: 'Help',
                       s1: 'payment',
                       s2: 'cancellation',
                       s3: 'fAQ',
                     ),
-                    BottomBarColumn(
+                    _BottomBarColumn(
                       heading: 'SOCIAL',
                       s1: 'twitter',
                       s2: 'facebook',
@@ -51,20 +53,20 @@ class BottomBar extends StatelessWidget {
                   ],
                 ),
                 const Divider(
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 const SizedBox(
                   height: 10,
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InfoText(
+                  children: const [
+                    _InfoText(
                       type: 'Email',
                       text: 'customercare@adwisor.com',
                     ),
-                    const SizedBox(height: 5),
-                    InfoText(
+                    SizedBox(height: 5),
+                    _InfoText(
                       type: 'Address',
                       text: 'Kent Mahal 😂',
                     )
@@ -74,13 +76,13 @@ class BottomBar extends StatelessWidget {
                   height: 10,
                 ),
                 const Divider(
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 const SizedBox(height: 20),
                 const Text(
                   'Copyright © 2021 | Adwisor',
                   style: TextStyle(
-                    color: Colors.white60,
+                    color: Colors.black87,
                     fontSize: 14,
                   ),
                 ),
@@ -92,38 +94,38 @@ class BottomBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    const BottomBarColumn(
+                    const _BottomBarColumn(
                       heading: 'ABOUT',
                       s1: 'contact Us',
                       s2: 'about us',
                       s3: 'careers',
                     ),
-                    const BottomBarColumn(
+                    const _BottomBarColumn(
                       heading: 'Help',
                       s1: 'payment',
                       s2: 'cancellation',
                       s3: 'fAQ',
                     ),
-                    const BottomBarColumn(
+                    const _BottomBarColumn(
                       heading: 'SOCIAL',
                       s1: 'twitter',
                       s2: 'facebook',
                       s3: 'youtube',
                     ),
                     Container(
-                      color: Colors.white,
+                      color: Colors.black87,
                       width: 2,
                       height: 150,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InfoText(
+                      children: const [
+                        _InfoText(
                           type: 'Email',
                           text: 'customercare@adwisor.com',
                         ),
-                        const SizedBox(height: 5),
-                        InfoText(
+                        SizedBox(height: 5),
+                        _InfoText(
                           type: 'Address',
                           text: 'Kent Mahal 😂',
                         )
@@ -132,13 +134,13 @@ class BottomBar extends StatelessWidget {
                   ],
                 ),
                 const Divider(
-                  color: Colors.white,
+                  color: Colors.black54,
                 ),
                 const SizedBox(height: 20),
                 const Text(
                   'Copyright © 2021 | Adwisor',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black87,
                     fontSize: 14,
                   ),
                 ),

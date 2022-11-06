@@ -3,7 +3,7 @@ import 'package:ad/provider/data_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../globals.dart';
+import '../../utils/globals.dart';
 import '../../routes/route_page_manager.dart';
 import '../sign_in/sign_in_card.dart';
 

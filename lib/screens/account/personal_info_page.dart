@@ -8,8 +8,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 
-import '../../constants.dart';
-import '../../globals.dart';
+import '../../utils/constants.dart';
+import '../../utils/globals.dart';
 import '../../widgets/custom_sliver.dart';
 
 class PersonalInfoPage extends StatelessWidget {

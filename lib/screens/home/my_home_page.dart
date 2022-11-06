@@ -1,10 +1,10 @@
 library home_page;
 
 import 'dart:math';
-import 'package:ad/globals.dart';
+import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
-import 'package:ad/screens/product_widgets/bottombar.dart';
+import 'package:ad/widgets/bottombar.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

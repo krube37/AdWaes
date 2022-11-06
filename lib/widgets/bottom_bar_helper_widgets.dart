@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+part of bottom_bar;
 
-class BottomBarColumn extends StatelessWidget {
+class _BottomBarColumn extends StatelessWidget {
   final String heading;
   final String s1;
   final String s2;
   final String s3;
 
-  const BottomBarColumn({
+  const _BottomBarColumn({
     super.key,
     required this.heading,
     required this.s1,
@@ -67,6 +67,44 @@ class BottomBarColumn extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _InfoText extends StatelessWidget {
+  final String type;
+  final String text;
+
+  const _InfoText({
+    super.key,
+    required this.type,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$type: ',
+          style: const TextStyle(
+            color: Colors.black87,
+            fontSize: 16,
+          ),
+        ),
+        Flexible(
+          child: Text(
+            text,
+            style: const TextStyle(
+              color: Colors.black87,
+              fontSize: 16,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

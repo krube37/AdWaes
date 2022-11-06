@@ -113,6 +113,64 @@ class _ProductEventTileState extends State<ProductEventTile> {
   }
 }
 
+class _ProductTile extends StatelessWidget {
+  final ProductData productData;
+  final Function()? onClick;
+  final bool isTileSelected;
+
+  const _ProductTile({
+    Key? key,
+    required this.productData,
+    this.onClick,
+    this.isTileSelected = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: InkWell(
+        onTap: () {
+          onClick?.call();
+        },
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            color: (isTileSelected) ? Colors.purple.shade200 : null,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.grey.shade400,
+                  backgroundImage: productData.profilePhotoImageProvider,
+                  child: productData.profilePhotoImageProvider == null
+                      ? const Icon(
+                          Icons.person_sharp,
+                          color: Colors.white,
+                        )
+                      : null,
+                ),
+                const SizedBox(
+                  width: 10.0,
+                ),
+                Expanded(
+                  child: Text(
+                    productData.name,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class FavouriteHeartIconWidget extends StatefulWidget {
   final ProductEvent event;
 
@@ -179,6 +237,7 @@ class _FavouriteHeartIconWidgetState extends State<FavouriteHeartIconWidget> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       });
+      if(user == null) return;
     }
 
     setState(() {

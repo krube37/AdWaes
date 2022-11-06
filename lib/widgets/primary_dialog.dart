@@ -1,4 +1,4 @@
-import 'package:ad/globals.dart';
+import 'package:ad/utils/globals.dart';
 import 'package:flutter/material.dart';
 
 class PrimaryDialog {

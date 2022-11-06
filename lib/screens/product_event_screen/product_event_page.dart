@@ -3,9 +3,9 @@ library product_event_page;
 import 'dart:math';
 
 import 'package:ad/adwise_user.dart';
-import 'package:ad/constants.dart';
+import 'package:ad/utils/constants.dart';
 import 'package:ad/firebase/firestore_manager.dart';
-import 'package:ad/globals.dart';
+import 'package:ad/utils/globals.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/productscreens/product_page.dart';

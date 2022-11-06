@@ -31,7 +31,6 @@ class DataManager extends ChangeNotifier {
   }
 
   /// clears and re-adds all the favourite event
-  ///
   refreshFavouriteEventList(List<ProductEvent> events) {
     _favouriteEvents
       ..clear()

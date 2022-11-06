@@ -2,7 +2,7 @@ library sign_in;
 
 import 'package:ad/firebase/api_response.dart';
 import 'package:ad/firebase/firestore_manager.dart';
-import 'package:ad/globals.dart';
+import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/provider/update_user_details_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,8 +13,6 @@ import 'package:provider/provider.dart';
 import '../../adwise_user.dart';
 import '../../firebase/auth_manager.dart';
 import '../../provider/sign_in_provider.dart';
-
-part 'sign_up_card.dart';
 
 part 'sign_in_manager.dart';
 
@@ -133,17 +131,19 @@ class _SignInCardState extends State<SignInCard> {
       if (userCreds.user != null) {
         bool isNewUser = userCreds.additionalUserInfo?.isNewUser ?? false;
 
-        AdWiseUser adWiseUser;
+        AdWiseUser? adWiseUser;
         if (isNewUser) {
           adWiseUser = AdWiseUser.newUser(userCreds.user!);
-          await FirestoreManager().updateNewUserDetails(adWiseUser);
+          await FirestoreManager().updateUserDetails(adWiseUser);
           if (mounted) {
             adWiseUser = await SignInManager().showNewUserFields(context, adWiseUser);
           }
         } else {
           adWiseUser = await FirestoreManager().getCurrentUserDetails(userCreds.user!);
         }
-        await DataManager().initialiseUserCreds(adWiseUser);
+        if (adWiseUser != null) {
+          await DataManager().initialiseUserCreds(adWiseUser);
+        }
         SnackBar snackBar = const SnackBar(
           content: Text('Successfully logged in'),
           behavior: SnackBarBehavior.floating,
@@ -158,13 +158,13 @@ class _SignInCardState extends State<SignInCard> {
         _provider.setIdleState(otpErrorMessage: 'Error signing in. Please try after sometime');
       }
     } catch (e, stack) {
-      print("_SignInCardState _onSigInButtonClicked: wrong otp, $e\n$stack");
+      debugPrint("_SignInCardState _onSigInButtonClicked: wrong otp, $e\n$stack");
       _provider.setIdleState(otpErrorMessage: 'Incorrect OTP entered. Please try again.');
     }
   }
 
   _onBackPressed() {
-    print("_SignInCardState _onBackPressed: $waitingForOTP");
+    debugPrint("_SignInCardState _onBackPressed: $waitingForOTP");
     if (waitingForOTP) {
       setState(() {
         _otpConfirmationResult = null;
@@ -180,7 +180,10 @@ class _SignInCardState extends State<SignInCard> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Log in to continue", style: TextStyle(fontSize: 20.0),),
+            const Text(
+              "Log in to continue",
+              style: TextStyle(fontSize: 20.0),
+            ),
             const SizedBox(height: 60.0),
             _CustomSignInTextField(
               'Your Mobile Number',
@@ -205,7 +208,10 @@ class _SignInCardState extends State<SignInCard> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Enter the 6 digit code sent to $phoneNumber', style: TextStyle(fontSize: 20.0),),
+            Text(
+              'Enter the 6 digit code sent to $phoneNumber',
+              style: const TextStyle(fontSize: 20.0),
+            ),
             const SizedBox(
               height: 60.0,
             ),

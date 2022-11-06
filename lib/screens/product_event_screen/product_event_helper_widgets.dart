@@ -136,7 +136,6 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
         setState(() {
           isBookingBtnLoading = false;
         });
-        // todo: pop screen.....
         PageManager.of(context).navigateToBookedEventsPage();
       }
     }
