@@ -20,6 +20,7 @@ class FirestoreManager {
   static const eventsCollectionName = "events";
   static const bookedEventsCollectionName = "bookedEvents";
   static const favouriteEventsCollectionName = "favouriteEvents";
+  static const productDataCollectionName = 'productData';
 
   FirestoreManager()
       : _mInstance = FirebaseFirestore.instance,
@@ -97,7 +98,7 @@ class FirestoreManager {
   Future<List<ProductData>> getProductsOfType({required ProductType type}) async {
     List<ProductData> products = [];
     try {
-      final CollectionReference<Map> collectionRef = _mInstance.collection('productData');
+      final CollectionReference<Map> collectionRef = _mInstance.collection(productDataCollectionName);
       QuerySnapshot<Map> productCollectionData = await collectionRef.where('type', isEqualTo: type.index).get();
       for (QueryDocumentSnapshot<Map> value in productCollectionData.docs) {
         products.add(ProductData.fromFirestore(value.data()));
@@ -120,8 +121,11 @@ class FirestoreManager {
       productDataStream!.cancel();
       productDataStream = null;
     }
-    productDataStream =
-        _mInstance.collection('productData').where('type', isEqualTo: productType.index).snapshots().listen((event) {
+    productDataStream = _mInstance
+        .collection(productDataCollectionName)
+        .where('type', isEqualTo: productType.index)
+        .snapshots()
+        .listen((event) {
       List<ProductData> products = [];
       for (QueryDocumentSnapshot<Map> value in event.docs) {
         products.add(ProductData.fromFirestore(value.data()));
@@ -358,7 +362,7 @@ class FirestoreManager {
         productEvents.add(ProductEvent.fromFirestore(doc.data()));
       }
       QuerySnapshot<Map> dataSnapshot = await _mInstance
-          .collection('productData')
+          .collection(productDataCollectionName)
           .where('userName', whereIn: productEvents.map((e) => e.productId).toList())
           .get();
       int i = 0;
@@ -374,5 +378,51 @@ class FirestoreManager {
       debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
     }
     return recentEvents;
+  }
+
+  /// searchTag of [ProductData] (which is name of the productData) will be filtered with the string [value]
+  /// returns the filtered list of [ProductData]
+  Future<List<ProductData>> getProductDataSearchResults(String value) async {
+    if (value.isEmpty) return [];
+    value = value.toLowerCase().replaceAll(' ', '');
+    List<ProductData> productData = [];
+    try {
+      QuerySnapshot<Map> snapshot = await _mInstance
+          .collection(productDataCollectionName)
+          .where('searchTag', isGreaterThanOrEqualTo: value)
+          .where('searchTag', isLessThan: '$value\uF7FF')
+          .limit(6)
+          .get();
+
+      for (QueryDocumentSnapshot<Map> doc in snapshot.docs) {
+        productData.add(ProductData.fromFirestore(doc.data()));
+      }
+    } catch (e) {
+      debugPrint("FirestoreManager getSearchResults: exception in getting search results $e");
+    }
+    return productData;
+  }
+
+  /// searchTag of [ProductEvent] (which is eventName of the ProductEvent) will be filtered with the string [value]
+  /// returns the filtered list of [ProductEvent]
+  Future<List<ProductEvent>> getProductEventSearchResults(String value) async {
+    if (value.isEmpty) return [];
+    value = value.toLowerCase().replaceAll(' ', '');
+    List<ProductEvent> productEvent = [];
+    try {
+      QuerySnapshot<Map> snapshot = await _mInstance
+          .collection(eventsCollectionName)
+          .where('searchTag', isGreaterThanOrEqualTo: value)
+          .where('searchTag', isLessThan: '$value\uF7FF')
+          .limit(6)
+          .get();
+
+      for (QueryDocumentSnapshot<Map> doc in snapshot.docs) {
+        productEvent.add(ProductEvent.fromFirestore(doc.data()));
+      }
+    } catch (e) {
+      debugPrint("FirestoreManager getSearchResults: exception in getting search results $e");
+    }
+    return productEvent;
   }
 }

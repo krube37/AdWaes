@@ -8,6 +8,7 @@ class ProductData {
   final ProductType _type;
   final String? _profilePhotoUrl;
   final ImageProvider? profilePhotoImageProvider;
+  final String _searchTag;
 
   ProductData({
     required String userName,
@@ -22,7 +23,8 @@ class ProductData {
         _totalEvents = totalEvents,
         _type = type,
         _profilePhotoUrl = profilePhotoUrl,
-        profilePhotoImageProvider = (profilePhotoUrl != null) ? CachedNetworkImageProvider(profilePhotoUrl) : null;
+        profilePhotoImageProvider = (profilePhotoUrl != null) ? CachedNetworkImageProvider(profilePhotoUrl) : null,
+        _searchTag = name.toLowerCase().replaceAll(' ', '');
 
   factory ProductData.fromFirestore(Map json) => ProductData(
         userName: json['userName'],
@@ -52,5 +54,6 @@ class ProductData {
         'totalEvents': totalEvents,
         'type': type.index,
         'profilePhotoUrl': profilePhotoUrl,
+        'searchTag': _searchTag,
       };
 }

@@ -1,11 +1,22 @@
+library app_bar;
+
+import 'dart:async';
+
+import 'package:ad/firebase/firestore_manager.dart';
 import 'package:ad/helper/custom_icons.dart';
+import 'package:ad/product/product_data.dart';
+import 'package:ad/product/product_event.dart';
+import 'package:ad/product/product_type.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../helper/my_search_field.dart';
 import '../../utils/globals.dart';
 import '../../routes/route_page_manager.dart';
 import '../sign_in/sign_in_card.dart';
+
+part 'search_manager.dart';
 
 /// default height of app bar is 56.0...
 /// but we are using custom height in Appbar ([toolbarHeight]) as 75.0
@@ -137,48 +148,5 @@ class _MyAppBarState extends State<MyAppBar> {
 
   _navigateToAccountsPage() {
     PageManager.of(context).navigateToAccount();
-  }
-}
-
-class _SearchBar extends StatefulWidget {
-  const _SearchBar({Key? key}) : super(key: key);
-
-  @override
-  State<_SearchBar> createState() => _SearchBarState();
-}
-
-class _SearchBarState extends State<_SearchBar> {
-  late TextEditingController _searchController;
-  late FocusNode _searchFocusNode;
-
-  @override
-  void initState() {
-    _searchController = TextEditingController();
-    _searchFocusNode = FocusNode();
-    _searchFocusNode.addListener(() {
-      setState(() {});
-    });
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      cursorWidth: _searchFocusNode.hasFocus ? 1.5 : 0.0,
-      cursorHeight: _searchFocusNode.hasFocus ? 20.0 : 0.0,
-      controller: _searchController,
-      focusNode: _searchFocusNode,
-      decoration: InputDecoration(
-        prefixIcon: const Icon(Icons.search),
-        hintText: 'search for products',
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(
-            color: Colors.black54,
-            width: 0.5,
-          ),
-        ),
-      ),
-    );
   }
 }

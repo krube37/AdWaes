@@ -62,7 +62,7 @@ class PageManager extends ChangeNotifier {
       );
     } else if (configuration.isProductPage || configuration.isCompanyPage) {
       _currentPage = MaterialPage(
-        key: const ValueKey('ProductsPage'),
+        key: ValueKey(configuration.productType!.name),
         name: configuration.path,
         child: ChangeNotifierProvider<ProductDataProvider>(
           create: (_) => ProductDataProvider(),

@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 
 class ProductEvent {
-  final String _eventId, _eventName, _description, _productId;
+  final String _eventId, _eventName, _description, _productId, _searchTag;
   final int _price;
   final DateTime _eventTime, _postedTime;
   final DateTime? _bookedTime;
@@ -39,7 +39,8 @@ class ProductEvent {
         _bookedUserId = bookedUserId,
         _bookedTime = bookedTime,
         _photoUrl = photoUrl,
-        photoImageProvider = (photoUrl != null) ? CachedNetworkImageProvider(photoUrl) : null;
+        photoImageProvider = (photoUrl != null) ? CachedNetworkImageProvider(photoUrl) : null,
+        _searchTag = eventName.toLowerCase().replaceAll(' ', '');
 
   factory ProductEvent.fromFirestore(Map json) => ProductEvent(
         eventId: json['eventId'],
@@ -137,5 +138,6 @@ class ProductEvent {
         'bookedUserId': bookedUserId,
         'bookedTime': bookedTime?.millisecondsSinceEpoch,
         'photoUrl': photoUrl,
+        'searchTag': _searchTag,
       };
 }
