@@ -365,7 +365,6 @@ class FirestoreManager {
           .collection(productDataCollectionName)
           .where('userName', whereIn: productEvents.map((e) => e.productId).toList())
           .get();
-      int i = 0;
       List<ProductData> productDataList = [];
       for (QueryDocumentSnapshot<Map> doc in dataSnapshot.docs) {
         productDataList.add(ProductData.fromFirestore(doc.data()));

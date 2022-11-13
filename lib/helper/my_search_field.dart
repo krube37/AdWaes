@@ -605,7 +605,6 @@ class SearchFieldState<T> extends State<SearchField<T>> {
             decoration:
                 widget.searchInputDecoration?.copyWith(hintText: widget.hint) ?? InputDecoration(hintText: widget.hint),
             onChanged: (query) {
-              debugPrint("SearchFieldState build: $onChangeEnqueuedTimes - ${Timestamp.now().millisecondsSinceEpoch}");
               int localEnqueuedState = ++onChangeEnqueuedTimes;
 
               if (widget.onChanged == null) {
