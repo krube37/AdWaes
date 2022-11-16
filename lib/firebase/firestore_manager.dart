@@ -373,6 +373,7 @@ class FirestoreManager {
       for (ProductEvent event in productEvents) {
         recentEvents.add(event);
       }
+      _dataManager.refreshRecentEvents(recentEvents);
     } catch (e, stack) {
       debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
     }

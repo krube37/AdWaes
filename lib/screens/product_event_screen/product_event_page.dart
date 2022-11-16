@@ -44,7 +44,6 @@ class ProductEventPage extends StatelessWidget {
           child: FutureBuilder(
             future: _getProductEvent(),
             builder: (context, snapshot) {
-              debugPrint("ProductEventPage build: checkzzzz building ${snapshot.hasData} and ${snapshot.data} and ${snapshot.hasError} and ${snapshot.error}");
               if (snapshot.hasError) {
                 return const Center(
                   child: Text(

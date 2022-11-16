@@ -113,6 +113,55 @@ class _ProductEventTileState extends State<ProductEventTile> {
   }
 }
 
+class MobileSearchEventTile extends StatelessWidget {
+  final ProductEvent event;
+
+  const MobileSearchEventTile({
+    Key? key,
+    required this.event,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkWell(
+        onTap: () => PageManager.of(context).navigateToProductEventPage(event.eventId),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                color: Colors.grey.shade400,
+                width: 0.4,
+              )),
+          height: 100.0,
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: CircleAvatar(
+                  backgroundImage: event.photoImageProvider,
+                  backgroundColor: Colors.grey.shade400,
+                  child: event.photoUrl == null
+                      ? const Icon(
+                          Icons.person_sharp,
+                          //size: 150.0,
+                          color: Colors.white,
+                        )
+                      : null,
+                ),
+              ),
+              Expanded(
+                child: Text(event.eventName),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ProductTile extends StatelessWidget {
   final ProductData productData;
   final Function()? onClick;
@@ -237,7 +286,7 @@ class _FavouriteHeartIconWidgetState extends State<FavouriteHeartIconWidget> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
       });
-      if(user == null) return;
+      if (user == null) return;
     }
 
     setState(() {

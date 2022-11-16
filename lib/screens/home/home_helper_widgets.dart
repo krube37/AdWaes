@@ -194,16 +194,16 @@ class _ScrollingArrowState extends State<_ScrollingArrow> {
   }
 }
 
-class _ProductListViewTile extends StatefulWidget {
+class _ProductListIconTile extends StatefulWidget {
   final ProductType type;
 
-  const _ProductListViewTile({Key? key, required this.type}) : super(key: key);
+  const _ProductListIconTile({Key? key, required this.type}) : super(key: key);
 
   @override
-  State<_ProductListViewTile> createState() => _ProductListViewTileState();
+  State<_ProductListIconTile> createState() => _ProductListIconTileState();
 }
 
-class _ProductListViewTileState extends State<_ProductListViewTile> {
+class _ProductListIconTileState extends State<_ProductListIconTile> {
   bool isHovering = false;
 
   @override

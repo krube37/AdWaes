@@ -28,7 +28,6 @@ class PageManager extends ChangeNotifier {
   Page get currentPage => _currentPage;
 
   RoutePath get currentPath {
-    debugPrint("PageManager currentPath: checkzzz pages info $currentPage");
     return parseRoute(_currentPage.name);
   }
 

@@ -218,7 +218,6 @@ class _FavouriteEventTileState extends State<_FavouriteEventTile> {
   _removeFromFavourite() async {
     setState(() => isRemoving = true);
     bool isSuccess = await FirestoreManager().removeFromFavourite(widget.event.eventId);
-    debugPrint("_FavouriteEventTileState _removeFromFavourite: checkzzz issuccess $isSuccess");
     if (isSuccess) {
       isRemoving = false;
       widget.onRemove?.call();

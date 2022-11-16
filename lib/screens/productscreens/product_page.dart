@@ -95,8 +95,6 @@ class _ProductPageState extends State<ProductPage> {
       body: Consumer<ProductDataProvider>(
         builder: (context, productDataValue, _) {
           _fetchData();
-          debugPrint(
-              "_ProductPageState build: checkzzzz building ========== $currentUserName and ${widget.currentUserName}");
 
           //todo: remove test code.
           if (products.isEmpty) {

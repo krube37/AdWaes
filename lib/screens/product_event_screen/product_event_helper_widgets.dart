@@ -122,8 +122,6 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
 
     bool? shouldProceed = await cancelDialog.show();
 
-    debugPrint("_EventImageWidgetState _cancelBooking: checkzzz dialog result $shouldProceed");
-
     if (shouldProceed ?? false) {
       setState(() {
         isBookingBtnLoading = true;

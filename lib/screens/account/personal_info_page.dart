@@ -26,13 +26,7 @@ class PersonalInfoPage extends StatelessWidget {
           style: TextStyle(color: Colors.black87),
         ),
       ),
-      body: isMobileView(context)
-          ? _MobileView(
-              user: user,
-            )
-          : _TabAndDesktopView(
-              user: user,
-            ),
+      body: isMobileView(context) ? _MobileView(user: user) : _TabAndDesktopView(user: user),
     );
   }
 }

@@ -23,12 +23,11 @@ class _SearchBarState extends State<_SearchBar> {
       suggestions: const [],
       onChanged: _updateSuggestions,
       maxSuggestionsInViewPort: 6,
-      searchInputDecoration: InputDecoration(
-        prefixIcon: const Icon(Icons.search),
+      searchInputDecoration: const InputDecoration(
+        prefixIcon: Icon(Icons.search),
         hintText: 'search for products',
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          borderSide: const BorderSide(
+          borderSide: BorderSide(
             color: Colors.black54,
             width: 0.5,
           ),
@@ -118,4 +117,94 @@ class _SearchBarState extends State<_SearchBar> {
       PageManager.of(context).navigateToProductEventPage(item.eventId);
     }
   }
+}
+
+class CustomMobileSearchDelegate extends SearchDelegate<dynamic> {
+  CustomMobileSearchDelegate({String? searchFieldLabel})
+      : super(
+          searchFieldLabel: searchFieldLabel,
+          searchFieldStyle: const TextStyle(
+            color: Colors.grey,
+          ),
+        );
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      if (query.trim().isNotEmpty)
+        _getIconButton(
+          context,
+          Icons.clear_rounded,
+          onPressed: () {
+            query = '';
+            showSuggestions(context);
+          },
+        )
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return _getIconButton(
+      context,
+      Icons.arrow_back_outlined,
+      onPressed: () => Navigator.of(context).pop(),
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return const SizedBox();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    List<ProductEvent> recentEvents = DataManager().recentEvents;
+
+    if (query.isEmpty) {
+      return ListView.builder(
+        itemCount: recentEvents.length,
+        itemBuilder: (context, index) => MobileSearchEventTile(
+          event: recentEvents[index],
+        ),
+      );
+    }
+
+    return FutureBuilder<List<ProductEvent>>(
+        future: FirestoreManager().getProductEventSearchResults(query),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData && !snapshot.hasError) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.hasError) {
+            return const Center(
+              child: Text('Error fetching results'),
+            );
+          }
+          List<ProductEvent> events = snapshot.data!;
+
+          if (events.isEmpty) {
+            return const Center(child: Text('No result found '));
+          }
+
+          return ListView.builder(
+            itemCount: events.length,
+            itemBuilder: (context, index) => MobileSearchEventTile(event: events[index]),
+          );
+        });
+  }
+
+  _getIconButton(
+    BuildContext context,
+    IconData iconData, {
+    required Function onPressed,
+  }) =>
+      IconButton(
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          onPressed: () => onPressed.call(),
+          icon: Icon(iconData));
 }

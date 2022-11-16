@@ -59,11 +59,22 @@ class DataManager extends ChangeNotifier {
     _bookedEvents
       ..clear()
       ..addAll(events);
-    if (events.isNotEmpty) notifyListeners();
+    notifyListeners();
   }
 
   removeBookedEvents(List<String> eventIds) =>
       _bookedEvents.removeWhere((element) => eventIds.contains(element.eventId));
+
+  final List<ProductEvent> _recentEvents = [];
+
+  List<ProductEvent> get recentEvents => _recentEvents;
+
+  refreshRecentEvents(List<ProductEvent> events) {
+    _recentEvents
+      ..clear()
+      ..addAll(events);
+    notifyListeners();
+  }
 
   initialize() async {
     if (FirebaseAuth.instance.currentUser != null) {
@@ -94,7 +105,7 @@ class DataManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  removeUserBelongings(BuildContext context) {
+  signOutCurrentUser(BuildContext context) {
     user = null;
     _favouriteEvents.clear();
     _bookedEvents.clear();

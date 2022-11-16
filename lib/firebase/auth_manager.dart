@@ -84,7 +84,7 @@ class AuthManager {
 
   Future<ApiResponse<void>> signOut(BuildContext context) async {
     try {
-      await auth.signOut().then((value) => DataManager().removeUserBelongings(context));
+      await auth.signOut().then((value) => DataManager().signOutCurrentUser(context));
       debugPrint("AuthManager signOut: sigined out successfully ");
       return ApiResponse.success();
     } catch (e) {

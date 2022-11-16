@@ -8,6 +8,7 @@ import 'package:ad/product/product_data.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:ad/product/product_type.dart';
 import 'package:ad/provider/data_manager.dart';
+import 'package:ad/screens/productscreens/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -148,5 +149,78 @@ class _MyAppBarState extends State<MyAppBar> {
 
   _navigateToAccountsPage() {
     PageManager.of(context).navigateToAccount();
+  }
+}
+
+class MobileAppbar extends StatefulWidget {
+  final TextEditingController controller;
+  final FocusNode focusNode;
+
+  MobileAppbar({Key? key})
+      : controller = TextEditingController(),
+        focusNode = FocusNode(),
+        super(key: key);
+
+  @override
+  State<MobileAppbar> createState() => _MobileAppbarState();
+}
+
+class _MobileAppbarState extends State<MobileAppbar> {
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      listenToSearchFocus();
+    });
+    return SliverAppBar(
+        expandedHeight: 130.0,
+        collapsedHeight: 80.0,
+        backgroundColor: Colors.white,
+        pinned: true,
+        floating: true,
+        flexibleSpace: FlexibleSpaceBar(
+          background: const Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text(
+              'Adwise',
+              style: TextStyle(
+                color: primaryColor,
+                fontSize: 30.0,
+                fontFamily: 'Ubuntu',
+              ),
+            ),
+          ),
+          title: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50.0),
+            child: TextField(
+              focusNode: widget.focusNode,
+              decoration: const InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: 'search for products',
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.black54,
+                    width: 0.5,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          centerTitle: true,
+          expandedTitleScale: 1,
+        ));
+  }
+
+  listenToSearchFocus() {
+    widget.focusNode.addListener(() {
+      if (widget.focusNode.hasFocus) {
+        widget.focusNode.unfocus();
+        showSearch(
+          context: context,
+          delegate: CustomMobileSearchDelegate(
+            searchFieldLabel: 'Search for Events and Companies',
+          ),
+        );
+      }
+    });
   }
 }
