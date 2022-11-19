@@ -15,7 +15,6 @@ class FavouriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<ProductEvent> favouriteEvents = DataManager().favouriteEvents;
     return Scaffold(
-      appBar: const MyAppBar(),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(

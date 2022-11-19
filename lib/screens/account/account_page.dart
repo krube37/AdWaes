@@ -21,7 +21,6 @@ class _AccountPageState extends State<AccountPage> {
     AdWiseUser user = DataManager().user!;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const MyAppBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -42,7 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const MyAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),

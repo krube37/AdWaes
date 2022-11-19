@@ -24,7 +24,11 @@ class _AdWaesAppState extends State<AdWaesApp> {
       debugShowCheckedModeBanner: false,
       routerDelegate: MyRouteDelegate(),
       routeInformationParser: RouteParser(),
-      builder: (context, child) => child!,
+      builder: (context, child) => Overlay(
+        initialEntries: [
+          OverlayEntry(builder: (context)=> child!)
+        ],
+      ),
     );
   }
 }

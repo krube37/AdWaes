@@ -35,7 +35,6 @@ class ProductEventPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
-      appBar: const MyAppBar(),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(
