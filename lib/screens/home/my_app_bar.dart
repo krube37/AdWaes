@@ -9,6 +9,7 @@ import 'package:ad/product/product_event.dart';
 import 'package:ad/product/product_type.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
+import 'package:ad/theme_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,9 +26,15 @@ part 'search_manager.dart';
 ///  should change the value of [localPreferredSize] according to new height
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Size localPreferredSize;
+  final Function? onLoginClicked, onAccountClicked, onFavouriteClicked, onHomeClicked;
 
-  const MyAppBar({Key? key})
-      : localPreferredSize = const Size.fromHeight(75.0),
+  const MyAppBar({
+    Key? key,
+    this.onLoginClicked,
+    this.onAccountClicked,
+    this.onFavouriteClicked,
+    this.onHomeClicked,
+  })  : localPreferredSize = const Size.fromHeight(75.0),
         super(key: key);
 
   @override
@@ -41,22 +48,19 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
     DataManager dataManager = Provider.of<DataManager>(context);
+    ThemeManager themeManager = ThemeManager();
     return AppBar(
       leading: Padding(
         padding: const EdgeInsets.only(left: 30.0),
         child: Center(
           child: InkWell(
-            onTap: () => PageManager.of(context).navigateToHome(),
+            onTap: () => widget.onHomeClicked?.call() ?? PageManager.of(context).navigateToHome(),
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
-            child: const Text(
+            child: Text(
               'Adwise',
-              style: TextStyle(
-                color: primaryColor,
-                fontSize: 30.0,
-                fontFamily: 'Ubuntu',
-              ),
+              style: Theme.of(context).textTheme.headline4?.copyWith(color: primaryColor),
             ),
           ),
         ),
@@ -71,15 +75,22 @@ class _MyAppBarState extends State<MyAppBar> {
       toolbarHeight: 75.0,
       actions: dataManager.user != null
           ? [
+              InkWell(
+                onTap: () => themeManager.toggleThemeMode(),
+                child: const Icon(Icons.add),
+              ),
+              const SizedBox(
+                width: 30.0,
+              ),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 13.0),
                 width: 50.0,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25.0),
-                  onTap: () => PageManager.of(context).navigateToFavouriteEvent(),
-                  child: const Icon(
+                  onTap: () => widget.onFavouriteClicked?.call() ?? PageManager.of(context).navigateToFavouriteEvent(),
+                  child: Icon(
                     CustomIcons.heart_svgrepo_com,
-                    color: Colors.black,
+                    color: themeManager.isDarkTheme ? Colors.white : Colors.black,
                   ),
                 ),
               ),
@@ -92,7 +103,6 @@ class _MyAppBarState extends State<MyAppBar> {
                     onTap: _navigateToAccountsPage,
                     borderRadius: BorderRadius.circular(18.0),
                     child: CircleAvatar(
-                      backgroundColor: Colors.grey.shade400,
                       backgroundImage: dataManager.user!.proPicImageProvider,
                       child: dataManager.user!.profilePhotoUrl == null
                           ? const Icon(
@@ -105,13 +115,9 @@ class _MyAppBarState extends State<MyAppBar> {
                   const SizedBox(
                     width: 10.0,
                   ),
-                  const Text(
+                  Text(
                     'UserName',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 15.0,
-                      fontFamily: 'Ubuntu',
-                    ),
+                    style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 16),
                   ),
                 ],
               ),
@@ -120,18 +126,22 @@ class _MyAppBarState extends State<MyAppBar> {
               ),
             ]
           : [
+              InkWell(
+                onTap: () => themeManager.toggleThemeMode(),
+                child: const Icon(Icons.add),
+              ),
+              const SizedBox(
+                width: 30.0,
+              ),
               Center(
                 child: InkWell(
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   hoverColor: Colors.transparent,
                   onTap: _signIn,
-                  child: const Text(
+                  child: Text(
                     'Log In',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 18.0,
-                    ),
+                    style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 16),
                   ),
                 ),
               ),
@@ -139,16 +149,15 @@ class _MyAppBarState extends State<MyAppBar> {
                 width: 40.0,
               ),
             ],
-      backgroundColor: Colors.white,
     );
   }
 
   _signIn() async {
-    await SignInManager().showSignInDialog(context);
+    widget.onLoginClicked?.call() ?? await SignInManager().showSignInDialog(context);
   }
 
   _navigateToAccountsPage() {
-    PageManager.of(context).navigateToAccount();
+    widget.onAccountClicked?.call() ?? PageManager.of(context).navigateToAccount();
   }
 }
 
@@ -174,7 +183,6 @@ class _MobileAppbarState extends State<MobileAppbar> {
     return SliverAppBar(
         expandedHeight: 130.0,
         collapsedHeight: 80.0,
-        backgroundColor: Colors.white,
         pinned: true,
         floating: true,
         flexibleSpace: FlexibleSpaceBar(
@@ -193,15 +201,10 @@ class _MobileAppbarState extends State<MobileAppbar> {
             padding: const EdgeInsets.symmetric(horizontal: 50.0),
             child: TextField(
               focusNode: widget.focusNode,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search),
                 hintText: 'search for products',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.black54,
-                    width: 0.5,
-                  ),
-                ),
+                border: Theme.of(context).inputDecorationTheme.border,
               ),
             ),
           ),

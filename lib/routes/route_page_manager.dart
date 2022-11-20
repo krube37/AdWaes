@@ -5,9 +5,6 @@ import 'package:provider/provider.dart';
 import '../product/product_type.dart';
 import '../provider/product_data_provider.dart';
 import '../screens/account/account_page.dart';
-import '../screens/account/personal_info_page.dart';
-import '../screens/account/booked_events_page.dart';
-import '../screens/account/favourite_screen.dart';
 import '../screens/home/my_home_page.dart';
 import '../screens/product_event_screen/product_event_page.dart';
 import '../screens/productscreens/product_page.dart';
@@ -32,8 +29,6 @@ class PageManager extends ChangeNotifier {
   }
 
   Future<void> setNewRoutePath(RoutePath configuration) async {
-    debugPrint(
-        "PageManager setNewRoutePath: page conditions ${configuration.isCompanyPage}, ${configuration.isProductPage}, ${configuration.path}");
 
     if (configuration.isAccountPage) {
       _currentPage = MaterialPage(
@@ -58,6 +53,12 @@ class PageManager extends ChangeNotifier {
         key: const ValueKey('BookedEventsPage'),
         name: configuration.path,
         child: const BookedEventsPage(),
+      );
+    } else if (configuration.isGeneralSettingsPage) {
+      _currentPage = MaterialPage(
+        key: const ValueKey('GeneralSettingsPage'),
+        name: configuration.path,
+        child: const GeneralSettingsPage(),
       );
     } else if (configuration.isProductPage || configuration.isCompanyPage) {
       _currentPage = MaterialPage(
@@ -99,6 +100,8 @@ class PageManager extends ChangeNotifier {
     String primarySegment = pathSegments[0];
     if (primarySegment == 'account') {
       return _parseAccountSubRoute(pathSegments);
+    } else if (primarySegment == 'general_settings') {
+      return RoutePath.generalSettings();
     } else if (primarySegment == 'p' && pathSegments.length > 1) {
       return _parseProductSubRoute(pathSegments);
     }
@@ -161,4 +164,6 @@ class PageManager extends ChangeNotifier {
   navigateToBookedEventsPage() => setNewRoutePath(RoutePath.bookedEventsPage());
 
   navigateToFavouriteEvent() => setNewRoutePath(RoutePath.favouriteEvents());
+
+  navigateToGeneralSettingsPage() => setNewRoutePath(RoutePath.generalSettings());
 }

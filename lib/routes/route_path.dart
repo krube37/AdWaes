@@ -6,6 +6,7 @@ enum RouteState {
   personalInfo,
   bookedEvents,
   favouriteScreen,
+  generalSettings,
   product,
   company,
   productEvent,
@@ -39,6 +40,10 @@ class RoutePath {
       : path = '/account/favourites',
         state = RouteState.favouriteScreen;
 
+  RoutePath.generalSettings()
+      : path = '/general_settings',
+        state = RouteState.generalSettings;
+
   RoutePath.company(this.productType, this.companyUserName)
       : path = '/p/${productType!.name}/$companyUserName',
         state = RouteState.company;
@@ -66,4 +71,6 @@ class RoutePath {
   bool get isFavouriteScreen => state == RouteState.favouriteScreen;
 
   bool get isBookedEventsPage => state == RouteState.bookedEvents;
+
+  bool get isGeneralSettingsPage => state == RouteState.generalSettings;
 }

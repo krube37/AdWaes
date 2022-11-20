@@ -64,7 +64,6 @@ class _HomeScaffoldState extends State<HomeScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: isMobileView(context) ? null :const MyAppBar(),
       body: Navigator(
         key: widget.navigatorKey,
         pages: [widget.pageManager.currentPage],

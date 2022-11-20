@@ -156,24 +156,28 @@ class _CustomButtonState extends State<_CustomButton> {
         IgnorePointer(
           ignoring: provider.isSendingOtp,
           child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: primaryColor,
-            ),
             onPressed: () {
               widget.onPressed.call();
             },
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Center(
-                  child: (widget.isSignInBtn ? provider.isVerifyingOtp : provider.isSendingOtp)
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ))
-                      : Text(widget.buttonText)),
+                child: (widget.isSignInBtn ? provider.isVerifyingOtp : provider.isSendingOtp)
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ))
+                    : Text(
+                        widget.buttonText,
+                        style: Theme.of(context).textTheme.headline5?.copyWith(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                      ),
+              ),
             ),
           ),
         ),

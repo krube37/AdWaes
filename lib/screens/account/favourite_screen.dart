@@ -1,12 +1,4 @@
-import 'package:ad/utils/constants.dart';
-import 'package:ad/firebase/firestore_manager.dart';
-import 'package:ad/product/product_event.dart';
-import 'package:ad/product/product_type.dart';
-import 'package:ad/provider/data_manager.dart';
-import 'package:ad/screens/home/my_app_bar.dart';
-import 'package:flutter/material.dart';
-
-import '../../routes/route_page_manager.dart';
+part of account_library;
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({Key? key}) : super(key: key);

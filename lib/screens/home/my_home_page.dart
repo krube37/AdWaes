@@ -13,6 +13,7 @@ import '../../firebase/firestore_manager.dart';
 import '../../product/product_event.dart';
 import '../../product/product_type.dart';
 import '../../routes/route_page_manager.dart';
+import '../../theme_manager.dart';
 
 part 'home_helper_widgets.dart';
 
@@ -41,7 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: const MyAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),

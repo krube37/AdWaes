@@ -31,7 +31,6 @@ class _ProductEventTileState extends State<ProductEventTile> {
         onEnter: (_) => setState(() => cursorIndex = widget.index),
         onExit: (_) => setState(() => cursorIndex = -1),
         child: Card(
-          color: widget.isLoading ? Colors.grey.shade200 : null,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
               side: BorderSide(

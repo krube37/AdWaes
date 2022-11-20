@@ -1,5 +1,6 @@
 library bottom_bar;
 
+import 'package:ad/theme_manager.dart';
 import 'package:flutter/material.dart';
 
 part 'bottom_bar_helper_widgets.dart';
@@ -8,20 +9,16 @@ class BottomBar extends StatelessWidget {
   const BottomBar({
     Key? key,
   }) : super(key: key);
-  static const Color gradientStartColor = Color.fromARGB(255, 0, 0, 0);
-  static const Color gradientEndColor = Color.fromARGB(255, 0, 0, 0);
+
   @override
   Widget build(BuildContext context) {
+    ThemeManager themeManager = ThemeManager();
+    ThemeData theme = Theme.of(context);
     return Container(
-      decoration:  BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(0.0)),
-          /*gradient: LinearGradient(
-            colors: [gradientStartColor, gradientEndColor],
-            begin: FractionalOffset(0.2, 0.2),
-            end: FractionalOffset(1.0, 1.0),
-            stops: [0.0, 1.0],
-            tileMode: TileMode.clamp),*/
-          color: Colors.grey.shade100),
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(0.0)),
+        //color: themeManager.isDarkTheme ? Colors.black87 : Colors.grey.shade100,
+      ),
       padding: const EdgeInsets.all(30),
       //color: Colors.blueGrey[900],
 
@@ -52,8 +49,8 @@ class BottomBar extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Divider(
-                  color: Colors.black54,
+                Divider(
+                  color: themeManager.isDarkTheme ? Colors.white54 : Colors.black54,
                 ),
                 const SizedBox(
                   height: 10,
@@ -75,16 +72,13 @@ class BottomBar extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                const Divider(
-                  color: Colors.black54,
+                Divider(
+                  color: themeManager.isDarkTheme ? Colors.white54 : Colors.black54,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Copyright © 2021 | Adwisor',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 14,
-                  ),
+                  style: theme.textTheme.headline5?.copyWith(fontSize: 14.0),
                 ),
               ],
             )
@@ -133,16 +127,13 @@ class BottomBar extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Divider(
-                  color: Colors.black54,
+                Divider(
+                  color: themeManager.isDarkTheme ? Colors.white54 : Colors.black54,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   'Copyright © 2021 | Adwisor',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 14,
-                  ),
+                  style: theme.textTheme.headline5?.copyWith(fontSize: 14.0),
                 ),
               ],
             ),

@@ -178,13 +178,15 @@ class _ScrollingArrowState extends State<_ScrollingArrow> {
             child: InkWell(
               borderRadius: BorderRadius.circular(25.0),
               onTap: () => widget.onPressed?.call(),
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
               child: Container(
                 margin: const EdgeInsets.all(2.0),
                 width: forwardArrowFocus ? widget.size + 2 : widget.size,
                 height: forwardArrowFocus ? widget.size + 2 : widget.size,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25.0),
-                  color: Colors.white,
+                  color: ThemeManager().isDarkTheme ? Colors.black54 : Colors.white24,
                   border: Border.all(color: Colors.grey),
                 ),
                 child: Icon(widget.isLeft ? Icons.navigate_before : Icons.navigate_next),
@@ -208,6 +210,7 @@ class _ProductListIconTileState extends State<_ProductListIconTile> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: MouseRegion(
@@ -225,11 +228,14 @@ class _ProductListIconTileState extends State<_ProductListIconTile> {
               children: [
                 Icon(
                   widget.type.getIcon(),
-                  color: isHovering ? primaryColor : Colors.black,
+                  color: isHovering ? primaryColor : null,
                 ),
                 Text(
                   widget.type.getDisplayName(),
-                  style: TextStyle(color: isHovering ? primaryColor : Colors.black),
+                  style: theme.textTheme.headline5?.copyWith(
+                    color: isHovering ? primaryColor : null,
+                    fontSize: 15.0,
+                  ),
                 ),
                 const SizedBox(
                   height: 5.0,
@@ -241,7 +247,7 @@ class _ProductListIconTileState extends State<_ProductListIconTile> {
                           border: Border(
                             bottom: BorderSide(
                               width: 1.5,
-                              color: isHovering ? primaryColor : Colors.black,
+                              color: isHovering ? primaryColor : Colors.transparent,
                             ),
                           ),
                         ),
@@ -256,8 +262,6 @@ class _ProductListIconTileState extends State<_ProductListIconTile> {
   }
 
   _onItemClicked() {
-      PageManager.of(context)
-          .navigateToProduct(widget.type);
-
+    PageManager.of(context).navigateToProduct(widget.type);
   }
 }

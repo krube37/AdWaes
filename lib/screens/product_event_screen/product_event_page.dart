@@ -34,7 +34,6 @@ class ProductEventPage extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
       body: Center(
         child: Container(
           constraints: const BoxConstraints(

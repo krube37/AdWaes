@@ -23,15 +23,10 @@ class _SearchBarState extends State<_SearchBar> {
       suggestions: const [],
       onChanged: _updateSuggestions,
       maxSuggestionsInViewPort: 6,
-      searchInputDecoration: const InputDecoration(
-        prefixIcon: Icon(Icons.search),
+      searchInputDecoration: InputDecoration(
+        prefixIcon: const Icon(Icons.search),
         hintText: 'search for products',
-        border: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black54,
-            width: 0.5,
-          ),
-        ),
+        border: Theme.of(context).inputDecorationTheme.border,
       ),
     );
   }

@@ -16,6 +16,7 @@ class _BottomBarColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Column(
@@ -23,10 +24,8 @@ class _BottomBarColumn extends StatelessWidget {
         children: [
           Text(
             heading,
-            style: const TextStyle(
-              color: Colors.black87,
+            style: theme.textTheme.headline6?.copyWith(
               fontSize: 18,
-              fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(
@@ -34,33 +33,21 @@ class _BottomBarColumn extends StatelessWidget {
           ),
           Text(
             s1,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 14,
-              //fontWeight: FontWeight.w500,
-            ),
+            style: theme.textTheme.headline5?.copyWith(fontSize: 14),
           ),
           const SizedBox(
             height: 10,
           ),
           Text(
             s2,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 14,
-              //fontWeight: FontWeight.w500,
-            ),
+            style: theme.textTheme.headline5?.copyWith(fontSize: 14),
           ),
           const SizedBox(
             height: 10,
           ),
           Text(
             s3,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 14,
-              //fontWeight: FontWeight.w500,
-            ),
+            style: theme.textTheme.headline5?.copyWith(fontSize: 14),
           ),
           const SizedBox(
             height: 10,
@@ -83,6 +70,7 @@ class _InfoText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -90,18 +78,12 @@ class _InfoText extends StatelessWidget {
       children: [
         Text(
           '$type: ',
-          style: const TextStyle(
-            color: Colors.black87,
-            fontSize: 16,
-          ),
+          style: theme.textTheme.headline5?.copyWith(fontSize: 16),
         ),
         Flexible(
           child: Text(
             text,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontSize: 16,
-            ),
+            style: theme.textTheme.headline5?.copyWith(fontSize: 14),
           ),
         )
       ],

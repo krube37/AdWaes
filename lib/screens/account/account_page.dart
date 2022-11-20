@@ -1,12 +1,35 @@
+library account_library;
+
 import 'package:ad/adwise_user.dart';
+import 'package:ad/product/product_type.dart';
 import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/widgets/bottombar.dart';
 import 'package:flutter/material.dart';
+import 'package:ad/firebase/firestore_manager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:image_picker_web/image_picker_web.dart';
 
 import '../../firebase/auth_manager.dart';
+import '../../product/product_event.dart';
 import '../../routes/route_page_manager.dart';
+import '../../theme_manager.dart';
+import '../../utils/constants.dart';
+import '../../widgets/custom_sliver.dart';
+
+import 'dart:math';
+import 'dart:typed_data';
+
+part 'personal_info_page.dart';
+
+part 'general_settings_page.dart';
+
+part 'booked_events_page.dart';
+
+part 'favourite_screen.dart';
+
+part 'account_library_helper_widgets.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);
@@ -20,7 +43,6 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     AdWiseUser user = DataManager().user!;
     return Scaffold(
-      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -35,21 +57,15 @@ class _AccountPageState extends State<AccountPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 70.0),
-                      const Text(
-                        "Account",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 30.0,
-                        ),
-                      ),
+                      Text("Account",
+                          style: Theme.of(context).textTheme.headline6?.copyWith(
+                                fontSize: 30.0,
+                              )),
                       const SizedBox(height: 20.0),
-                      Text(
-                        "Hi ${user.displayName},",
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 20.0,
-                        ),
-                      ),
+                      Text("Hi ${user.displayName},",
+                          style: Theme.of(context).textTheme.headline6?.copyWith(
+                                fontSize: 20.0,
+                              )),
                       const SizedBox(height: 20.0),
                       !isMobileView(context)
                           ? GridView(
@@ -82,11 +98,11 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
-                                  header: "Card Header",
-                                  description: "Card description",
-                                  onTap: () {},
+                                  header: "General Settings",
+                                  description: "Set your theme mode, time zone, etc",
+                                  onTap: _navigateToGeneralSettingsPage,
                                   icon: const Icon(
-                                    Icons.account_circle_rounded,
+                                    Icons.toggle_on,
                                     color: Colors.grey,
                                     size: 50.0,
                                   ),
@@ -119,7 +135,7 @@ class _AccountPageState extends State<AccountPage> {
                                   onTap: _logout,
                                   headerColor: Colors.red,
                                   icon: const Icon(
-                                    Icons.account_circle_rounded,
+                                    Icons.logout,
                                     color: Colors.red,
                                     size: 50.0,
                                   ),
@@ -149,8 +165,8 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                                 _AccountMobileTile(
                                   user: user,
-                                  header: "Header",
-                                  onTap: () {},
+                                  header: "General Settings",
+                                  onTap: _navigateToGeneralSettingsPage,
                                   icon: const Icon(
                                     Icons.account_circle_rounded,
                                     color: Colors.grey,
@@ -180,7 +196,7 @@ class _AccountPageState extends State<AccountPage> {
                                   headerColor: Colors.red,
                                   onTap: _logout,
                                   icon: const Icon(
-                                    Icons.account_circle_rounded,
+                                    Icons.logout,
                                     color: Colors.grey,
                                   ),
                                 ),
@@ -207,6 +223,10 @@ class _AccountPageState extends State<AccountPage> {
     PageManager.of(context).navigateToBookedEventsPage();
   }
 
+  _navigateToGeneralSettingsPage() {
+    PageManager.of(context).navigateToGeneralSettingsPage();
+  }
+
   _logout() => AuthManager().signOut(context);
 }
 
@@ -216,7 +236,7 @@ class _AccountDesktopTile extends StatelessWidget {
   final String header;
   final String? description;
   final Function? onTap;
-  final Color headerColor;
+  final Color? headerColor;
 
   const _AccountDesktopTile({
     Key? key,
@@ -225,7 +245,7 @@ class _AccountDesktopTile extends StatelessWidget {
     required this.header,
     this.description,
     this.onTap,
-    this.headerColor = Colors.black87,
+    this.headerColor,
   }) : super(key: key);
 
   @override
@@ -239,7 +259,6 @@ class _AccountDesktopTile extends StatelessWidget {
         hoverColor: Colors.transparent,
         onTap: () => onTap?.call(),
         child: Card(
-          elevation: 4.0,
           shadowColor: Colors.grey.shade300,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),

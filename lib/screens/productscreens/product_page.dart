@@ -90,7 +90,6 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: Consumer<ProductDataProvider>(
         builder: (context, productDataValue, _) {
           _fetchData();

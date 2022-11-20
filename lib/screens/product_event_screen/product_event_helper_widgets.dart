@@ -185,15 +185,16 @@ class _EventContentWidget extends StatelessWidget {
         RichText(
           text: TextSpan(
             children: [
-              const TextSpan(
-                text: 'Date of Event: ',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                ),
-              ),
-              TextSpan(text: ' ${DateFormat('dd/MM/yyyy').format(event.eventTime)}'),
+              TextSpan(
+                  text: 'Date of Event: ',
+                  style: Theme.of(context).textTheme.headline5?.copyWith(
+                        fontSize: 18,
+                      )),
+              TextSpan(
+                  text: ' ${DateFormat('dd/MM/yyyy').format(event.eventTime)}',
+                  style: Theme.of(context).textTheme.headline5?.copyWith(
+                        fontSize: 15,
+                      )),
             ],
           ),
         ),
@@ -202,10 +203,12 @@ class _EventContentWidget extends StatelessWidget {
         Container(
           decoration: const BoxDecoration(),
           child: RichText(
-              text: const TextSpan(children: [
+              text: TextSpan(children: [
             TextSpan(
                 text: 'Description: \n\n',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black54)),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      fontSize: 18,
+                    )),
             TextSpan(
                 text: 'The Hindu ePaper is a Hindi language daily newspaper in India which is headquartered'
                     ' in Chennai, Tamil Nadu. In 1878, the Hindi editorial started as a weekly edition'
@@ -219,7 +222,10 @@ class _EventContentWidget extends StatelessWidget {
                     ' and make the company’s annual turnover of almost 200 million dollars. Most of the'
                     ' Hindu Group revenue comes from the Subscription & Advertising. Hindu newspaper'
                     ' became as the first Indian news paper to offer an Online Edition Services.',
-                style: TextStyle(height: 2.0, fontSize: 17)),
+                style: Theme.of(context).textTheme.headline5?.copyWith(
+                      fontSize: 17,
+                      height: 2.0,
+                    )),
           ])),
         ),
       ],
