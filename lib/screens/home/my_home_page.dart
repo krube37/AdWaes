@@ -25,6 +25,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  late ScrollController scrollController;
+  double appBarElevation = 0;
+  double appBarColorOpacity = 0.0;
+
+  @override
+  void initState() {
+    scrollController = ScrollController();
+    scrollController.addListener(() {
+      double pixel = scrollController.position.pixels;
+      if (appBarColorOpacity > 0 && appBarColorOpacity < 1) {
+        setState(() {
+          appBarColorOpacity = min(pixel / 65, 1.0);
+        });
+      } else if (appBarColorOpacity == 0.0 && pixel > 0.0) {
+        setState(() => appBarColorOpacity = min(pixel / 65, 1.0));
+      } else if (appBarColorOpacity == 1.0 && pixel < 65) {
+        setState(() => appBarColorOpacity = min(pixel / 65, 1.0));
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(() {});
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Provider.of<DataManager>(context);
@@ -42,8 +70,12 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: MyAppBar(
+        elevation: appBarElevation,
+        colorOpacity: appBarColorOpacity,
+      ),
       body: SingleChildScrollView(
+        controller: scrollController,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: LayoutBuilder(builder: (context, constraints) {
@@ -56,10 +88,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _getBody() {
     Size screenSize = MediaQuery.of(context).size;
-    double listIconViewPadding = isMobileView(context) ? 0 : 60.0;
-    double eventTileHeight = isMobileView(context) ? 300 : 400;
+    double eventTileHeight = isMobileView(context) ? 320 : 420;
     double eventTileWidth = isMobileView(context) ? 220 : 300;
 
+    double listIconViewPadding = isMobileView(context) ? 0 : 60.0;
     double listIconTileWidth = 116; // refer [_ProductListIconTile]
     double listIconTileHeight = 100.0;
 
@@ -77,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ((screenSize.width - (2 * listIconViewPadding)) / listIconTileWidth) * (listIconTileWidth / 1.3),
           ),
         ),
+        const Divider(),
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
           child: Text(
@@ -90,26 +123,22 @@ class _MyHomePageState extends State<MyHomePage> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<ProductEvent> recentEvents = snapshot.data!;
+
+                if (recentEvents.isEmpty) {
+                  return const Center(
+                    child: Text('No events Available'),
+                  );
+                }
                 return _CustomHorizontalScroller(
                   itemLength: recentEvents.length,
                   height: eventTileHeight,
                   scrollingArrowSize: 50.0,
                   alignItemBuilder: Alignment.centerLeft,
                   scrollPixelsPerClick: (screenSize.width / eventTileWidth) * (eventTileWidth / 1.3),
-                  itemBuilder: (index) {
-                    return recentEvents.isNotEmpty
-                        ? ProductEventTile(
-                            index: index,
-                            event: recentEvents[index],
-                            tileWidth: eventTileWidth,
-                          )
-                        : // todo: handle error
-                        const SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: Text('some error is there'),
-                          );
-                  },
+                  itemBuilder: (index) => ProductEventTile(
+                    event: recentEvents[index],
+                    tileWidth: eventTileWidth,
+                  ),
                 );
               } else {
                 int noOfEmptyEvents = (screenSize.width / (eventTileWidth + 40)).ceil();
@@ -120,7 +149,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemCount: noOfEmptyEvents,
                     itemBuilder: (context, index) {
                       return ProductEventTile(
-                        index: index,
                         event: null,
                         isLoading: true,
                         tileWidth: eventTileWidth,

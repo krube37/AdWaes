@@ -26,14 +26,13 @@ part 'search_manager.dart';
 ///  should change the value of [localPreferredSize] according to new height
 class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Size localPreferredSize;
-  final Function? onLoginClicked, onAccountClicked, onFavouriteClicked, onHomeClicked;
+  final double elevation;
+  final double colorOpacity;
 
   const MyAppBar({
     Key? key,
-    this.onLoginClicked,
-    this.onAccountClicked,
-    this.onFavouriteClicked,
-    this.onHomeClicked,
+    this.elevation = 0.0,
+    this.colorOpacity = 1.0,
   })  : localPreferredSize = const Size.fromHeight(75.0),
         super(key: key);
 
@@ -50,11 +49,12 @@ class _MyAppBarState extends State<MyAppBar> {
     DataManager dataManager = Provider.of<DataManager>(context);
     ThemeManager themeManager = ThemeManager();
     return AppBar(
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor?.withAlpha(widget.colorOpacity.toInt() * 100),
       leading: Padding(
         padding: const EdgeInsets.only(left: 30.0),
         child: Center(
           child: InkWell(
-            onTap: () => widget.onHomeClicked?.call() ?? PageManager.of(context).navigateToHome(),
+            onTap: () => PageManager.of(context).navigateToHome(),
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
@@ -73,21 +73,15 @@ class _MyAppBarState extends State<MyAppBar> {
       centerTitle: true,
       leadingWidth: 150.0,
       toolbarHeight: 75.0,
+      elevation: widget.elevation,
       actions: dataManager.user != null
           ? [
-              InkWell(
-                onTap: () => themeManager.toggleThemeMode(),
-                child: const Icon(Icons.add),
-              ),
-              const SizedBox(
-                width: 30.0,
-              ),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 13.0),
                 width: 50.0,
                 child: InkWell(
                   borderRadius: BorderRadius.circular(25.0),
-                  onTap: () => widget.onFavouriteClicked?.call() ?? PageManager.of(context).navigateToFavouriteEvent(),
+                  onTap: () => PageManager.of(context).navigateToFavouriteEvent(),
                   child: Icon(
                     CustomIcons.heart_svgrepo_com,
                     color: themeManager.isDarkTheme ? Colors.white : Colors.black,
@@ -126,13 +120,6 @@ class _MyAppBarState extends State<MyAppBar> {
               ),
             ]
           : [
-              InkWell(
-                onTap: () => themeManager.toggleThemeMode(),
-                child: const Icon(Icons.add),
-              ),
-              const SizedBox(
-                width: 30.0,
-              ),
               Center(
                 child: InkWell(
                   splashColor: Colors.transparent,
@@ -153,11 +140,11 @@ class _MyAppBarState extends State<MyAppBar> {
   }
 
   _signIn() async {
-    widget.onLoginClicked?.call() ?? await SignInManager().showSignInDialog(context);
+    await SignInManager().showSignInDialog(context);
   }
 
   _navigateToAccountsPage() {
-    widget.onAccountClicked?.call() ?? PageManager.of(context).navigateToAccount();
+    PageManager.of(context).navigateToAccount();
   }
 }
 

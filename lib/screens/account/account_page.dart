@@ -109,28 +109,6 @@ class _AccountPageState extends State<AccountPage> {
                                 ),
                                 _AccountDesktopTile(
                                   user: user,
-                                  header: "Card Header",
-                                  description: "Card description",
-                                  onTap: () {},
-                                  icon: const Icon(
-                                    Icons.account_circle_rounded,
-                                    color: Colors.grey,
-                                    size: 50.0,
-                                  ),
-                                ),
-                                _AccountDesktopTile(
-                                  user: user,
-                                  header: "Card Header",
-                                  description: "Card description",
-                                  onTap: () {},
-                                  icon: const Icon(
-                                    Icons.account_circle_rounded,
-                                    color: Colors.grey,
-                                    size: 50.0,
-                                  ),
-                                ),
-                                _AccountDesktopTile(
-                                  user: user,
                                   header: "Logout",
                                   onTap: _logout,
                                   headerColor: Colors.red,
@@ -167,24 +145,6 @@ class _AccountPageState extends State<AccountPage> {
                                   user: user,
                                   header: "General Settings",
                                   onTap: _navigateToGeneralSettingsPage,
-                                  icon: const Icon(
-                                    Icons.account_circle_rounded,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                _AccountMobileTile(
-                                  user: user,
-                                  header: "Header",
-                                  onTap: () {},
-                                  icon: const Icon(
-                                    Icons.account_circle_rounded,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                _AccountMobileTile(
-                                  user: user,
-                                  header: "Header",
-                                  onTap: () {},
                                   icon: const Icon(
                                     Icons.account_circle_rounded,
                                     color: Colors.grey,

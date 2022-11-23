@@ -34,6 +34,7 @@ class ProductEventPage extends StatelessWidget {
     Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
+      appBar: const MyAppBar(),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(
@@ -43,6 +44,7 @@ class ProductEventPage extends StatelessWidget {
             future: _getProductEvent(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
+                debugPrint("ProductEventPage build: checkzzz error ${snapshot.error}");
                 return const Center(
                   child: Text(
                     'no even available',

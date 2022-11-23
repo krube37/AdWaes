@@ -51,7 +51,7 @@ class ProductEvent {
         postedTime: DateTime.fromMillisecondsSinceEpoch(json['postedTime']),
         type: ProductType.values[json['type']],
         productId: json['productId'],
-        isBooked: json['isBooked'],
+        isBooked: json['isBooked'] ?? false,
         bookedUserId: json['bookedUserId'],
         bookedTime: json['bookedTime'] != null ? DateTime.fromMillisecondsSinceEpoch(json['bookedTime']) : null,
         photoUrl: json['photoUrl'],

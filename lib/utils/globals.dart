@@ -42,11 +42,13 @@ final ThemeData darkTheme = ThemeData(
   fontFamily: "Ubuntu",
   visualDensity: VisualDensity.adaptivePlatformDensity,
   appBarTheme: const AppBarTheme(
-    backgroundColor: Colors.blueGrey,
+    backgroundColor: Color(0xFF070707),
   ),
+  scaffoldBackgroundColor: const Color(0xFF121212),
   iconTheme: const IconThemeData(
     color: Colors.white,
   ),
+  cardColor: const Color(0xFF282828),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ButtonStyle(
       textStyle: MaterialStateProperty.all<TextStyle>(

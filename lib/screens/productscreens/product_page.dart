@@ -90,6 +90,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const MyAppBar(),
       body: Consumer<ProductDataProvider>(
         builder: (context, productDataValue, _) {
           _fetchData();
@@ -199,10 +200,7 @@ class _ProductPageState extends State<ProductPage> {
                                       ),
                                       itemCount: events.length,
                                       itemBuilder: (context, index) {
-                                        return ProductEventTile(
-                                          index: index,
-                                          event: events[index],
-                                        );
+                                        return ProductEventTile(event: events[index]);
                                       });
                                 }),
                       ),

@@ -123,6 +123,7 @@ class _SettingsNameTileState extends State<_SettingsNameTile> {
     });
     return isMobileView(context)
         ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
@@ -264,6 +265,7 @@ class _SettingsTileState extends State<_SettingsTile> {
     });
     return isMobileView(context)
         ? Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _getTextField(),
               const SizedBox(height: 10.0),

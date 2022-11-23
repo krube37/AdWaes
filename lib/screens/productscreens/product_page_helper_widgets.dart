@@ -1,14 +1,12 @@
 part of product_page;
 
 class ProductEventTile extends StatefulWidget {
-  final int index;
   final ProductEvent? event;
   final double? tileWidth;
   final bool isLoading;
 
   const ProductEventTile({
     Key? key,
-    required this.index,
     required this.event,
     this.tileWidth,
     this.isLoading = false,
@@ -20,92 +18,109 @@ class ProductEventTile extends StatefulWidget {
 }
 
 class _ProductEventTileState extends State<ProductEventTile> {
-  int cursorIndex = -1;
+  bool isHovering = false;
   Widget image = getRandomTestImage();
 
   @override
   Widget build(BuildContext context) {
-    return IgnorePointer(
-      ignoring: widget.isLoading,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => cursorIndex = widget.index),
-        onExit: (_) => setState(() => cursorIndex = -1),
-        child: Card(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5),
-              side: BorderSide(
-                color: Colors.grey.shade400,
-                width: 0.2,
-              )),
-          elevation: cursorIndex == widget.index ? 10 : 0,
-          child: InkWell(
-              borderRadius: BorderRadius.circular(10),
-              hoverColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              onTap: () =>
-                  widget.isLoading ? null : PageManager.of(context).navigateToProductEventPage(widget.event!.eventId),
-              child: SizedBox(
-                width: widget.tileWidth,
-                child: Stack(
-                  children: [
-                    LayoutBuilder(
-                      builder: (BuildContext context, BoxConstraints constraints) {
-                        return SizedBox(
-                          width: constraints.maxWidth,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: widget.isLoading ? const SizedBox() : Center(child: image),
-                                ),
-                                const SizedBox(
-                                  height: 10.0,
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      widget.isLoading
-                                          ? const SizedBox()
-                                          : Text(
-                                              widget.event!.eventName,
-                                              style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: IgnorePointer(
+        ignoring: widget.isLoading,
+        child: MouseRegion(
+          onEnter: (_) => setState(() => isHovering = true),
+          onExit: (_) => setState(() => isHovering = false),
+          child: Card(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5),
+                side: BorderSide(
+                  color: Colors.grey.shade400,
+                  width: 0.2,
+                )),
+            elevation: isHovering ? 10 : 0,
+            child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                splashColor: Colors.transparent,
+                onTap: () =>
+                    widget.isLoading ? null : PageManager.of(context).navigateToProductEventPage(widget.event!.eventId),
+                child: SizedBox(
+                  width: widget.tileWidth,
+                  child: Stack(
+                    children: [
+                      LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) {
+                          return SizedBox(
+                            width: constraints.maxWidth,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    flex: 5,
+                                    child: widget.isLoading
+                                        ? const SizedBox()
+                                        : Center(
+                                            child: AnimatedContainer(
+                                            padding:
+                                                isHovering ? const EdgeInsets.all(8.0) : const EdgeInsets.all(10.0),
+                                            duration: const Duration(milliseconds: 100),
+                                            curve: Curves.easeOut,
+                                            child: AspectRatio(
+                                              aspectRatio: 1,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(5.0),
+                                                child: image,
+                                              ),
                                             ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      widget.isLoading ? const SizedBox() : Text("\u20B9${widget.event!.price}"),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      widget.isLoading
-                                          ? const SizedBox()
-                                          : Text(
-                                              'date posted: ${widget.event!.eventTime}',
-                                              style: const TextStyle(overflow: TextOverflow.ellipsis),
-                                            ),
-                                    ],
+                                          )),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(
+                                    height: 10.0,
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        widget.isLoading
+                                            ? const SizedBox()
+                                            : Text(
+                                                widget.event!.eventName,
+                                                style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
+                                              ),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        widget.isLoading ? const SizedBox() : Text("\u20B9${widget.event!.price}"),
+                                        const SizedBox(
+                                          height: 10,
+                                        ),
+                                        widget.isLoading
+                                            ? const SizedBox()
+                                            : Text(
+                                                'date posted: ${widget.event!.eventTime}',
+                                                style: const TextStyle(overflow: TextOverflow.ellipsis),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                    if (!widget.isLoading)
-                      Positioned(
-                        right: 10,
-                        top: 10,
-                        child: FavouriteHeartIconWidget(event: widget.event!),
+                          );
+                        },
                       ),
-                  ],
-                ),
-              )),
+                      if (!widget.isLoading)
+                        Positioned(
+                          right: 25,
+                          top: 20,
+                          child: FavouriteHeartIconWidget(event: widget.event!),
+                        ),
+                    ],
+                  ),
+                )),
+          ),
         ),
       ),
     );
