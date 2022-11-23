@@ -1,23 +1,26 @@
 part of product_page;
 
-class ProductEventTile extends StatefulWidget {
+class EventTile extends StatefulWidget {
   final ProductEvent? event;
   final double? tileWidth;
   final bool isLoading;
 
-  const ProductEventTile({
+  const EventTile({
     Key? key,
     required this.event,
     this.tileWidth,
     this.isLoading = false,
-  })  : assert(isLoading || event != null, 'if isLoading is false, then productData and event should not be null'),
+  })  : assert(
+          isLoading || event != null,
+          'if isLoading is false, then productData and event should not be null',
+        ),
         super(key: key);
 
   @override
-  State<ProductEventTile> createState() => _ProductEventTileState();
+  State<EventTile> createState() => _EventTileState();
 }
 
-class _ProductEventTileState extends State<ProductEventTile> {
+class _EventTileState extends State<EventTile> {
   bool isHovering = false;
   Widget image = getRandomTestImage();
 
@@ -58,33 +61,45 @@ class _ProductEventTileState extends State<ProductEventTile> {
                                 children: [
                                   Expanded(
                                     flex: 5,
-                                    child: widget.isLoading
-                                        ? const SizedBox()
-                                        : Center(
-                                            child: AnimatedContainer(
-                                            padding:
-                                                isHovering ? const EdgeInsets.all(8.0) : const EdgeInsets.all(10.0),
-                                            duration: const Duration(milliseconds: 100),
-                                            curve: Curves.easeOut,
-                                            child: AspectRatio(
-                                              aspectRatio: 1,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(5.0),
-                                                child: image,
-                                              ),
+                                    child: Center(
+                                      child: AnimatedContainer(
+                                        padding: isHovering ? const EdgeInsets.all(8.0) : const EdgeInsets.all(10.0),
+                                        duration: const Duration(milliseconds: 100),
+                                        curve: Curves.easeOut,
+                                        child: AspectRatio(
+                                          aspectRatio: 1,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(5.0),
+                                            child: Container(
+                                              color: Theme.of(context).disabledColor,
+                                              child: widget.event?.photoImageProvider != null
+                                                  ? Image(
+                                                      image: widget.event!.photoImageProvider!,
+                                                      fit: BoxFit.cover,
+                                                    )
+                                                  : !widget.isLoading
+                                                      ? const FlutterLogo()
+                                                      : null,
                                             ),
-                                          )),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(
-                                    height: 10.0,
-                                  ),
+                                  const SizedBox(height: 10.0),
                                   Expanded(
                                     flex: 2,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         widget.isLoading
-                                            ? const SizedBox()
+                                            ? Container(
+                                                height: 20.0,
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context).disabledColor,
+                                                  borderRadius: BorderRadius.circular(8.0),
+                                                ),
+                                              )
                                             : Text(
                                                 widget.event!.eventName,
                                                 style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
@@ -92,12 +107,33 @@ class _ProductEventTileState extends State<ProductEventTile> {
                                         const SizedBox(
                                           height: 10,
                                         ),
-                                        widget.isLoading ? const SizedBox() : Text("\u20B9${widget.event!.price}"),
+                                        widget.isLoading
+                                            ? Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      height: 20.0,
+                                                      decoration: BoxDecoration(
+                                                        color: Theme.of(context).disabledColor,
+                                                        borderRadius: BorderRadius.circular(8.0),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const Expanded(child: SizedBox()),
+                                                ],
+                                              )
+                                            : Text("\u20B9${widget.event!.price}"),
                                         const SizedBox(
                                           height: 10,
                                         ),
                                         widget.isLoading
-                                            ? const SizedBox()
+                                            ? Container(
+                                                height: 20.0,
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context).disabledColor,
+                                                  borderRadius: BorderRadius.circular(8.0),
+                                                ),
+                                              )
                                             : Text(
                                                 'date posted: ${widget.event!.eventTime}',
                                                 style: const TextStyle(overflow: TextOverflow.ellipsis),

@@ -135,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   scrollingArrowSize: 50.0,
                   alignItemBuilder: Alignment.centerLeft,
                   scrollPixelsPerClick: (screenSize.width / eventTileWidth) * (eventTileWidth / 1.3),
-                  itemBuilder: (index) => ProductEventTile(
+                  itemBuilder: (index) => EventTile(
                     event: recentEvents[index],
                     tileWidth: eventTileWidth,
                   ),
@@ -148,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     scrollDirection: Axis.horizontal,
                     itemCount: noOfEmptyEvents,
                     itemBuilder: (context, index) {
-                      return ProductEventTile(
+                      return EventTile(
                         event: null,
                         isLoading: true,
                         tileWidth: eventTileWidth,

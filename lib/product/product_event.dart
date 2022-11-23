@@ -1,6 +1,7 @@
 import 'package:ad/product/product_type.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ProductEvent {
   final String _eventId, _eventName, _description, _productId, _searchTag;
@@ -140,4 +141,14 @@ class ProductEvent {
         'photoUrl': photoUrl,
         'searchTag': _searchTag,
       };
+
+  Widget getCachedImage(BuildContext context) => photoUrl != null
+      ? Container(
+          color: Theme.of(context).disabledColor,
+          child: Image(
+            image: photoImageProvider!,
+            fit: BoxFit.cover,
+          ),
+        )
+      : const FlutterLogo();
 }

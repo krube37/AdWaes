@@ -44,7 +44,6 @@ class ProductEventPage extends StatelessWidget {
             future: _getProductEvent(),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                debugPrint("ProductEventPage build: checkzzz error ${snapshot.error}");
                 return const Center(
                   child: Text(
                     'no even available',

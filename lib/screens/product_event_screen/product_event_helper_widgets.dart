@@ -19,7 +19,6 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
         Stack(
           children: [
             Container(
-              height: 450.0,
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 0.2,
@@ -27,11 +26,22 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
                 ),
                 borderRadius: BorderRadius.circular(2.0),
               ),
-              // todo : put event image here
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image.asset(
-                  '../assets/images/photography.jpeg',
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(5.0),
+                    child: Container(
+                      color: Theme.of(context).disabledColor,
+                      child: widget.event.photoImageProvider != null
+                          ? Image(
+                              image: widget.event.photoImageProvider!,
+                              fit: BoxFit.cover,
+                            )
+                          : const FlutterLogo(),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -55,10 +65,15 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
                   onTap: widget.event.isBooked ? _cancelBooking : _bookEvent,
                   child: Container(
                     margin: const EdgeInsets.all(5.0),
-                    padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 60.0),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 20.0,
+                      horizontal: 60.0,
+                    ),
+                    decoration: BoxDecoration(
+                        color: widget.event.isBooked ? Colors.red : Colors.orange,
+                        borderRadius: BorderRadius.circular(10.0)),
                     height: 55.0,
                     width: 200.0,
-                    color: widget.event.isBooked ? Colors.red : Colors.orange,
                     child: Center(
                       child: isBookingBtnLoading
                           ? const AspectRatio(
@@ -150,11 +165,9 @@ class _EventContentWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          // todo: place eventName here
-          //_event.eventName,
-          "The Product Event Name",
-          style: TextStyle(
+        Text(
+          event.eventName,
+          style: const TextStyle(
             fontSize: 25.0,
           ),
         ),
@@ -199,8 +212,8 @@ class _EventContentWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20.0),
-        //todo : put event description here
         Container(
+          constraints: const BoxConstraints(minHeight: 400.0),
           decoration: const BoxDecoration(),
           child: RichText(
               text: TextSpan(children: [
@@ -210,6 +223,8 @@ class _EventContentWidget extends StatelessWidget {
                       fontSize: 18,
                     )),
             TextSpan(
+                //todo: description
+                //   text: event.description,
                 text: 'The Hindu ePaper is a Hindi language daily newspaper in India which is headquartered'
                     ' in Chennai, Tamil Nadu. In 1878, the Hindi editorial started as a weekly edition'
                     ' and became as a daily newspaper in the year 1989. TheHindu paper is one of the 2'

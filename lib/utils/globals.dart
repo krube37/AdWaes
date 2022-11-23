@@ -39,6 +39,7 @@ final ThemeData defaultTheme = ThemeData(
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   primarySwatch: primaryColor,
+  disabledColor: const Color(0xFF424242),
   fontFamily: "Ubuntu",
   visualDensity: VisualDensity.adaptivePlatformDensity,
   appBarTheme: const AppBarTheme(

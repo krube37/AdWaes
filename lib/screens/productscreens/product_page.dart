@@ -11,6 +11,7 @@ import 'package:ad/product/product_data.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -200,7 +201,7 @@ class _ProductPageState extends State<ProductPage> {
                                       ),
                                       itemCount: events.length,
                                       itemBuilder: (context, index) {
-                                        return ProductEventTile(event: events[index]);
+                                        return EventTile(event: events[index]);
                                       });
                                 }),
                       ),
