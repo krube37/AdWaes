@@ -10,6 +10,7 @@ enum RouteState {
   product,
   company,
   productEvent,
+  productProfile,
 }
 
 class RoutePath {
@@ -52,9 +53,13 @@ class RoutePath {
       : path = '/p/${productType!.name}',
         state = RouteState.product;
 
-  RoutePath.productEvent(String this.eventId)
+  RoutePath.productEvent(this.eventId)
       : path = '/p/event/$eventId',
         state = RouteState.productEvent;
+
+  RoutePath.productProfile(this.companyUserName)
+      : path = 'p/profile/$companyUserName',
+        state = RouteState.productProfile;
 
   bool get isHomePage => state == RouteState.home;
 
@@ -73,4 +78,6 @@ class RoutePath {
   bool get isBookedEventsPage => state == RouteState.bookedEvents;
 
   bool get isGeneralSettingsPage => state == RouteState.generalSettings;
+
+  bool get isProductProfilePage => state == RouteState.productProfile && companyUserName != null;
 }

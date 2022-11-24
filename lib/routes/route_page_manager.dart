@@ -1,4 +1,5 @@
 import 'package:ad/routes/route_path.dart';
+import 'package:ad/screens/product_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,6 @@ class PageManager extends ChangeNotifier {
   }
 
   Future<void> setNewRoutePath(RoutePath configuration) async {
-
     if (configuration.isAccountPage) {
       _currentPage = MaterialPage(
         key: const ValueKey('AccountPage'),
@@ -78,6 +78,12 @@ class PageManager extends ChangeNotifier {
         name: configuration.path,
         child: ProductEventPage(eventId: configuration.eventId!),
       );
+    } else if (configuration.isProductProfilePage) {
+      _currentPage = MaterialPage(
+        key: const ValueKey('ProductProfilePage'),
+        name: configuration.path,
+        child: ProductProfilePage(userName: configuration.companyUserName!),
+      );
     } else {
       _currentPage = MaterialPage(
         key: const ValueKey('HomePage'),
@@ -112,6 +118,8 @@ class PageManager extends ChangeNotifier {
     String secondarySegment = pathSegments[1];
     if (secondarySegment == 'event' && pathSegments.length > 1) {
       return _getProductEventRoute(pathSegments);
+    } else if (secondarySegment == 'profile' && pathSegments.length > 1) {
+      return RoutePath.productProfile(pathSegments[2]);
     } else {
       return _getProductsRoute(pathSegments);
     }
@@ -152,6 +160,8 @@ class PageManager extends ChangeNotifier {
   navigateToCompany(ProductType type, String companyUserName) {
     return setNewRoutePath(RoutePath.company(type, companyUserName));
   }
+
+  navigateToProductProfilePage(String companyUserName) => setNewRoutePath(RoutePath.productProfile(companyUserName));
 
   navigateToProduct(ProductType type) => setNewRoutePath(RoutePath.product(type));
 

@@ -107,7 +107,7 @@ class _SearchBarState extends State<_SearchBar> {
     dynamic item = clickedItem.item!;
 
     if (item is ProductData) {
-      PageManager.of(context).navigateToCompany(item.type, item.userName);
+      PageManager.of(context).navigateToProductProfilePage(item.userName);
     } else if (item is ProductEvent) {
       PageManager.of(context).navigateToProductEventPage(item.eventId);
     }

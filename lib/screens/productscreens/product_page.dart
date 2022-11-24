@@ -11,7 +11,7 @@ import 'package:ad/product/product_data.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ad/widgets/underlined_text_clicker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -181,7 +181,7 @@ class _ProductPageState extends State<ProductPage> {
                         child: products.isEmpty || currentUserName.isEmpty
                             ? const Center(child: Text("there are no Events available or selected "))
                             : StreamBuilder<List<ProductEvent>>(
-                                stream: productDataProvider.listenToEvents(widget.productType, currentUserName),
+                                stream: productDataProvider.listenToEvents(currentUserName),
                                 builder: (context, snapshot) {
                                   events.clear();
                                   debugPrint(
@@ -201,7 +201,11 @@ class _ProductPageState extends State<ProductPage> {
                                       ),
                                       itemCount: events.length,
                                       itemBuilder: (context, index) {
-                                        return EventTile(event: events[index]);
+                                        return EventTile(
+                                          event: events[index],
+                                          showProductHeader: false,
+                                          productData: products[currentUserName],
+                                        );
                                       });
                                 }),
                       ),

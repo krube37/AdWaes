@@ -109,6 +109,19 @@ class FirestoreManager {
     return products;
   }
 
+  Future<ProductData?> getProductDataById(String userName) async {
+    try {
+      final CollectionReference<Map> collectionRef = _mInstance.collection(productDataCollectionName);
+      QuerySnapshot<Map> productCollectionData = await collectionRef.where('userName', isEqualTo: userName).get();
+      for (QueryDocumentSnapshot<Map> value in productCollectionData.docs) {
+        return ProductData.fromFirestore(value.data());
+      }
+    } catch (e) {
+      debugPrint("FirestoreManager getProductById: exception in getting product data of id $userName, ERROR : $e");
+    }
+    return null;
+  }
+
   StreamSubscription<QuerySnapshot>? productDataStream;
 
   /// listens to the change of [ProductData] in firestore
@@ -140,7 +153,6 @@ class FirestoreManager {
   /// listens to the change of [ProductEvent] in firestore
   /// if any changes occurs in firestore, returns [eventsStream] which contains new list of [ProductData]
   StreamSubscription<QuerySnapshot> listenToEvents(
-    ProductType type,
     String companyUserName,
     Function(List<ProductEvent> productEvent)? onUpdate,
   ) {
@@ -161,6 +173,25 @@ class FirestoreManager {
       onUpdate?.call(productEvents);
     });
     return eventsStream!;
+  }
+
+  /// gets all [ProductEvent]s of product id [companyUserName]
+  ///
+  /// returns empty if no events or error in fetching the events
+  Future<List<ProductEvent>> getEventsOfProduct(String companyUserName) async {
+    List<ProductEvent> events = [];
+    try {
+      QuerySnapshot<Map> snapshot =
+          await _mInstance.collection(eventsCollectionName).where('productId', isEqualTo: companyUserName).get();
+
+      for (QueryDocumentSnapshot<Map> doc in snapshot.docs) {
+        events.add(ProductEvent.fromFirestore(doc.data()));
+      }
+    } catch (e) {
+      debugPrint(
+          "FirestoreManager getEventsofProduct: exception in getting events of product id $companyUserName, ERROR : $e");
+    }
+    return events;
   }
 
   /// fetches the details of [eventId]
@@ -347,9 +378,10 @@ class FirestoreManager {
   }
 
   /// fetches and returns the events recently posted in all [ProductType] category
+  /// returns List of MapEntry in which key will be [ProductType] and value will be [ProductData]
   /// returns empty if no recent events or any error while fetching from firestore
-  Future<List<ProductEvent>> getRecentEvents() async {
-    List<ProductEvent> recentEvents = [];
+  Future<List<MapEntry<ProductEvent, ProductData>>> getRecentEvents() async {
+    List<MapEntry<ProductEvent, ProductData>> recentEventsToDataEntryList = [];
     try {
       QuerySnapshot<Map> eventSnapshot = await _mInstance
           .collection(eventsCollectionName)
@@ -371,13 +403,14 @@ class FirestoreManager {
       }
 
       for (ProductEvent event in productEvents) {
-        recentEvents.add(event);
+        recentEventsToDataEntryList
+            .add(MapEntry(event, productDataList.firstWhere((element) => element.userName == event.productId)));
       }
-      _dataManager.refreshRecentEvents(recentEvents);
+      _dataManager.refreshRecentEvents(recentEventsToDataEntryList.map((e) => e.key).toList());
     } catch (e, stack) {
       debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
     }
-    return recentEvents;
+    return recentEventsToDataEntryList;
   }
 
   /// searchTag of [ProductData] (which is name of the productData) will be filtered with the string [value]

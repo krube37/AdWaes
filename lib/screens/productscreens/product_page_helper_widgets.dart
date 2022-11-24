@@ -2,16 +2,19 @@ part of product_page;
 
 class EventTile extends StatefulWidget {
   final ProductEvent? event;
+  final ProductData? productData;
   final double? tileWidth;
-  final bool isLoading;
+  final bool isLoading, showProductHeader;
 
   const EventTile({
     Key? key,
     required this.event,
     this.tileWidth,
     this.isLoading = false,
+    required this.productData,
+    this.showProductHeader = true,
   })  : assert(
-          isLoading || event != null,
+          isLoading || (event != null && productData != null),
           'if isLoading is false, then productData and event should not be null',
         ),
         super(key: key);
@@ -48,25 +51,76 @@ class _EventTileState extends State<EventTile> {
                     widget.isLoading ? null : PageManager.of(context).navigateToProductEventPage(widget.event!.eventId),
                 child: SizedBox(
                   width: widget.tileWidth,
-                  child: Stack(
-                    children: [
-                      LayoutBuilder(
-                        builder: (BuildContext context, BoxConstraints constraints) {
-                          return SizedBox(
-                            width: constraints.maxWidth,
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    flex: 5,
-                                    child: Center(
-                                      child: AnimatedContainer(
-                                        padding: isHovering ? const EdgeInsets.all(8.0) : const EdgeInsets.all(10.0),
-                                        duration: const Duration(milliseconds: 100),
-                                        curve: Curves.easeOut,
-                                        child: AspectRatio(
+                  child: LayoutBuilder(
+                    builder: (BuildContext context, BoxConstraints constraints) {
+                      return SizedBox(
+                        width: constraints.maxWidth,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (widget.showProductHeader)
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 20.0,
+                                      backgroundImage:
+                                          widget.isLoading ? null : widget.productData!.profilePhotoImageProvider,
+                                      backgroundColor: Theme.of(context).disabledColor,
+                                      child: widget.productData?.profilePhotoImageProvider == null && !widget.isLoading
+                                          ? const Icon(
+                                              Icons.person_sharp,
+                                              size: 30.0,
+                                              color: Colors.white,
+                                            )
+                                          : null,
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                    Expanded(
+                                      child: widget.isLoading
+                                          ? _getLoadingContainer(height: 35.0)
+                                          : Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                UnderLinedTextClicker(
+                                                  text: widget.productData!.name,
+                                                  style: const TextStyle(
+                                                    //fontSize: 18.0,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                  onTap: () => PageManager.of(context)
+                                                      .navigateToProductProfilePage(widget.productData!.userName),
+                                                ),
+                                                const SizedBox(height: 5),
+                                                UnderLinedTextClicker(
+                                                  text: ProductType.values[widget.event!.type.index].getDisplayName(),
+                                                  style: const TextStyle(
+                                                    fontSize: 12.0,
+                                                  ),
+                                                  onTap: () =>
+                                                      PageManager.of(context).navigateToProduct(widget.event!.type),
+                                                ),
+                                              ],
+                                            ),
+                                    ),
+                                    const SizedBox(width: 30.0),
+                                  ],
+                                ),
+                              if (widget.showProductHeader)
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                              Expanded(
+                                flex: 5,
+                                child: Center(
+                                  child: AnimatedContainer(
+                                    padding: isHovering ? null : const EdgeInsets.all(2.0),
+                                    duration: const Duration(milliseconds: 100),
+                                    curve: Curves.easeOut,
+                                    child: Stack(
+                                      children: [
+                                        AspectRatio(
                                           aspectRatio: 1,
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(5.0),
@@ -83,77 +137,57 @@ class _EventTileState extends State<EventTile> {
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10.0),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        widget.isLoading
-                                            ? Container(
-                                                height: 20.0,
-                                                decoration: BoxDecoration(
-                                                  color: Theme.of(context).disabledColor,
-                                                  borderRadius: BorderRadius.circular(8.0),
-                                                ),
-                                              )
-                                            : Text(
-                                                widget.event!.eventName,
-                                                style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
-                                              ),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        widget.isLoading
-                                            ? Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Container(
-                                                      height: 20.0,
-                                                      decoration: BoxDecoration(
-                                                        color: Theme.of(context).disabledColor,
-                                                        borderRadius: BorderRadius.circular(8.0),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const Expanded(child: SizedBox()),
-                                                ],
-                                              )
-                                            : Text("\u20B9${widget.event!.price}"),
-                                        const SizedBox(
-                                          height: 10,
-                                        ),
-                                        widget.isLoading
-                                            ? Container(
-                                                height: 20.0,
-                                                decoration: BoxDecoration(
-                                                  color: Theme.of(context).disabledColor,
-                                                  borderRadius: BorderRadius.circular(8.0),
-                                                ),
-                                              )
-                                            : Text(
-                                                'date posted: ${widget.event!.eventTime}',
-                                                style: const TextStyle(overflow: TextOverflow.ellipsis),
-                                              ),
+                                        if (!widget.isLoading)
+                                          Positioned(
+                                            right: 10,
+                                            top: 10,
+                                            child: FavouriteHeartIconWidget(event: widget.event!),
+                                          ),
                                       ],
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                      if (!widget.isLoading)
-                        Positioned(
-                          right: 25,
-                          top: 20,
-                          child: FavouriteHeartIconWidget(event: widget.event!),
+                              const SizedBox(height: 10.0),
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    widget.isLoading
+                                        ? _getLoadingContainer(height: 20.0)
+                                        : Text(
+                                            widget.event!.eventName,
+                                            style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
+                                          ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    widget.isLoading
+                                        ? Row(
+                                            children: [
+                                              Expanded(child: _getLoadingContainer(height: 20.0)),
+                                              const Expanded(child: SizedBox()),
+                                            ],
+                                          )
+                                        : Text("\u20B9${widget.event!.price}"),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    widget.isLoading
+                                        ? _getLoadingContainer(height: 20.0)
+                                        : Text(
+                                            'date posted: ${widget.event!.eventTime}',
+                                            style: const TextStyle(overflow: TextOverflow.ellipsis),
+                                          ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                    ],
+                      );
+                    },
                   ),
                 )),
           ),
@@ -161,6 +195,14 @@ class _EventTileState extends State<EventTile> {
       ),
     );
   }
+
+  _getLoadingContainer({required double height}) => Container(
+        height: height,
+        decoration: BoxDecoration(
+          color: Theme.of(context).disabledColor,
+          borderRadius: BorderRadius.circular(height * 0.4),
+        ),
+      );
 }
 
 class MobileSearchEventTile extends StatelessWidget {

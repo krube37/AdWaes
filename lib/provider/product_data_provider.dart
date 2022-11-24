@@ -33,10 +33,10 @@ class ProductDataProvider extends ChangeNotifier {
         notifyListeners();
       });
 
-  Stream<List<ProductEvent>> listenToEvents(ProductType type, String productDataId) {
+  Stream<List<ProductEvent>> listenToEvents(String productDataId) {
     StreamController<List<ProductEvent>> controller = StreamController();
     controller = StreamController();
-    firestoreDatabase.listenToEvents(type, productDataId, (productEvents) {
+    firestoreDatabase.listenToEvents(productDataId, (productEvents) {
       controller.add(productEvents);
       _productEvents
         ..clear()

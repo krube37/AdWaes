@@ -1,6 +1,7 @@
 library home_page;
 
 import 'dart:math';
+import 'package:ad/product/product_data.dart';
 import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
@@ -111,7 +112,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         const Divider(),
         const Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+          padding: EdgeInsets.symmetric(
+            vertical: 20.0,
+            horizontal: 30.0,
+          ),
           child: Text(
             "Recent Events",
             style: TextStyle(fontSize: 25.0),
@@ -122,21 +126,22 @@ class _MyHomePageState extends State<MyHomePage> {
             initialData: null,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<ProductEvent> recentEvents = snapshot.data!;
+                List<MapEntry<ProductEvent, ProductData>> recentEventsToDataEntryList = snapshot.data!;
 
-                if (recentEvents.isEmpty) {
+                if (recentEventsToDataEntryList.isEmpty) {
                   return const Center(
                     child: Text('No events Available'),
                   );
                 }
                 return _CustomHorizontalScroller(
-                  itemLength: recentEvents.length,
+                  itemLength: recentEventsToDataEntryList.length,
                   height: eventTileHeight,
                   scrollingArrowSize: 50.0,
                   alignItemBuilder: Alignment.centerLeft,
                   scrollPixelsPerClick: (screenSize.width / eventTileWidth) * (eventTileWidth / 1.3),
                   itemBuilder: (index) => EventTile(
-                    event: recentEvents[index],
+                    event: recentEventsToDataEntryList[index].key,
+                    productData: recentEventsToDataEntryList[index].value,
                     tileWidth: eventTileWidth,
                   ),
                 );
@@ -150,6 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     itemBuilder: (context, index) {
                       return EventTile(
                         event: null,
+                        productData: null,
                         isLoading: true,
                         tileWidth: eventTileWidth,
                       );
