@@ -186,7 +186,7 @@ class _ScrollingArrowState extends State<_ScrollingArrow> {
                 height: forwardArrowFocus ? widget.size + 2 : widget.size,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25.0),
-                  color: ThemeManager().isDarkTheme ? Colors.black54 : Colors.white24,
+                  color: GeneralSettingsProvider().isDarkTheme ? Colors.black54 : Colors.white24,
                   border: Border.all(color: Colors.grey),
                 ),
                 child: Icon(widget.isLeft ? Icons.navigate_before : Icons.navigate_next),

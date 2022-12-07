@@ -9,10 +9,10 @@ import 'package:ad/product/product_event.dart';
 import 'package:ad/product/product_type.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/productscreens/product_page.dart';
-import 'package:ad/theme_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../general_settings.dart';
 import '../../helper/my_search_field.dart';
 import '../../utils/globals.dart';
 import '../../routes/route_page_manager.dart';
@@ -47,7 +47,7 @@ class _MyAppBarState extends State<MyAppBar> {
   @override
   Widget build(BuildContext context) {
     DataManager dataManager = Provider.of<DataManager>(context);
-    ThemeManager themeManager = ThemeManager();
+    GeneralSettingsProvider settingsProvider = GeneralSettingsProvider();
     return AppBar(
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor?.withAlpha(widget.colorOpacity.toInt() * 100),
       leading: Padding(
@@ -84,7 +84,7 @@ class _MyAppBarState extends State<MyAppBar> {
                   onTap: () => PageManager.of(context).navigateToFavouriteEvent(),
                   child: Icon(
                     CustomIcons.heart_svgrepo_com,
-                    color: themeManager.isDarkTheme ? Colors.white : Colors.black,
+                    color: settingsProvider.isDarkTheme ? Colors.white : Colors.black,
                   ),
                 ),
               ),

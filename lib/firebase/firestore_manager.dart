@@ -37,7 +37,7 @@ class FirestoreManager {
       await updateUserDetails(newUser);
       return newUser;
     }
-    return AdWiseUser.fromFirestoreDB(snapshot.data()!);
+    return AdWiseUser.fromFirestore(snapshot.data()!);
   }
 
   /// updates the user details to firestore database

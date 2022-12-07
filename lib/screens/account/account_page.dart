@@ -1,6 +1,7 @@
 library account_library;
 
 import 'package:ad/adwise_user.dart';
+import 'package:ad/firebase/api_response.dart';
 import 'package:ad/product/product_type.dart';
 import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
@@ -13,9 +14,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker_web/image_picker_web.dart';
 
 import '../../firebase/auth_manager.dart';
+import '../../general_settings.dart';
 import '../../product/product_event.dart';
 import '../../routes/route_page_manager.dart';
-import '../../theme_manager.dart';
 import '../../utils/constants.dart';
 import '../../widgets/custom_sliver.dart';
 
@@ -188,7 +189,12 @@ class _AccountPageState extends State<AccountPage> {
     PageManager.of(context).navigateToGeneralSettingsPage();
   }
 
-  _logout() => AuthManager().signOut(context);
+  _logout() async {
+    ApiResponse response = await AuthManager().signOut(context);
+    if (response.status && mounted) {
+      PageManager.of(context).navigateToHome();
+    }
+  }
 }
 
 class _AccountDesktopTile extends StatelessWidget {

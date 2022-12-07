@@ -1,7 +1,8 @@
 library bottom_bar;
 
-import 'package:ad/theme_manager.dart';
 import 'package:flutter/material.dart';
+
+import '../general_settings.dart';
 
 part 'bottom_bar_helper_widgets.dart';
 
@@ -12,12 +13,11 @@ class BottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeManager themeManager = ThemeManager();
+    GeneralSettingsProvider settingsProvider = GeneralSettingsProvider();
     ThemeData theme = Theme.of(context);
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(0.0)),
-        //color: themeManager.isDarkTheme ? Colors.black87 : Colors.grey.shade100,
       ),
       padding: const EdgeInsets.all(30),
       //color: Colors.blueGrey[900],
@@ -50,7 +50,7 @@ class BottomBar extends StatelessWidget {
                   ],
                 ),
                 Divider(
-                  color: themeManager.isDarkTheme ? Colors.white54 : Colors.black54,
+                  color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
                 ),
                 const SizedBox(
                   height: 10,
@@ -73,7 +73,7 @@ class BottomBar extends StatelessWidget {
                   height: 10,
                 ),
                 Divider(
-                  color: themeManager.isDarkTheme ? Colors.white54 : Colors.black54,
+                  color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
                 ),
                 const SizedBox(height: 20),
                 Text(
@@ -128,7 +128,7 @@ class BottomBar extends StatelessWidget {
                   ],
                 ),
                 Divider(
-                  color: themeManager.isDarkTheme ? Colors.white54 : Colors.black54,
+                  color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
                 ),
                 const SizedBox(height: 20),
                 Text(

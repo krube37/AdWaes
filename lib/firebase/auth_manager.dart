@@ -1,4 +1,5 @@
 import 'package:ad/firebase/api_response.dart';
+import 'package:ad/general_settings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -73,10 +74,10 @@ class AuthManager {
 
   Future<ApiResponse<ConfirmationResult>> signInWithPhoneNumber(String phoneNumber) async {
     debugPrint("AuthManager signInWithPhoneNumber: ");
-    try{
+    try {
       ConfirmationResult result = await auth.signInWithPhoneNumber(phoneNumber);
       return ApiResponse.success(data: result);
-    }catch(e){
+    } catch (e) {
       debugPrint("AuthManager signInWithPhoneNumber: error signing in with phone number $e");
       return ApiResponse.error(errorMessage: e.toString());
     }
@@ -84,7 +85,10 @@ class AuthManager {
 
   Future<ApiResponse<void>> signOut(BuildContext context) async {
     try {
-      await auth.signOut().then((value) => DataManager().signOutCurrentUser(context));
+      await auth.signOut().then((value) {
+        DataManager().signOutCurrentUser(context);
+        GeneralSettingsProvider().resetSettingsToDefault();
+      });
       debugPrint("AuthManager signOut: sigined out successfully ");
       return ApiResponse.success();
     } catch (e) {
@@ -94,12 +98,12 @@ class AuthManager {
   }
 
   Future<ApiResponse<void>> addEmailAddress(String email) async {
-    try{
+    try {
       AuthCredential credential = EmailAuthProvider.credential(email: email, password: 'kjbhwcqokkjwecbj');
 
       UserCredential? cred = await auth.currentUser?.linkWithCredential(credential);
       return ApiResponse.success();
-    }catch(e){
+    } catch (e) {
       debugPrint("AuthManager addEmailAddress: error in adding email address $e");
       return ApiResponse.error(errorMessage: e.toString());
     }

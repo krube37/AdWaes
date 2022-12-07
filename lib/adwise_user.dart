@@ -1,3 +1,4 @@
+import 'package:ad/general_settings.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ class AdWiseUser {
   final DateTime? age;
   final bool? isEmailVerified;
   final ImageProvider? proPicImageProvider;
+  final GeneralSettings settings;
 
   static const String firstNameTitle = 'First name',
       lastNameTitle = 'Last name',
@@ -19,9 +21,10 @@ class AdWiseUser {
       gstNumberTitle = 'GST number',
       businessTypeTitle = 'Business type';
 
-  AdWiseUser(
+  AdWiseUser._(
     this.userId,
-    this.phoneNumber, {
+    this.phoneNumber,
+    this.settings, {
     this.firstName,
     this.emailId,
     this.isEmailVerified,
@@ -37,31 +40,40 @@ class AdWiseUser {
           'if isEmailVerified is true, emailId should be provided',
         );
 
-  factory AdWiseUser.fromFirestoreDB(Map<String, dynamic> user) => AdWiseUser(
-        user['userId'],
-        user['phoneNumber'],
-        firstName: user['firstName'],
-        emailId: user['emailId'],
-        isEmailVerified: user['isEmailVerified'],
-        lastName: user['lastName'],
-        companyName: user['companyName'],
-        gstNumber: user['gstNumber'],
-        age: user['age'] != null ? DateTime.fromMillisecondsSinceEpoch(user['age']) : null,
-        businessType: user['businessType'],
-        profilePhotoUrl: user['profilePhotoUrl'],
-      );
+  factory AdWiseUser.fromFirestore(Map<String, dynamic> user) {
+    return AdWiseUser._(
+      user['userId'],
+      user['phoneNumber'],
+      user['generalSettings'] != null
+          ? GeneralSettings.fromFirestore(user['generalSettings'])
+          : GeneralSettings.defaultSettings(),
+      firstName: user['firstName'],
+      emailId: user['emailId'],
+      isEmailVerified: user['isEmailVerified'],
+      lastName: user['lastName'],
+      companyName: user['companyName'],
+      gstNumber: user['gstNumber'],
+      age: user['age'] != null ? DateTime.fromMillisecondsSinceEpoch(user['age']) : null,
+      businessType: user['businessType'],
+      profilePhotoUrl: user['profilePhotoUrl'],
+    );
+  }
 
-  factory AdWiseUser.newUser(User user) => AdWiseUser(
-        user.uid,
-        user.phoneNumber!,
-        emailId: user.email,
-        isEmailVerified: user.emailVerified,
-        profilePhotoUrl: user.photoURL,
-      );
+  factory AdWiseUser.newUser(User user) {
+    return AdWiseUser._(
+      user.uid,
+      user.phoneNumber!,
+      GeneralSettings.defaultSettings(),
+      emailId: user.email,
+      isEmailVerified: user.emailVerified,
+      profilePhotoUrl: user.photoURL,
+    );
+  }
 
   Map<String, dynamic> get map => {
         'userId': userId,
         'phoneNumber': phoneNumber,
+        'generalSettings': settings.map,
         'firstName': firstName,
         'emailId': emailId,
         'isEmailVerified': isEmailVerified,
@@ -84,6 +96,7 @@ class AdWiseUser {
     String? businessType,
     String? profilePhotoUrl,
     bool? deleteProfilePic,
+    GeneralSettings? generalSettings,
   }) {
     assert((deleteProfilePic == null || !deleteProfilePic || profilePhotoUrl == null),
         'if deleteProfilePic is set to true, then profilePhotoUrl value should not be given');
@@ -91,9 +104,10 @@ class AdWiseUser {
     if (deleteProfilePic == null || !deleteProfilePic) {
       proPicUrl = (profilePhotoUrl?.isNotEmpty ?? false) ? profilePhotoUrl : this.profilePhotoUrl;
     }
-    return AdWiseUser(
+    return AdWiseUser._(
       userId,
       phoneNumber,
+      generalSettings ?? settings,
       firstName: (firstName?.isNotEmpty ?? false) ? firstName! : this.firstName,
       lastName: (lastName?.isNotEmpty ?? false) ? lastName : this.lastName,
       emailId: (emailId?.isNotEmpty ?? false) ? emailId : this.emailId,

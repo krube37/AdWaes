@@ -173,7 +173,7 @@ class _ProfilePicState extends State<_ProfilePic> {
                   padding: const EdgeInsets.all(10.0),
                   child: _CustomInfoBtn(
                     name: 'Remove',
-                    color: ThemeManager().isDarkTheme ? Colors.grey : Colors.grey.shade300,
+                    color: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
                     height: 40.0,
                     onTap: _deleteProfilePic,
                   ),

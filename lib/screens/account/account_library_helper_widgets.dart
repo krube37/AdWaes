@@ -32,7 +32,7 @@ class _SettingsContentTile extends StatelessWidget {
               decoration: BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
-                    color: ThemeManager().isDarkTheme ? Colors.grey : Colors.grey.shade300,
+                    color: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
                   ),
                 ),
               ),
@@ -193,7 +193,7 @@ class _SettingsNameTileState extends State<_SettingsNameTile> {
               padding: const EdgeInsets.all(8.0),
               child: _CustomInfoBtn(
                 name: 'Cancel',
-                color: ThemeManager().isDarkTheme ? Colors.grey : Colors.grey.shade300,
+                color: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
                 onTap: () => widget.onEditMode?.call(false),
               ),
             ),
@@ -425,7 +425,7 @@ class _ThemeTile extends StatefulWidget {
 }
 
 class _ThemeTileState extends State<_ThemeTile> {
-  ThemeManager themeManager = ThemeManager();
+  GeneralSettingsProvider settingsProvider = GeneralSettingsProvider();
 
   @override
   Widget build(BuildContext context) {
@@ -436,7 +436,7 @@ class _ThemeTileState extends State<_ThemeTile> {
           InkWell(
             onTap: _onLightThemePressed,
             child: _getThemeContainer(
-              isEnabled: !themeManager.isDarkTheme,
+              isEnabled: !settingsProvider.isDarkTheme,
               color: Colors.white,
             ),
           ),
@@ -446,7 +446,7 @@ class _ThemeTileState extends State<_ThemeTile> {
           InkWell(
             onTap: _onDarkThemePressed,
             child: _getThemeContainer(
-              isEnabled: themeManager.isDarkTheme,
+              isEnabled: settingsProvider.isDarkTheme,
               color: Colors.black,
             ),
           )
@@ -456,16 +456,16 @@ class _ThemeTileState extends State<_ThemeTile> {
   }
 
   _onLightThemePressed() {
-    if (!themeManager.isDarkTheme) return;
+    if (!settingsProvider.isDarkTheme) return;
 
-    themeManager.toggleThemeMode();
+    settingsProvider.toggleThemeMode();
     setState(() {});
   }
 
   _onDarkThemePressed() {
-    if (themeManager.isDarkTheme) return;
+    if (settingsProvider.isDarkTheme) return;
 
-    themeManager.toggleThemeMode();
+    settingsProvider.toggleThemeMode();
     setState(() {});
   }
 

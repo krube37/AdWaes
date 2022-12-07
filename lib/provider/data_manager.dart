@@ -1,5 +1,6 @@
 import 'package:ad/adwise_user.dart';
 import 'package:ad/firebase/firestore_manager.dart';
+import 'package:ad/general_settings.dart';
 import 'package:ad/product/product_event.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -91,6 +92,7 @@ class DataManager extends ChangeNotifier {
         notifyListeners();
         this.user = await FirestoreManager().getCurrentUserDetails(user);
         fetchingSigInDetails = false;
+        GeneralSettingsProvider().updateUserSettings(this.user?.settings ?? GeneralSettings.defaultSettings());
         refreshFavouriteEventList(await FirestoreManager().getAllFavouriteEvents());
         refreshBookedEventsList(await FirestoreManager().getAllBookedEvents());
       }
