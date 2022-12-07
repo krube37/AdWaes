@@ -197,13 +197,29 @@ class _ProfilePicState extends State<_ProfilePic> {
   }
 
   _deleteProfilePic() async {
-    String url = user.profilePhotoUrl!;
-    setState(() => isLoading = true);
-    bool isSuccess = await FirestoreManager().deleteUserProfilePic();
-    if (isSuccess) {
-      CachedNetworkImage.evictFromCache(url);
-      setState(() => isLoading = false);
-    }
+    PrimaryDialog dialog = PrimaryDialog(
+      context,
+      'Remove photo',
+      description: 'Do you really want to remove the profile picture?',
+      yesButton: PrimaryDialogButton(
+        'Yes',
+        onTap: () async {
+          Navigator.of(context).pop();
+          String url = user.profilePhotoUrl!;
+          setState(() => isLoading = true);
+          bool isSuccess = await FirestoreManager().deleteUserProfilePic();
+          if (isSuccess) {
+            CachedNetworkImage.evictFromCache(url);
+            setState(() => isLoading = false);
+          }
+        },
+      ),
+      noButton: PrimaryDialogButton(
+        'cancel',
+        onTap: () => Navigator.of(context).pop(),
+      ),
+    );
+    await dialog.show();
   }
 }
 

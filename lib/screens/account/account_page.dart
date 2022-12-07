@@ -6,6 +6,7 @@ import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/widgets/bottombar.dart';
+import 'package:ad/widgets/primary_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:ad/firebase/firestore_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
