@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scaffold(
           body: CustomScrollView(
             slivers: [
-              MobileAppbar(),
+              MobileSliverAppbar(),
               SliverToBoxAdapter(
                 child: _getBody(),
               )

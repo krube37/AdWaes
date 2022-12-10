@@ -8,7 +8,7 @@ class BookedEventsPage extends StatelessWidget {
     List<ProductEvent> bookedEvents = DataManager().bookedEvents;
     debugPrint("BookedEventsPage build: booked events ${bookedEvents.map((e) => e.eventId)}");
     return Scaffold(
-      appBar: const MyAppBar(showSearchBar: false),
+      appBar: isMobileView(context) ? const MobileAppBar(text: "Booked Events") : const MyAppBar(showSearchBar: false),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(
@@ -18,16 +18,18 @@ class BookedEventsPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Booked Events',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+              if (!isMobileView(context))
+                const Text(
+                  'Booked Events',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
+              if (!isMobileView(context))
+                const SizedBox(
+                  height: 50,
+                ),
               const SizedBox(
                 height: 20.0,
               ),

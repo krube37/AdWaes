@@ -7,7 +7,8 @@ class FavouriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<ProductEvent> favouriteEvents = DataManager().favouriteEvents;
     return Scaffold(
-      appBar: const MyAppBar(showSearchBar: false),
+      appBar:
+          isMobileView(context) ? const MobileAppBar(text: "Favourite Events") : const MyAppBar(showSearchBar: false),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(
@@ -17,19 +18,18 @@ class FavouriteScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Favourite Events',
-                style: TextStyle(
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.bold,
+              if (!isMobileView(context))
+                const Text(
+                  'Favourite Events',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              if (!isMobileView(context))
+                const SizedBox(
+                  height: 50,
+                ),
               Expanded(
                 child: StatefulBuilder(
                   builder: (context, setState) {

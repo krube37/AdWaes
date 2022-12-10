@@ -31,7 +31,7 @@ void main() async {
         builder: (_, dataManagerValue, __) {
           debugPrint(" main: datamanager reloaded ");
           return Consumer<GeneralSettingsProvider>(
-            builder: (_, settingsProvider, __) {
+            builder: (context, settingsProvider, __) {
               debugPrint(" settings provider reloaded: ${dataManagerValue.user}");
               return MaterialApp.router(
                 title: 'Adwisor',
@@ -41,6 +41,7 @@ void main() async {
                 debugShowCheckedModeBanner: false,
                 routerDelegate: MyRouteDelegate(),
                 routeInformationParser: RouteParser(),
+                backButtonDispatcher: RootBackButtonDispatcher(),
                 builder: (context, child) => Overlay(
                   initialEntries: [OverlayEntry(builder: (context) => child!)],
                 ),

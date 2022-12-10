@@ -6,9 +6,8 @@ class PersonalInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AdWiseUser user = DataManager().user!;
-    ThemeData theme = Theme.of(context);
     return Scaffold(
-      appBar: const MyAppBar(showSearchBar: false),
+      appBar: isMobileView(context) ? const MobileAppBar(text: "Personal Info") : const MyAppBar(showSearchBar: false),
       body: isMobileView(context)
           ? _MobileView(
               user: user,
@@ -83,33 +82,15 @@ class _MobileView extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(15.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(
-                top: 40.0,
-                bottom: 20.0,
+            Container(
+              constraints: const BoxConstraints(
+                maxWidth: 300,
               ),
-              child: Text(
-                "Personal Info",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 30.0,
-                ),
-              ),
+              child: const _ProfilePic(),
             ),
-            Column(
-              children: [
-                Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 300,
-                  ),
-                  child: const _ProfilePic(),
-                ),
-                const SizedBox(width: 20.0),
-                const _InfoContent(),
-              ],
-            ),
+            const SizedBox(width: 20.0),
+            const _InfoContent(),
           ],
         ),
       ),
@@ -186,15 +167,14 @@ class _ProfilePicState extends State<_ProfilePic> {
   }
 
   _pickProfilePic() async {
-    if (kIsWeb) {
-      Uint8List? imageInBytes = await image_picker.pickImage();
-      if (imageInBytes == null) return;
+    Uint8List? imageInBytes = await conditional_import.pickImage();
+    if (imageInBytes == null) return;
 
-      setState(() => isLoading = true);
-      bool isSuccess = await FirestoreManager().updateUserProfilePic(imageInBytes);
-      if (isSuccess) {
-        setState(() => isLoading = false);
-      }
+    setState(() => isLoading = true);
+    bool isSuccess = await FirestoreManager().updateUserProfilePic(imageInBytes);
+    if (isSuccess) {
+      DataManager.notify();
+      setState(() => isLoading = false);
     }
   }
 

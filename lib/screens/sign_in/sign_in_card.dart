@@ -6,6 +6,7 @@ import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/provider/update_user_details_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,8 @@ class SignInCard extends StatefulWidget {
 class _SignInCardState extends State<SignInCard> {
   String? _phoneNumberErrorText, _otpErrorText;
   late SignInProvider _provider;
-  ConfirmationResult? _otpConfirmationResult;
+  ConfirmationResult? _otpConfirmationResultForWeb;
+  String? otpVerificationIdForNative;
   String? phoneNumber;
   bool waitingForOTP = false;
 
@@ -98,35 +100,54 @@ class _SignInCardState extends State<SignInCard> {
   }
 
   _onContinueButtonClicked() async {
-    String email = _provider.phoneNumberTextController.text.trim();
+    String phoneNumber = _provider.phoneNumberTextController.text.trim();
 
-    if (!_validateFilledFields(email)) {
+    if (!_validateFilledFields(phoneNumber)) {
       setState(() {});
       return;
     }
 
     _provider.setSendingOtpState();
 
-    ApiResponse response = await AuthManager().signInWithPhoneNumber(_provider.phoneNumberTextController.text.trim());
-    if (response.status) {
-      _otpConfirmationResult = response.data;
-    }
-
-    setState(() {
-      if (_otpConfirmationResult != null) {
-        waitingForOTP = true;
-        phoneNumber = _provider.phoneNumberTextController.text.trim();
-        _provider.setIdleState();
-      } else {
-        _provider.setIdleState(phoneNumberErrorMessage: 'unable to send Verification Code!');
+    if (kIsWeb) {
+      ApiResponse response = await AuthManager().signInWithPhoneNumber(phoneNumber);
+      if (response.status) {
+        _otpConfirmationResultForWeb = response.data;
       }
-    });
+
+      setState(() {
+        if (_otpConfirmationResultForWeb != null) {
+          waitingForOTP = true;
+          _provider.setIdleState();
+        } else {
+          _provider.setIdleState(phoneNumberErrorMessage: 'unable to send Verification Code!');
+        }
+      });
+    } else {
+      FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: _onVerificationCompletedNative,
+        verificationFailed: _onVerificationFailedNative,
+        codeSent: _onCodeSentNative,
+        codeAutoRetrievalTimeout: _codeAutoRetrievalTimeoutNative,
+      );
+    }
   }
 
   _onSigInButtonClicked() async {
+    debugPrint("_SignInCardState _onSigInButtonClicked:");
     try {
+      String otp = _provider.otpTextController.text.trim();
       _provider.setVerifyingOtpState();
-      UserCredential userCreds = await _otpConfirmationResult!.confirm(_provider.otpTextController.text.trim());
+      UserCredential userCreds;
+      if (kIsWeb) {
+        userCreds = await _otpConfirmationResultForWeb!.confirm(otp);
+      } else {
+        PhoneAuthCredential credential =
+            PhoneAuthProvider.credential(verificationId: otpVerificationIdForNative!, smsCode: otp);
+
+        userCreds = await FirebaseAuth.instance.signInWithCredential(credential);
+      }
 
       if (userCreds.user != null) {
         bool isNewUser = userCreds.additionalUserInfo?.isNewUser ?? false;
@@ -163,11 +184,49 @@ class _SignInCardState extends State<SignInCard> {
     }
   }
 
+  _onCodeSentNative(String verificationId, int? forceResendingToken) {
+    debugPrint("_SignInCardState _onContinueButtonClicked: onCodeSent $verificationId and $forceResendingToken");
+    if (mounted) {
+      setState(() {
+        otpVerificationIdForNative = verificationId;
+        waitingForOTP = true;
+        _provider.setIdleState();
+      });
+    }
+  }
+
+  _codeAutoRetrievalTimeoutNative(String verificationId) {
+    debugPrint("_SignInCardState _onContinueButtonClicked: codeAutoRetrievalTimeout $verificationId");
+    if (mounted) {
+      setState(() {
+        waitingForOTP = false;
+        otpVerificationIdForNative = null;
+      });
+    }
+  }
+
+  _onVerificationFailedNative(FirebaseAuthException error) {
+    debugPrint("_SignInCardState _onContinueButtonClicked: verificationFailed ${error.code}");
+    if (mounted) {
+      if (error.code == 'invalid-phone-number') {
+        _provider.setIdleState(phoneNumberErrorMessage: 'Invalid phone Number');
+      } else if (error.code == 'otp error code to be pasted here') {
+        _provider.setIdleState(phoneNumberErrorMessage: 'Wrong otp!');
+      } else {
+        _provider.setIdleState(phoneNumberErrorMessage: 'Something went wrong');
+      }
+    }
+  }
+
+  _onVerificationCompletedNative(PhoneAuthCredential authCredential) {
+    debugPrint("_SignInCardState _onContinueButtonClicked:");
+  }
+
   _onBackPressed() {
     debugPrint("_SignInCardState _onBackPressed: $waitingForOTP");
     if (waitingForOTP) {
       setState(() {
-        _otpConfirmationResult = null;
+        _otpConfirmationResultForWeb = null;
         waitingForOTP = false;
       });
     } else {

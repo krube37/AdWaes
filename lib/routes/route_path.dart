@@ -80,4 +80,10 @@ class RoutePath {
   bool get isGeneralSettingsPage => state == RouteState.generalSettings;
 
   bool get isProductProfilePage => state == RouteState.productProfile && companyUserName != null;
+
+  @override
+  int get hashCode => Object.hash(path.hashCode, state.hashCode);
+
+  @override
+  bool operator ==(Object other) => other is RoutePath && hashCode == other.hashCode;
 }

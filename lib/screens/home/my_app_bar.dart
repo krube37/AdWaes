@@ -152,20 +152,52 @@ class _MyAppBarState extends State<MyAppBar> {
   }
 }
 
-class MobileAppbar extends StatefulWidget {
+/// default height of app bar is 56.0...
+/// but we are using custom height in Appbar ([toolbarHeight]) as 75.0
+/// if need to use any bottom feature in appbar or need to manually set different height for appBar later,
+///  should change the value of [localPreferredSize] according to new height
+class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final Size localPreferredSize;
+  final String? text;
+
+  const MobileAppBar({
+    Key? key,
+    this.text,
+  })  : localPreferredSize = const Size.fromHeight(75.0),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Text(
+        text ?? "Adwise",
+        style: const TextStyle(
+          color: primaryColor,
+          fontSize: 25.0,
+          fontFamily: 'Ubuntu',
+        ),
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => localPreferredSize;
+}
+
+class MobileSliverAppbar extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode focusNode;
 
-  MobileAppbar({Key? key})
+  MobileSliverAppbar({Key? key})
       : controller = TextEditingController(),
         focusNode = FocusNode(),
         super(key: key);
 
   @override
-  State<MobileAppbar> createState() => _MobileAppbarState();
+  State<MobileSliverAppbar> createState() => _MobileSliverAppbarState();
 }
 
-class _MobileAppbarState extends State<MobileAppbar> {
+class _MobileSliverAppbarState extends State<MobileSliverAppbar> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

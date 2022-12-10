@@ -17,51 +17,56 @@ class PageManager extends ChangeNotifier {
 
   GlobalKey<NavigatorState> get navigatorKey => _key;
 
-  Page _currentPage = MaterialPage(
-    key: UniqueKey(),
-    child: const MyHomePage(),
-    name: RoutePath.home().path,
-  );
+  final List<Page> _pageStack = [
+    MaterialPage(
+      key: UniqueKey(),
+      child: const MyHomePage(),
+      name: RoutePath.home().path,
+    )
+  ];
 
-  Page get currentPage => _currentPage;
+  Page get currentPage => _pageStack.last;
+
+  List<Page> get pageStack => _pageStack;
 
   RoutePath get currentPath {
-    return parseRoute(_currentPage.name);
+    return parseRoute(currentPage.name);
   }
 
   Future<void> setNewRoutePath(RoutePath configuration) async {
+    if (configuration.path == _pageStack.last.name) return;
     if (configuration.isAccountPage) {
-      _currentPage = MaterialPage(
+      _pageStack.add(MaterialPage(
         key: const ValueKey('AccountPage'),
         name: configuration.path,
         child: const AccountPage(),
-      );
+      ));
     } else if (configuration.isPersonalInfoPage) {
-      _currentPage = MaterialPage(
+      _pageStack.add(MaterialPage(
         key: const ValueKey('PersonalInfoPage'),
         name: configuration.path,
         child: const PersonalInfoPage(),
-      );
+      ));
     } else if (configuration.isFavouriteScreen) {
-      _currentPage = MaterialPage(
+      _pageStack.add(MaterialPage(
         key: const ValueKey('FavouriteEventsPage'),
         name: configuration.path,
         child: const FavouriteScreen(),
-      );
+      ));
     } else if (configuration.isBookedEventsPage) {
-      _currentPage = MaterialPage(
+      _pageStack.add(MaterialPage(
         key: const ValueKey('BookedEventsPage'),
         name: configuration.path,
         child: const BookedEventsPage(),
-      );
+      ));
     } else if (configuration.isGeneralSettingsPage) {
-      _currentPage = MaterialPage(
+      _pageStack.add(MaterialPage(
         key: const ValueKey('GeneralSettingsPage'),
         name: configuration.path,
         child: const GeneralSettingsPage(),
-      );
+      ));
     } else if (configuration.isProductPage || configuration.isCompanyPage) {
-      _currentPage = MaterialPage(
+      _pageStack.add(MaterialPage(
         key: ValueKey(configuration.productType!.name),
         name: configuration.path,
         child: ChangeNotifierProvider<ProductDataProvider>(
@@ -71,25 +76,27 @@ class PageManager extends ChangeNotifier {
             currentUserName: configuration.companyUserName,
           ),
         ),
-      );
+      ));
     } else if (configuration.isProductEventPage) {
-      _currentPage = MaterialPage(
+      _pageStack.add(MaterialPage(
         key: const ValueKey('ProductEventPage'),
         name: configuration.path,
         child: ProductEventPage(eventId: configuration.eventId!),
-      );
+      ));
     } else if (configuration.isProductProfilePage) {
-      _currentPage = MaterialPage(
+      _pageStack.add(MaterialPage(
         key: const ValueKey('ProductProfilePage'),
         name: configuration.path,
         child: ProductProfilePage(userName: configuration.companyUserName!),
-      );
+      ));
     } else {
-      _currentPage = MaterialPage(
-        key: const ValueKey('HomePage'),
-        child: const MyHomePage(),
-        name: RoutePath.home().path,
-      );
+      _pageStack
+        ..clear()
+        ..add(MaterialPage(
+          key: const ValueKey('HomePage'),
+          child: const MyHomePage(),
+          name: RoutePath.home().path,
+        ));
     }
     notifyListeners();
   }
@@ -152,6 +159,12 @@ class PageManager extends ChangeNotifier {
       }
     }
     return RoutePath.account();
+  }
+
+  /// removes top most route which is showing in UI
+  popRoute() {
+    _pageStack.removeLast();
+    notifyListeners();
   }
 
   /// navigation helper methods

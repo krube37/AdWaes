@@ -8,12 +8,18 @@ const primaryColor = Colors.orange;
 
 final ThemeData defaultTheme = ThemeData(
   brightness: Brightness.light,
+  accentColor: primaryColor,
   primarySwatch: primaryColor,
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.white,
   ),
   iconTheme: const IconThemeData(
     color: Colors.black,
+  ),
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    selectedItemColor: primaryColor,
+    selectedIconTheme: IconThemeData(color: primaryColor),
+    backgroundColor: Colors.white,
   ),
   primaryColorLight: Colors.grey.shade400,
   // circle avatar background color
@@ -39,6 +45,7 @@ final ThemeData defaultTheme = ThemeData(
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
   primarySwatch: primaryColor,
+  accentColor: primaryColor,
   disabledColor: const Color(0xFF424242),
   fontFamily: "Ubuntu",
   visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -48,6 +55,11 @@ final ThemeData darkTheme = ThemeData(
   scaffoldBackgroundColor: const Color(0xFF121212),
   iconTheme: const IconThemeData(
     color: Colors.white,
+  ),
+  bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    selectedItemColor: primaryColor,
+    selectedIconTheme: IconThemeData(color: primaryColor),
+    backgroundColor: Color(0xFF121212),
   ),
   cardColor: const Color(0xFF282828),
   elevatedButtonTheme: ElevatedButtonThemeData(

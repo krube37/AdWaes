@@ -474,8 +474,8 @@ class _ThemeTileState extends State<_ThemeTile> {
     required color,
   }) =>
       Container(
-        height: 20.0,
-        width: 20.0,
+        height: 30.0,
+        width: 30.0,
         decoration: BoxDecoration(
           color: color,
           border: Border.all(

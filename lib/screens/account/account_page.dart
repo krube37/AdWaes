@@ -3,6 +3,7 @@ library account_library;
 import 'package:ad/adwise_user.dart';
 import 'package:ad/firebase/api_response.dart';
 import 'package:ad/product/product_type.dart';
+import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
@@ -13,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:ad/firebase/firestore_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ad/utils/conditional_imports/native_conditional_imports.dart'
-    if (dart.library.html) 'package:ad/utils/conditional_imports/web_conditional_imports.dart' as image_picker;
+    if (dart.library.html) 'package:ad/utils/conditional_imports/web_conditional_imports.dart' as conditional_import;
 
 import '../../firebase/auth_manager.dart';
 import '../../general_settings.dart';
@@ -42,11 +43,26 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  DataManager dataManager = DataManager();
+
   @override
   Widget build(BuildContext context) {
-    AdWiseUser user = DataManager().user!;
+    if (dataManager.user == null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        AdWiseUser? user = await SignInManager().showSignInDialog(context);
+        if (user != null) {
+          setState(() {});
+        } else {
+          if (mounted) {
+            PageManager.of(context).popRoute();
+          }
+        }
+      });
+      return const SizedBox();
+    }
+    AdWiseUser user = dataManager.user!;
     return Scaffold(
-      appBar: const MyAppBar(showSearchBar: false),
+      appBar: isMobileView(context) ? const MobileAppBar(text: "Account") : const MyAppBar(showSearchBar: false),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -61,10 +77,11 @@ class _AccountPageState extends State<AccountPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 70.0),
-                      Text("Account",
-                          style: Theme.of(context).textTheme.headline6?.copyWith(
-                                fontSize: 30.0,
-                              )),
+                      if (!isMobileView(context))
+                        Text("Account",
+                            style: Theme.of(context).textTheme.headline6?.copyWith(
+                                  fontSize: 30.0,
+                                )),
                       const SizedBox(height: 20.0),
                       Text("Hi ${user.displayName},",
                           style: Theme.of(context).textTheme.headline6?.copyWith(
@@ -126,6 +143,7 @@ class _AccountPageState extends State<AccountPage> {
                             )
                           : ListView(
                               shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
                               children: [
                                 _AccountMobileTile(
                                   user: user,
@@ -274,7 +292,7 @@ class _AccountMobileTile extends StatelessWidget {
   final AdWiseUser user;
   final String header;
   final Function? onTap;
-  final Color headerColor;
+  final Color? headerColor;
 
   const _AccountMobileTile({
     Key? key,
@@ -282,13 +300,13 @@ class _AccountMobileTile extends StatelessWidget {
     required this.user,
     required this.header,
     this.onTap,
-    this.headerColor = Colors.black87,
+    this.headerColor,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+      padding: !isMobileView(context) ? const EdgeInsets.symmetric(horizontal: 30.0) : EdgeInsets.zero,
       child: InkWell(
         onTap: () => onTap?.call(),
         hoverColor: Colors.transparent,

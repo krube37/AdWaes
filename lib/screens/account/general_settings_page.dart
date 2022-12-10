@@ -9,11 +9,13 @@ class GeneralSettingsPage extends StatefulWidget {
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   List<bool> editMode = List.filled(1, false);
+
   @override
   Widget build(BuildContext context) {
     GeneralSettingsProvider settingsProvider = GeneralSettingsProvider();
     return Scaffold(
-      appBar: const MyAppBar(showSearchBar: false),
+      appBar:
+          isMobileView(context) ? const MobileAppBar(text: " General Settings") : const MyAppBar(showSearchBar: false),
       body: Column(
         children: [
           _SettingsContentTile(

@@ -156,9 +156,7 @@ class _CustomButtonState extends State<_CustomButton> {
         IgnorePointer(
           ignoring: provider.isSendingOtp,
           child: ElevatedButton(
-            onPressed: () {
-              widget.onPressed.call();
-            },
+            onPressed: () => widget.onPressed.call(),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Center(

@@ -30,6 +30,7 @@ class _CustomHorizontalScrollerState extends State<_CustomHorizontalScroller> {
   Widget build(BuildContext context) {
     _controller = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if(!mounted) return;
       if ((!disableForwardScroll && _controller.position.extentAfter == 0) ||
           (disableForwardScroll && _controller.position.extentAfter != 0) ||
           (!disableBackScroll && _controller.position.extentBefore == 0) ||

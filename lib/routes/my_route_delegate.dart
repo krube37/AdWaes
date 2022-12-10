@@ -21,15 +21,13 @@ class MyRouteDelegate extends RouterDelegate<RoutePath>
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: pageManager,
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => pageManager,
       child: Consumer<PageManager>(
-        builder: (context, pageManager, child) {
-          return HomeScaffold(
-            pageManager: pageManager,
-            navigatorKey: navigatorKey,
-          );
-        },
+        builder: (context, pageManager, child) => HomeScaffold(
+          pageManager: pageManager,
+          navigatorKey: navigatorKey,
+        ),
       ),
     );
   }
@@ -42,6 +40,17 @@ class MyRouteDelegate extends RouterDelegate<RoutePath>
 
   @override
   RoutePath? get currentConfiguration => pageManager.currentPath;
+
+  @override
+  Future<bool> popRoute() async {
+    debugPrint("MyRouteDelegate popRoute: ");
+    if (pageManager.pageStack.length > 1) {
+      pageManager.pageStack.removeLast();
+      return true;
+    }
+
+    return false;
+  }
 }
 
 class HomeScaffold extends StatefulWidget {
@@ -63,6 +72,14 @@ class _HomeScaffoldState extends State<HomeScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    RoutePath currentPath = widget.pageManager.currentPath;
+    if (currentPath == RoutePath.home()) {
+      selectedIndex = 0;
+    } else if (currentPath == RoutePath.favouriteEvents()) {
+      selectedIndex = 1;
+    } else if (currentPath == RoutePath.account()) {
+      selectedIndex = 2;
+    }
     return Scaffold(
       body: Navigator(
         key: widget.navigatorKey,
@@ -70,9 +87,18 @@ class _HomeScaffoldState extends State<HomeScaffold> {
         onPopPage: _onPopPage,
       ),
       bottomNavigationBar: isMobileView(context)
-          ? HomeBottomNavigationBar(
-              selectedIndex: selectedIndex,
-              onItemTapped: onItemTapped,
+          ? Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                top: BorderSide(
+                  color: Theme.of(context).disabledColor,
+                  width: 1.0,
+                ),
+              )),
+              child: HomeBottomNavigationBar(
+                selectedIndex: selectedIndex,
+                onItemTapped: onItemTapped,
+              ),
             )
           : null,
     );

@@ -25,7 +25,6 @@ class PrimaryDialog {
 
     return await showDialog<T>(
       context: context,
-      barrierColor: Colors.black26,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext context) {
         return StatefulBuilder(builder: (context, setState) {
@@ -44,10 +43,10 @@ class PrimaryDialog {
                     Container(
                       height: 50.0,
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
-                            color: Color(0xFFE4E8EB),
+                            color: Theme.of(context).disabledColor,
                           ),
                         ),
                       ),
@@ -56,7 +55,6 @@ class PrimaryDialog {
                         title,
                         style: const TextStyle(
                           fontSize: 18.0,
-                          color: Color(0xFF191919),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -72,7 +70,6 @@ class PrimaryDialog {
                               description!,
                               style: const TextStyle(
                                 fontSize: 14.0,
-                                color: Color(0xFF191919),
                               ),
                             ),
                           ),
@@ -91,7 +88,7 @@ class PrimaryDialog {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: const Color(0xFFC2C7C7),
+                                        color: primaryColor,
                                         width: 1.0,
                                       ),
                                       borderRadius: BorderRadius.circular(2.0),
