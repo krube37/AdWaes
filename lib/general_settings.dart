@@ -41,55 +41,63 @@ class GeneralSettings {
 
 class GeneralSettingsProvider extends ChangeNotifier {
   static final mInstance = GeneralSettingsProvider._();
-  GeneralSettings settings;
-  DataManager dataManager;
-  FirestoreManager firestoreManager;
+  GeneralSettings _settings;
+  DataManager _dataManager;
+  FirestoreManager _firestoreManager;
 
   GeneralSettingsProvider._()
-      : settings = DataManager().user?.settings ?? GeneralSettings.defaultSettings(),
-        dataManager = DataManager(),
-        firestoreManager = FirestoreManager();
+      : _settings = DataManager().user?.settings ?? GeneralSettings.defaultSettings(),
+        _dataManager = DataManager(),
+        _firestoreManager = FirestoreManager();
 
   factory GeneralSettingsProvider() => mInstance;
 
-  bool get isDarkTheme => settings.themeMode.isDarkTheme;
+  bool get isDarkTheme => _settings.themeMode.isDarkTheme;
 
-  ThemeMode get themeMode => settings.themeMode;
+  ThemeMode get themeMode => _settings.themeMode;
+
+  String get timeZone => _settings.timeZone;
 
   toggleThemeMode() {
-    settings = settings.copyWith(
-      themeMode: settings.themeMode.isDarkTheme ? ThemeMode.light : ThemeMode.dark,
+    _settings = _settings.copyWith(
+      themeMode: _settings.themeMode.isDarkTheme ? ThemeMode.light : ThemeMode.dark,
     );
-    dataManager.user = dataManager.user?.copyWith(generalSettings: settings);
-    firestoreManager.updateUserDetails(dataManager.user!);
+    if (_dataManager.user != null) {
+      _dataManager.user = _dataManager.user!.copyWith(generalSettings: _settings);
+      _firestoreManager.updateUserDetails(_dataManager.user!);
+    }
     notifyListeners();
   }
 
   setThemeMode(ThemeMode themeMode) {
-    if (themeMode == settings.themeMode) return;
-    settings = settings.copyWith(themeMode: themeMode);
-    dataManager.user = dataManager.user?.copyWith(generalSettings: settings);
-    firestoreManager.updateUserDetails(dataManager.user!);
+    if (themeMode == _settings.themeMode) return;
+    _settings = _settings.copyWith(themeMode: themeMode);
+    if (_dataManager.user != null) {
+      _dataManager.user = _dataManager.user!.copyWith(generalSettings: _settings);
+      _firestoreManager.updateUserDetails(_dataManager.user!);
+    }
     notifyListeners();
   }
 
   setTimeZone(String zone) {
-    if (settings.timeZone == zone) return;
-    settings = settings.copyWith(timeZone: zone);
-    dataManager.user = dataManager.user?.copyWith(generalSettings: settings);
-    firestoreManager.updateUserDetails(dataManager.user!);
+    if (_settings.timeZone == zone) return;
+    _settings = _settings.copyWith(timeZone: zone);
+    if (_dataManager.user != null) {
+      _dataManager.user = _dataManager.user!.copyWith(generalSettings: _settings);
+      _firestoreManager.updateUserDetails(_dataManager.user!);
+    }
     notifyListeners();
   }
 
   updateUserSettings(GeneralSettings settings) {
-    this.settings = settings;
+    _settings = settings;
     notifyListeners();
   }
 
   resetSettingsToDefault() {
-    settings = GeneralSettings.defaultSettings();
+    _settings = GeneralSettings.defaultSettings();
     notifyListeners();
   }
 
-  get map => settings.map;
+  get map => _settings.map;
 }

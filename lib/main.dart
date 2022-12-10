@@ -29,9 +29,10 @@ void main() async {
       ],
       child: Consumer<DataManager>(
         builder: (_, dataManagerValue, __) {
+          debugPrint(" main: datamanager reloaded ");
           return Consumer<GeneralSettingsProvider>(
             builder: (_, settingsProvider, __) {
-              debugPrint("_AdWaesAppState build: user ${dataManagerValue.user}");
+              debugPrint(" settings provider reloaded: ${dataManagerValue.user}");
               return MaterialApp.router(
                 title: 'Adwisor',
                 theme: defaultTheme,
@@ -41,9 +42,7 @@ void main() async {
                 routerDelegate: MyRouteDelegate(),
                 routeInformationParser: RouteParser(),
                 builder: (context, child) => Overlay(
-                  initialEntries: [
-                    OverlayEntry(builder: (context)=> child!)
-                  ],
+                  initialEntries: [OverlayEntry(builder: (context) => child!)],
                 ),
               );
             },

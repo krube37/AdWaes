@@ -33,6 +33,7 @@ class DataManager extends ChangeNotifier {
 
   /// clears and re-adds all the favourite event
   refreshFavouriteEventList(List<ProductEvent> events) {
+    debugPrint("DataManager refreshFavouriteEventList: ${events.length}");
     _favouriteEvents
       ..clear()
       ..addAll(events);
@@ -52,11 +53,13 @@ class DataManager extends ChangeNotifier {
   /// [_bookedEvents] are arranged in descending order by booked time
   /// this method will insert the new element at 0th position, as the event booking now is the latest
   addBookedEvent(ProductEvent event) {
+    debugPrint("DataManager addBookedEvent: ${event.eventId}");
     _bookedEvents.insert(0, event);
     notifyListeners();
   }
 
   refreshBookedEventsList(List<ProductEvent> events) {
+    debugPrint("DataManager refreshBookedEventsList: ${events.length}");
     _bookedEvents
       ..clear()
       ..addAll(events);
@@ -70,11 +73,12 @@ class DataManager extends ChangeNotifier {
 
   List<ProductEvent> get recentEvents => _recentEvents;
 
-  refreshRecentEvents(List<ProductEvent> events) {
+  refreshRecentEvents(List<ProductEvent> events, {notify = true}) {
+    debugPrint("DataManager refreshRecentEvents: ${events.length}");
     _recentEvents
       ..clear()
       ..addAll(events);
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   initialize() async {
@@ -101,6 +105,7 @@ class DataManager extends ChangeNotifier {
   }
 
   initialiseUserCreds(AdWiseUser adWiseUser) async {
+    debugPrint("DataManager initialiseUserCreds: ${adWiseUser.userId}");
     user = adWiseUser;
     refreshFavouriteEventList(await FirestoreManager().getAllFavouriteEvents());
     refreshBookedEventsList(await FirestoreManager().getAllBookedEvents());
@@ -108,6 +113,7 @@ class DataManager extends ChangeNotifier {
   }
 
   signOutCurrentUser(BuildContext context) {
+    debugPrint("DataManager signOutCurrentUser: ");
     user = null;
     _favouriteEvents.clear();
     _bookedEvents.clear();

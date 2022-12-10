@@ -8,10 +8,12 @@ import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/widgets/bottombar.dart';
 import 'package:ad/widgets/primary_dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ad/firebase/firestore_manager.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:image_picker_web/image_picker_web.dart';
+import 'package:ad/utils/conditional_imports/native_conditional_imports.dart'
+    if (dart.library.html) 'package:ad/utils/conditional_imports/web_conditional_imports.dart' as image_picker;
 
 import '../../firebase/auth_manager.dart';
 import '../../general_settings.dart';
@@ -21,7 +23,6 @@ import '../../utils/constants.dart';
 import '../../widgets/custom_sliver.dart';
 
 import 'dart:math';
-import 'dart:typed_data';
 
 part 'personal_info_page.dart';
 
@@ -45,6 +46,7 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     AdWiseUser user = DataManager().user!;
     return Scaffold(
+      appBar: const MyAppBar(showSearchBar: false),
       body: SingleChildScrollView(
         child: Column(
           children: [

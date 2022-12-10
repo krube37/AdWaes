@@ -406,7 +406,7 @@ class FirestoreManager {
         recentEventsToDataEntryList
             .add(MapEntry(event, productDataList.firstWhere((element) => element.userName == event.productId)));
       }
-      _dataManager.refreshRecentEvents(recentEventsToDataEntryList.map((e) => e.key).toList());
+      _dataManager.refreshRecentEvents(recentEventsToDataEntryList.map((e) => e.key).toList(), notify: false);
     } catch (e, stack) {
       debugPrint("FirestoreDatabase getRecentEvents: error in getting recent events $e\n$stack");
     }

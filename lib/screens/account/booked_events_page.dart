@@ -8,7 +8,7 @@ class BookedEventsPage extends StatelessWidget {
     List<ProductEvent> bookedEvents = DataManager().bookedEvents;
     debugPrint("BookedEventsPage build: booked events ${bookedEvents.map((e) => e.eventId)}");
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: const MyAppBar(showSearchBar: false),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(

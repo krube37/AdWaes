@@ -8,35 +8,24 @@ class GeneralSettingsPage extends StatefulWidget {
 }
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
-  List<bool> editMode = List.filled(2, false);
+  List<bool> editMode = List.filled(1, false);
   @override
   Widget build(BuildContext context) {
+    GeneralSettingsProvider settingsProvider = GeneralSettingsProvider();
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: const MyAppBar(showSearchBar: false),
       body: Column(
         children: [
           _SettingsContentTile(
             title: 'Time zone',
-            value: 'Indian standard time',
+            value: settingsProvider.timeZone,
             isEditMode: editMode[0],
             onEditMode: (isEditMode) => setState(() => editMode[0] = isEditMode),
             hasEditTile: editMode.any((element) => element == true),
             settingsTile: _SettingsTile(
-              title: 'Time zonee',
-              value: 'IST',
+              title: 'Time zone',
+              value: settingsProvider.timeZone,
               onEditMode: (isEditMode) => setState(() => editMode[0] = isEditMode),
-            ),
-          ),
-          _SettingsContentTile(
-            title: 'Time zone',
-            value: 'Indian standard time',
-            isEditMode: editMode[1],
-            onEditMode: (isEditMode) => setState(() => editMode[1] = isEditMode),
-            hasEditTile: editMode.any((element) => element == true),
-            settingsTile: _SettingsTile(
-              title: 'Enter time zone',
-              value: 'Indian standard time',
-              onEditMode: (isEditMode) => setState(() => editMode[1] = isEditMode),
             ),
           ),
           _SettingsContentTile(

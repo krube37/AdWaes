@@ -28,11 +28,13 @@ class MyAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Size localPreferredSize;
   final double elevation;
   final double colorOpacity;
+  final bool showSearchBar;
 
   const MyAppBar({
     Key? key,
     this.elevation = 0.0,
     this.colorOpacity = 1.0,
+    this.showSearchBar = true,
   })  : localPreferredSize = const Size.fromHeight(75.0),
         super(key: key);
 
@@ -65,11 +67,13 @@ class _MyAppBarState extends State<MyAppBar> {
           ),
         ),
       ),
-      title: Container(
-          constraints: const BoxConstraints(
-            maxWidth: 500,
-          ),
-          child: const _SearchBar()),
+      title: widget.showSearchBar
+          ? Container(
+              constraints: const BoxConstraints(
+                maxWidth: 500,
+              ),
+              child: const _SearchBar())
+          : const SizedBox(),
       centerTitle: true,
       leadingWidth: 150.0,
       toolbarHeight: 75.0,
@@ -110,7 +114,7 @@ class _MyAppBarState extends State<MyAppBar> {
                     width: 10.0,
                   ),
                   Text(
-                    'UserName',
+                    dataManager.user!.displayName,
                     style: Theme.of(context).textTheme.headline5?.copyWith(fontSize: 16),
                   ),
                 ],

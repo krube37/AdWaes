@@ -47,6 +47,7 @@ class _EventTileState extends State<EventTile> {
             child: InkWell(
                 borderRadius: BorderRadius.circular(10),
                 splashColor: Colors.transparent,
+                hoverColor: Colors.transparent,
                 onTap: () =>
                     widget.isLoading ? null : PageManager.of(context).navigateToProductEventPage(widget.event!.eventId),
                 child: SizedBox(
@@ -104,7 +105,8 @@ class _EventTileState extends State<EventTile> {
                                               ],
                                             ),
                                     ),
-                                    const SizedBox(width: 30.0),
+                                    if (!widget.isLoading)
+                                      FavouriteHeartIconWidget(event: widget.event!),
                                   ],
                                 ),
                               if (widget.showProductHeader)
@@ -118,37 +120,27 @@ class _EventTileState extends State<EventTile> {
                                     padding: isHovering ? null : const EdgeInsets.all(2.0),
                                     duration: const Duration(milliseconds: 100),
                                     curve: Curves.easeOut,
-                                    child: Stack(
-                                      children: [
-                                        AspectRatio(
-                                          aspectRatio: 1,
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(5.0),
-                                            child: Container(
-                                              color: Theme.of(context).disabledColor,
-                                              child: widget.event?.photoImageProvider != null
-                                                  ? Image(
-                                                      image: widget.event!.photoImageProvider!,
-                                                      fit: BoxFit.cover,
-                                                    )
-                                                  : !widget.isLoading
-                                                      ? const FlutterLogo()
-                                                      : null,
-                                            ),
-                                          ),
+                                    child: AspectRatio(
+                                      aspectRatio: 1,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(5.0),
+                                        child: Container(
+                                          color: Theme.of(context).disabledColor,
+                                          child: widget.event?.photoImageProvider != null
+                                              ? Image(
+                                                  image: widget.event!.photoImageProvider!,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : !widget.isLoading
+                                                  ? const FlutterLogo()
+                                                  : null,
                                         ),
-                                        if (!widget.isLoading)
-                                          Positioned(
-                                            right: 10,
-                                            top: 10,
-                                            child: FavouriteHeartIconWidget(event: widget.event!),
-                                          ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 10.0),
+                              const SizedBox(height: 5.0),
                               Expanded(
                                 flex: 2,
                                 child: Column(
@@ -161,7 +153,7 @@ class _EventTileState extends State<EventTile> {
                                             style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
                                           ),
                                     const SizedBox(
-                                      height: 10,
+                                      height: 5,
                                     ),
                                     widget.isLoading
                                         ? Row(
@@ -172,7 +164,7 @@ class _EventTileState extends State<EventTile> {
                                           )
                                         : Text("\u20B9${widget.event!.price}"),
                                     const SizedBox(
-                                      height: 10,
+                                      height: 5,
                                     ),
                                     widget.isLoading
                                         ? _getLoadingContainer(height: 20.0)

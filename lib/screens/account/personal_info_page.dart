@@ -8,7 +8,7 @@ class PersonalInfoPage extends StatelessWidget {
     AdWiseUser user = DataManager().user!;
     ThemeData theme = Theme.of(context);
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: const MyAppBar(showSearchBar: false),
       body: isMobileView(context)
           ? _MobileView(
               user: user,
@@ -186,13 +186,15 @@ class _ProfilePicState extends State<_ProfilePic> {
   }
 
   _pickProfilePic() async {
-    Uint8List? rawPath = await ImagePickerWeb.getImageAsBytes();
-    if (rawPath == null) return;
+    if (kIsWeb) {
+      Uint8List? imageInBytes = await image_picker.pickImage();
+      if (imageInBytes == null) return;
 
-    setState(() => isLoading = true);
-    bool isSuccess = await FirestoreManager().updateUserProfilePic(rawPath);
-    if (isSuccess) {
-      setState(() => isLoading = false);
+      setState(() => isLoading = true);
+      bool isSuccess = await FirestoreManager().updateUserProfilePic(imageInBytes);
+      if (isSuccess) {
+        setState(() => isLoading = false);
+      }
     }
   }
 

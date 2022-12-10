@@ -17,7 +17,7 @@ class ProductProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: const MyAppBar(showSearchBar: false),
       body: Align(
         alignment: Alignment.topCenter,
         child: Container(

@@ -59,14 +59,16 @@ class _MyHomePageState extends State<MyHomePage> {
     Provider.of<DataManager>(context);
 
     if (isMobileView(context)) {
-      return Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            MobileAppbar(),
-            SliverToBoxAdapter(
-              child: _getBody(),
-            )
-          ],
+      return SafeArea(
+        child: Scaffold(
+          body: CustomScrollView(
+            slivers: [
+              MobileAppbar(),
+              SliverToBoxAdapter(
+                child: _getBody(),
+              )
+            ],
+          ),
         ),
       );
     }
@@ -89,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _getBody() {
     Size screenSize = MediaQuery.of(context).size;
-    double eventTileHeight = isMobileView(context) ? 320 : 420;
+    double eventTileHeight = isMobileView(context) ? 350 : 420;
     double eventTileWidth = isMobileView(context) ? 220 : 300;
 
     double listIconViewPadding = isMobileView(context) ? 0 : 60.0;
