@@ -1,4 +1,24 @@
-part of account_library;
+import 'dart:math';
+import 'dart:typed_data';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+
+import '../../adwise_user.dart';
+import '../../firebase/firestore_manager.dart';
+import '../../general_settings.dart';
+import '../../provider/data_manager.dart';
+import '../../utils/constants.dart';
+import '../../utils/globals.dart';
+import '../../widgets/custom_sliver.dart';
+import '../../widgets/loading_button.dart';
+import '../../widgets/primary_dialog.dart';
+import '../home/my_app_bar.dart';
+
+import 'package:ad/utils/conditional_imports/native_conditional_imports.dart'
+    if (dart.library.html) 'package:ad/utils/conditional_imports/web_conditional_imports.dart' as conditional_import;
+
+import 'account_library_helper_widgets.dart';
 
 class PersonalInfoPage extends StatelessWidget {
   const PersonalInfoPage({Key? key}) : super(key: key);
@@ -139,7 +159,7 @@ class _ProfilePicState extends State<_ProfilePic> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: _CustomInfoBtn(
+                child: LoadingButton(
                   name: user.profilePhotoUrl != null ? 'Edit' : 'Add',
                   color: Colors.orange,
                   textColor: Colors.white,
@@ -152,7 +172,7 @@ class _ProfilePicState extends State<_ProfilePic> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: _CustomInfoBtn(
+                  child: LoadingButton(
                     name: 'Remove',
                     color: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
                     height: 40.0,
@@ -205,62 +225,6 @@ class _ProfilePicState extends State<_ProfilePic> {
   }
 }
 
-class _CustomInfoBtn extends StatelessWidget {
-  final String name;
-  final Color color;
-  final Color? textColor;
-  final Function? onTap;
-  final double? minWidth, height;
-  final bool isLoading;
-
-  const _CustomInfoBtn({
-    Key? key,
-    required this.name,
-    required this.color,
-    this.textColor,
-    this.onTap,
-    this.minWidth,
-    this.height = 30.0,
-    this.isLoading = false,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onTap?.call(),
-      child: Container(
-        height: height,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(3.0),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: minWidth != null ? minWidth! / 2.5 : 10,
-        ),
-        child: Center(
-          child: isLoading
-              ? const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2.5,
-                    ),
-                  ),
-                )
-              : Text(
-                  name,
-                  style: TextStyle(
-                    color: textColor,
-                  ),
-                ),
-        ),
-      ),
-    );
-  }
-}
-
 class _InfoContent extends StatefulWidget {
   const _InfoContent({Key? key}) : super(key: key);
 
@@ -277,86 +241,86 @@ class _InfoContentState extends State<_InfoContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SettingsContentTile(
+        SettingsContentTile(
           title: 'Name',
           value: user.fullName,
           isEditMode: editMode[0],
           onEditMode: (isEditMode) => setState(() => editMode[0] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
-          settingsTile: _SettingsNameTile(
+          settingsTile: SettingsNameTile(
             title: 'Name',
             firstName: user.firstName ?? '',
             lastName: user.lastName ?? '',
             onEditMode: (isEditMode) => setState(() => editMode[0] = isEditMode),
           ),
         ),
-        _SettingsContentTile(
+        SettingsContentTile(
           title: AdWiseUser.dobTitle,
           value: user.ageAsString,
           isEditMode: editMode[1],
           onEditMode: (isEditMode) => setState(() => editMode[1] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
-          settingsTile: _SettingsTile(
+          settingsTile: SettingsTile(
             title: AdWiseUser.dobTitle,
             value: user.ageAsString,
             onEditMode: (isEditMode) => setState(() => editMode[1] = isEditMode),
           ),
         ),
-        _SettingsContentTile(
+        SettingsContentTile(
           title: AdWiseUser.phoneNumberTitle,
           value: user.phoneNumber,
           isEditMode: editMode[2],
           onEditMode: (isEditMode) => setState(() => editMode[2] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
-          settingsTile: _SettingsTile(
+          settingsTile: SettingsTile(
             title: AdWiseUser.phoneNumberTitle,
             value: user.phoneNumber,
             onEditMode: (isEditMode) => setState(() => editMode[2] = isEditMode),
           ),
         ),
-        _SettingsContentTile(
+        SettingsContentTile(
           title: AdWiseUser.emailTitle,
           value: user.emailId ?? '',
           isEditMode: editMode[3],
           onEditMode: (isEditMode) => setState(() => editMode[3] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
-          settingsTile: _SettingsTile(
+          settingsTile: SettingsTile(
             title: AdWiseUser.emailTitle,
             value: user.emailId ?? '',
             onEditMode: (isEditMode) => setState(() => editMode[3] = isEditMode),
           ),
         ),
-        _SettingsContentTile(
+        SettingsContentTile(
           title: AdWiseUser.companyNameTitle,
           value: user.companyName ?? '',
           isEditMode: editMode[4],
           onEditMode: (isEditMode) => setState(() => editMode[4] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
-          settingsTile: _SettingsTile(
+          settingsTile: SettingsTile(
             title: AdWiseUser.companyNameTitle,
             value: user.companyName ?? '',
             onEditMode: (isEditMode) => setState(() => editMode[4] = isEditMode),
           ),
         ),
-        _SettingsContentTile(
+        SettingsContentTile(
           title: AdWiseUser.gstNumberTitle,
           value: user.gstNumber ?? '',
           isEditMode: editMode[5],
           onEditMode: (isEditMode) => setState(() => editMode[5] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
-          settingsTile: _SettingsTile(
+          settingsTile: SettingsTile(
             title: AdWiseUser.gstNumberTitle,
             value: user.gstNumber ?? '',
             onEditMode: (isEditMode) => setState(() => editMode[5] = isEditMode),
           ),
         ),
-        _SettingsContentTile(
+        SettingsContentTile(
           title: AdWiseUser.businessTypeTitle,
           value: user.businessType ?? '',
           isEditMode: editMode[6],
           onEditMode: (isEditMode) => setState(() => editMode[6] = isEditMode),
           hasEditTile: editMode.any((element) => element == true),
-          settingsTile: _SettingsTile(
+          settingsTile: SettingsTile(
             title: AdWiseUser.businessTypeTitle,
             value: user.businessType ?? '',
             onEditMode: (isEditMode) => setState(() => editMode[6] = isEditMode),

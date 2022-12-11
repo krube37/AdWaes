@@ -142,13 +142,16 @@ class ProductEvent {
         'searchTag': _searchTag,
       };
 
-  Widget getCachedImage(BuildContext context) => photoUrl != null
-      ? Container(
-          color: Theme.of(context).disabledColor,
-          child: Image(
-            image: photoImageProvider!,
-            fit: BoxFit.cover,
-          ),
-        )
-      : const FlutterLogo();
+  Widget getCachedImage(BuildContext context) => AspectRatio(
+    aspectRatio: 1,
+    child: photoUrl != null
+        ? Container(
+            color: Theme.of(context).disabledColor,
+            child: Image(
+              image: photoImageProvider!,
+              fit: BoxFit.cover,
+            ),
+          )
+        : const FlutterLogo(),
+  );
 }

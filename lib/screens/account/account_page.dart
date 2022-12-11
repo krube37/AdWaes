@@ -1,39 +1,15 @@
-library account_library;
 
 import 'package:ad/adwise_user.dart';
 import 'package:ad/firebase/api_response.dart';
-import 'package:ad/product/product_type.dart';
 import 'package:ad/screens/sign_in/sign_in_card.dart';
 import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/widgets/bottombar.dart';
-import 'package:ad/widgets/primary_dialog.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ad/firebase/firestore_manager.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ad/utils/conditional_imports/native_conditional_imports.dart'
-    if (dart.library.html) 'package:ad/utils/conditional_imports/web_conditional_imports.dart' as conditional_import;
 
 import '../../firebase/auth_manager.dart';
-import '../../general_settings.dart';
-import '../../product/product_event.dart';
 import '../../routes/route_page_manager.dart';
-import '../../utils/constants.dart';
-import '../../widgets/custom_sliver.dart';
-
-import 'dart:math';
-
-part 'personal_info_page.dart';
-
-part 'general_settings_page.dart';
-
-part 'booked_events_page.dart';
-
-part 'favourite_screen.dart';
-
-part 'account_library_helper_widgets.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({Key? key}) : super(key: key);

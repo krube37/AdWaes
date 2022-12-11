@@ -1,6 +1,14 @@
-part of account_library;
 
-class _SettingsContentTile extends StatelessWidget {
+import 'package:ad/widgets/loading_button.dart';
+import 'package:flutter/material.dart';
+
+import '../../adwise_user.dart';
+import '../../firebase/firestore_manager.dart';
+import '../../general_settings.dart';
+import '../../provider/data_manager.dart';
+import '../../utils/globals.dart';
+
+class SettingsContentTile extends StatelessWidget {
   final String title, value;
   final Function(bool isEditMode)? onEditMode;
   final bool isEditMode;
@@ -8,7 +16,7 @@ class _SettingsContentTile extends StatelessWidget {
   final Widget settingsTile;
   final bool alwaysShowContent;
 
-  const _SettingsContentTile({
+  const SettingsContentTile({
     Key? key,
     required this.title,
     required this.value,
@@ -58,7 +66,7 @@ class _SettingsContentTile extends StatelessWidget {
                     ),
                   ),
                   if (!isEditMode && !alwaysShowContent)
-                    _CustomInfoBtn(
+                    LoadingButton(
                       name: value.isEmpty ? 'Add' : 'Edit',
                       color: Colors.orange,
                       textColor: Colors.white,
@@ -76,13 +84,13 @@ class _SettingsContentTile extends StatelessWidget {
   }
 }
 
-class _SettingsNameTile extends StatefulWidget {
+class SettingsNameTile extends StatefulWidget {
   final String title;
   final String firstName;
   final String lastName;
   final Function(bool isEditMode)? onEditMode;
 
-  const _SettingsNameTile({
+  const SettingsNameTile({
     Key? key,
     required this.title,
     required this.firstName,
@@ -91,10 +99,10 @@ class _SettingsNameTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<_SettingsNameTile> createState() => _SettingsNameTileState();
+  State<SettingsNameTile> createState() => _SettingsNameTileState();
 }
 
-class _SettingsNameTileState extends State<_SettingsNameTile> {
+class _SettingsNameTileState extends State<SettingsNameTile> {
   late TextEditingController _firstNameTextController, _lastNameTextController;
   late FocusNode _firstNameFocusNode;
 
@@ -191,7 +199,7 @@ class _SettingsNameTileState extends State<_SettingsNameTile> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _CustomInfoBtn(
+              child: LoadingButton(
                 name: 'Cancel',
                 color: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
                 onTap: () => widget.onEditMode?.call(false),
@@ -221,12 +229,12 @@ class _SettingsNameTileState extends State<_SettingsNameTile> {
       );
 }
 
-class _SettingsTile extends StatefulWidget {
+class SettingsTile extends StatefulWidget {
   final String title, value;
   final Function(bool isEditMode)? onEditMode;
   final String? hintText;
 
-  const _SettingsTile({
+  const SettingsTile({
     Key? key,
     required this.title,
     required this.value,
@@ -235,10 +243,10 @@ class _SettingsTile extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<_SettingsTile> createState() => _SettingsTileState();
+  State<SettingsTile> createState() => _SettingsTileState();
 }
 
-class _SettingsTileState extends State<_SettingsTile> {
+class _SettingsTileState extends State<SettingsTile> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
 
@@ -304,7 +312,7 @@ class _SettingsTileState extends State<_SettingsTile> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: _CustomInfoBtn(
+              child: LoadingButton(
                 name: 'Cancel',
                 color: Colors.grey.shade300,
                 onTap: () => widget.onEditMode?.call(false),
@@ -355,7 +363,7 @@ class _SaveButtonState extends State<_SaveButton> {
 
   @override
   Widget build(BuildContext context) {
-    return _CustomInfoBtn(
+    return LoadingButton(
       name: 'Save',
       color: Colors.orange,
       textColor: Colors.white,
@@ -415,74 +423,4 @@ class _SaveButtonState extends State<_SaveButton> {
     }
     widget.onCompleted?.call();
   }
-}
-
-class _ThemeTile extends StatefulWidget {
-  const _ThemeTile({Key? key}) : super(key: key);
-
-  @override
-  State<_ThemeTile> createState() => _ThemeTileState();
-}
-
-class _ThemeTileState extends State<_ThemeTile> {
-  GeneralSettingsProvider settingsProvider = GeneralSettingsProvider();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Row(
-        children: [
-          InkWell(
-            onTap: _onLightThemePressed,
-            child: _getThemeContainer(
-              isEnabled: !settingsProvider.isDarkTheme,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(
-            width: 20.0,
-          ),
-          InkWell(
-            onTap: _onDarkThemePressed,
-            child: _getThemeContainer(
-              isEnabled: settingsProvider.isDarkTheme,
-              color: Colors.black,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  _onLightThemePressed() {
-    if (!settingsProvider.isDarkTheme) return;
-
-    settingsProvider.toggleThemeMode();
-    setState(() {});
-  }
-
-  _onDarkThemePressed() {
-    if (settingsProvider.isDarkTheme) return;
-
-    settingsProvider.toggleThemeMode();
-    setState(() {});
-  }
-
-  _getThemeContainer({
-    required isEnabled,
-    required color,
-  }) =>
-      Container(
-        height: 30.0,
-        width: 30.0,
-        decoration: BoxDecoration(
-          color: color,
-          border: Border.all(
-            color: isEnabled ? primaryColor : Colors.grey,
-            width: isEnabled ? 1 : 0.2,
-          ),
-          borderRadius: BorderRadius.circular(2),
-        ),
-      );
 }

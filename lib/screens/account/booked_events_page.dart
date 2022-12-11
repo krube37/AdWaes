@@ -1,4 +1,13 @@
-part of account_library;
+
+import 'package:ad/product/product_type.dart';
+import 'package:flutter/material.dart';
+
+import '../../product/product_event.dart';
+import '../../provider/data_manager.dart';
+import '../../routes/route_page_manager.dart';
+import '../../utils/constants.dart';
+import '../../utils/globals.dart';
+import '../home/my_app_bar.dart';
 
 class BookedEventsPage extends StatelessWidget {
   const BookedEventsPage({Key? key}) : super(key: key);

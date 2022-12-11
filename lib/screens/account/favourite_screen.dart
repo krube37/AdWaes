@@ -1,4 +1,13 @@
-part of account_library;
+import 'package:ad/product/product_type.dart';
+import 'package:flutter/material.dart';
+
+import '../../firebase/firestore_manager.dart';
+import '../../product/product_event.dart';
+import '../../provider/data_manager.dart';
+import '../../routes/route_page_manager.dart';
+import '../../utils/constants.dart';
+import '../../utils/globals.dart';
+import '../home/my_app_bar.dart';
 
 class FavouriteScreen extends StatelessWidget {
   const FavouriteScreen({Key? key}) : super(key: key);
@@ -7,48 +16,147 @@ class FavouriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     List<ProductEvent> favouriteEvents = DataManager().favouriteEvents;
     return Scaffold(
-      appBar:
-          isMobileView(context) ? const MobileAppBar(text: "Favourite Events") : const MyAppBar(showSearchBar: false),
-      body: Center(
-        child: Container(
-          constraints: const BoxConstraints(
-            maxWidth: maxScreenWidth,
-          ),
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!isMobileView(context))
-                const Text(
-                  'Favourite Events',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              if (!isMobileView(context))
-                const SizedBox(
-                  height: 50,
-                ),
-              Expanded(
-                child: StatefulBuilder(
-                  builder: (context, setState) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: favouriteEvents.length,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: _FavouriteEventTile(
-                          event: favouriteEvents[index],
-                          onRemove: () {
-                            setState(() => favouriteEvents = DataManager().favouriteEvents);
-                          },
-                        ),
-                      ),
-                    );
-                  },
+      appBar: isMobileView(context)
+          ? const MobileAppBar(
+              text: "Favourite Events",
+            )
+          : const MyAppBar(
+              showSearchBar: false,
+            ),
+      body: isMobileView(context)
+          ? _MobileView(
+              events: favouriteEvents,
+            )
+          : _DesktopView(
+              events: favouriteEvents,
+            ),
+    );
+  }
+}
+
+class _MobileView extends StatelessWidget {
+  const _MobileView({Key? key, required this.events}) : super(key: key);
+  final List<ProductEvent> events;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: events.length,
+      itemBuilder: (context, index) => _MobileEventTile(
+        event: events[index],
+      ),
+    );
+  }
+}
+
+class _DesktopView extends StatelessWidget {
+  const _DesktopView({Key? key, required this.events}) : super(key: key);
+  final List<ProductEvent> events;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: maxScreenWidth,
+        ),
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!isMobileView(context))
+              const Text(
+                'Favourite Events',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+            if (!isMobileView(context))
+              const SizedBox(
+                height: 50,
+              ),
+            Expanded(
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: events.length,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: _DesktopEventTile(
+                        event: events[index],
+                        onRemove: () {
+                          setState(() => events.removeAt(index));
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileEventTile extends StatefulWidget {
+  const _MobileEventTile({Key? key, required this.event}) : super(key: key);
+
+  final ProductEvent event;
+
+  @override
+  State<_MobileEventTile> createState() => _MobileEventTileState();
+}
+
+class _MobileEventTileState extends State<_MobileEventTile> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => PageManager.of(context).navigateToProductEventPage(
+        widget.event.eventId,
+      ),
+      splashColor: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+            color: Theme.of(context).disabledColor,
+            width: 1.0,
+          )),
+        ),
+        height: 150.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: widget.event.getCachedImage(context),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Event on dd/MM/YYYY'),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Text(widget.event.eventName),
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.arrow_forward_ios_outlined,
+                size: 15.0,
+              )
             ],
           ),
         ),
@@ -57,21 +165,21 @@ class FavouriteScreen extends StatelessWidget {
   }
 }
 
-class _FavouriteEventTile extends StatefulWidget {
+class _DesktopEventTile extends StatefulWidget {
   final ProductEvent event;
   final Function? onRemove;
 
-  const _FavouriteEventTile({
+  const _DesktopEventTile({
     Key? key,
     required this.event,
     this.onRemove,
   }) : super(key: key);
 
   @override
-  State<_FavouriteEventTile> createState() => _FavouriteEventTileState();
+  State<_DesktopEventTile> createState() => _DesktopEventTileState();
 }
 
-class _FavouriteEventTileState extends State<_FavouriteEventTile> {
+class _DesktopEventTileState extends State<_DesktopEventTile> {
   bool isHovering = false, isRemoving = false, isRemoveBtnHovering = false;
   Widget image = getRandomTestImage();
 
