@@ -166,9 +166,9 @@ class PageManager extends ChangeNotifier {
   }
 
   /// removes top most route which is showing in UI
-  popRoute() {
+  popRoute({notify = true}) {
     _pageStack.removeLast();
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   /// navigation helper methods

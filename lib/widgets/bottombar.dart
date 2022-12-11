@@ -1,5 +1,6 @@
 library bottom_bar;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../general_settings.dart';
@@ -15,128 +16,130 @@ class BottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     GeneralSettingsProvider settingsProvider = GeneralSettingsProvider();
     ThemeData theme = Theme.of(context);
-    return Container(
-      decoration: const BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(0.0)),
-      ),
-      padding: const EdgeInsets.all(30),
-      //color: Colors.blueGrey[900],
-
-      child: MediaQuery.of(context).size.width < 800
-          ? Column(
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: const [
-                    _BottomBarColumn(
-                      heading: 'ABOUT',
-                      s1: 'contact Us',
-                      s2: 'about Us',
-                      s3: 'careers',
-                    ),
-                    _BottomBarColumn(
-                      heading: 'Help',
-                      s1: 'payment',
-                      s2: 'cancellation',
-                      s3: 'fAQ',
-                    ),
-                    _BottomBarColumn(
-                      heading: 'SOCIAL',
-                      s1: 'twitter',
-                      s2: 'facebook',
-                      s3: 'youtube',
-                    ),
-                  ],
-                ),
-                Divider(
-                  color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    _InfoText(
-                      type: 'Email',
-                      text: 'customercare@adwisor.com',
-                    ),
-                    SizedBox(height: 5),
-                    _InfoText(
-                      type: 'Address',
-                      text: 'Kent Mahal 😂',
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Divider(
-                  color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Copyright © 2021 | Adwisor',
-                  style: theme.textTheme.headline5?.copyWith(fontSize: 14.0),
-                ),
-              ],
-            )
-          : Column(
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const _BottomBarColumn(
-                      heading: 'ABOUT',
-                      s1: 'contact Us',
-                      s2: 'about us',
-                      s3: 'careers',
-                    ),
-                    const _BottomBarColumn(
-                      heading: 'Help',
-                      s1: 'payment',
-                      s2: 'cancellation',
-                      s3: 'fAQ',
-                    ),
-                    const _BottomBarColumn(
-                      heading: 'SOCIAL',
-                      s1: 'twitter',
-                      s2: 'facebook',
-                      s3: 'youtube',
-                    ),
-                    Container(
-                      color: Colors.black87,
-                      width: 2,
-                      height: 150,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        _InfoText(
-                          type: 'Email',
-                          text: 'customercare@adwisor.com',
-                        ),
-                        SizedBox(height: 5),
-                        _InfoText(
-                          type: 'Address',
-                          text: 'Kent Mahal 😂',
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-                Divider(
-                  color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Copyright © 2021 | Adwisor',
-                  style: theme.textTheme.headline5?.copyWith(fontSize: 14.0),
-                ),
-              ],
+    return kIsWeb
+        ? Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(0.0)),
             ),
-    );
+            padding: const EdgeInsets.all(30),
+            //color: Colors.blueGrey[900],
+
+            child: MediaQuery.of(context).size.width < 800
+                ? Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: const [
+                          _BottomBarColumn(
+                            heading: 'ABOUT',
+                            s1: 'contact Us',
+                            s2: 'about Us',
+                            s3: 'careers',
+                          ),
+                          _BottomBarColumn(
+                            heading: 'Help',
+                            s1: 'payment',
+                            s2: 'cancellation',
+                            s3: 'fAQ',
+                          ),
+                          _BottomBarColumn(
+                            heading: 'SOCIAL',
+                            s1: 'twitter',
+                            s2: 'facebook',
+                            s3: 'youtube',
+                          ),
+                        ],
+                      ),
+                      Divider(
+                        color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: const [
+                          _InfoText(
+                            type: 'Email',
+                            text: 'customercare@adwisor.com',
+                          ),
+                          SizedBox(height: 5),
+                          _InfoText(
+                            type: 'Address',
+                            text: 'Kent Mahal 😂',
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Copyright © 2021 | Adwisor',
+                        style: theme.textTheme.headline5?.copyWith(fontSize: 14.0),
+                      ),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const _BottomBarColumn(
+                            heading: 'ABOUT',
+                            s1: 'contact Us',
+                            s2: 'about us',
+                            s3: 'careers',
+                          ),
+                          const _BottomBarColumn(
+                            heading: 'Help',
+                            s1: 'payment',
+                            s2: 'cancellation',
+                            s3: 'fAQ',
+                          ),
+                          const _BottomBarColumn(
+                            heading: 'SOCIAL',
+                            s1: 'twitter',
+                            s2: 'facebook',
+                            s3: 'youtube',
+                          ),
+                          Container(
+                            color: Colors.black87,
+                            width: 2,
+                            height: 150,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: const [
+                              _InfoText(
+                                type: 'Email',
+                                text: 'customercare@adwisor.com',
+                              ),
+                              SizedBox(height: 5),
+                              _InfoText(
+                                type: 'Address',
+                                text: 'Kent Mahal 😂',
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      Divider(
+                        color: settingsProvider.isDarkTheme ? Colors.white54 : Colors.black54,
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        'Copyright © 2021 | Adwisor',
+                        style: theme.textTheme.headline5?.copyWith(fontSize: 14.0),
+                      ),
+                    ],
+                  ),
+          )
+        : const SizedBox();
   }
 }

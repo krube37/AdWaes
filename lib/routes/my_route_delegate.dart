@@ -68,7 +68,7 @@ class HomeScaffold extends StatefulWidget {
 }
 
 class _HomeScaffoldState extends State<HomeScaffold> {
-  int selectedIndex = 0;
+  int selectedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +79,8 @@ class _HomeScaffoldState extends State<HomeScaffold> {
       selectedIndex = 1;
     } else if (currentPath == RoutePath.account()) {
       selectedIndex = 2;
+    } else{
+      selectedIndex = -1;
     }
     return Scaffold(
       body: Navigator(
@@ -86,15 +88,16 @@ class _HomeScaffoldState extends State<HomeScaffold> {
         pages: [widget.pageManager.currentPage],
         onPopPage: _onPopPage,
       ),
-      bottomNavigationBar: isMobileView(context)
+      bottomNavigationBar: isMobileView(context) && selectedIndex != -1
           ? Container(
               decoration: BoxDecoration(
-                  border: Border(
-                top: BorderSide(
-                  color: Theme.of(context).disabledColor,
-                  width: 1.0,
+                border: Border(
+                  top: BorderSide(
+                    color: Theme.of(context).disabledColor,
+                    width: 1.0,
+                  ),
                 ),
-              )),
+              ),
               child: HomeBottomNavigationBar(
                 selectedIndex: selectedIndex,
                 onItemTapped: onItemTapped,

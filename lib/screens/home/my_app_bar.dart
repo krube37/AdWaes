@@ -153,28 +153,37 @@ class _MyAppBarState extends State<MyAppBar> {
 }
 
 /// default height of app bar is 56.0...
-/// but we are using custom height in Appbar ([toolbarHeight]) as 75.0
+/// but we are using custom height in Appbar ([toolbarHeight]) as 60.0
 /// if need to use any bottom feature in appbar or need to manually set different height for appBar later,
 ///  should change the value of [localPreferredSize] according to new height
 class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Size localPreferredSize;
   final String? text;
+  final bool showBackButton;
 
   const MobileAppBar({
     Key? key,
     this.text,
-  })  : localPreferredSize = const Size.fromHeight(75.0),
+    this.showBackButton = true,
+  })  : localPreferredSize = const Size.fromHeight(60.0),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      elevation: 10.0,
+      leading: InkWell(
+        onTap: () => PageManager.of(context).popRoute(),
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        child: const Icon(Icons.arrow_back),
+      ),
       title: Text(
         text ?? "Adwise",
         style: const TextStyle(
-          color: primaryColor,
           fontSize: 25.0,
           fontFamily: 'Ubuntu',
+          fontWeight: FontWeight.normal
         ),
       ),
     );

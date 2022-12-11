@@ -29,12 +29,12 @@ class ProductEventPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isMobileView(context)) return const Center(child: Text("Mobile view"));
+
 
     Size screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: isMobileView(context) ? const MobileAppBar(text: 'Put some name',) : const MyAppBar(),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(
@@ -55,6 +55,9 @@ class ProductEventPage extends StatelessWidget {
                 return const CircularProgressIndicator();
               }
               ProductEvent event = snapshot.data!;
+              if(isMobileView(context)){
+                return _MobileView(event: event,);
+              }
               return CustomSliver(
                 leftSideWidget: _EventImageWidget(event: event),
                 rightSideWidget: _EventContentWidget(event: event),

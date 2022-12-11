@@ -141,16 +141,19 @@ class _MobileEventTileState extends State<_MobileEventTile> {
               ),
               Expanded(
                 flex: 2,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Event on dd/MM/YYYY'),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Text(widget.event.eventName),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Event on dd/MM/YYYY'),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      Text(widget.event.eventName),
+                    ],
+                  ),
                 ),
               ),
               const Icon(

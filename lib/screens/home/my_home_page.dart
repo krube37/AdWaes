@@ -166,7 +166,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               }
             }),
-        const SizedBox(height: 50.0),
+        const SizedBox(height: 100.0),
         const BottomBar(),
       ],
     );
