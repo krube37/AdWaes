@@ -48,8 +48,12 @@ class _EventTileState extends State<EventTile> {
                 borderRadius: BorderRadius.circular(10),
                 splashColor: Colors.transparent,
                 hoverColor: Colors.transparent,
-                onTap: () =>
-                    widget.isLoading ? null : PageManager.of(context).navigateToProductEventPage(widget.event!.eventId),
+                onTap: () => widget.isLoading
+                    ? null
+                    : PageManager.of(context).navigateToProductEventPage(
+                        widget.event!.eventId,
+                        event: widget.event,
+                      ),
                 child: SizedBox(
                   width: widget.tileWidth,
                   child: LayoutBuilder(
@@ -64,18 +68,10 @@ class _EventTileState extends State<EventTile> {
                               if (widget.showProductHeader)
                                 Row(
                                   children: [
-                                    CircleAvatar(
+                                    ProductData.circleAvatar(
+                                      context,
+                                      widget.productData,
                                       radius: 20.0,
-                                      backgroundImage:
-                                          widget.isLoading ? null : widget.productData!.profilePhotoImageProvider,
-                                      backgroundColor: Theme.of(context).disabledColor,
-                                      child: widget.productData?.profilePhotoImageProvider == null && !widget.isLoading
-                                          ? const Icon(
-                                              Icons.person_sharp,
-                                              size: 30.0,
-                                              color: Colors.white,
-                                            )
-                                          : null,
                                     ),
                                     const SizedBox(width: 10.0),
                                     Expanded(
@@ -105,8 +101,7 @@ class _EventTileState extends State<EventTile> {
                                               ],
                                             ),
                                     ),
-                                    if (!widget.isLoading)
-                                      FavouriteHeartIconWidget(event: widget.event!),
+                                    if (!widget.isLoading) FavouriteHeartIconWidget(event: widget.event!),
                                   ],
                                 ),
                               if (widget.showProductHeader)
@@ -126,14 +121,17 @@ class _EventTileState extends State<EventTile> {
                                         borderRadius: BorderRadius.circular(5.0),
                                         child: Container(
                                           color: Theme.of(context).disabledColor,
-                                          child: widget.event?.photoImageProvider != null
-                                              ? Image(
-                                                  image: widget.event!.photoImageProvider!,
-                                                  fit: BoxFit.cover,
+                                          child: !widget.isLoading
+                                              ? Hero(
+                                                  tag: widget.event!.eventId,
+                                                  child: widget.event!.photoImageProvider != null
+                                                      ? Image(
+                                                          image: widget.event!.photoImageProvider!,
+                                                          fit: BoxFit.cover,
+                                                        )
+                                                      : const FlutterLogo(),
                                                 )
-                                              : !widget.isLoading
-                                                  ? const FlutterLogo()
-                                                  : null,
+                                              : null,
                                         ),
                                       ),
                                     ),
@@ -150,7 +148,7 @@ class _EventTileState extends State<EventTile> {
                                         ? _getLoadingContainer(height: 20.0)
                                         : Text(
                                             widget.event!.eventName,
-                                            style: const TextStyle(fontSize: 20.0, overflow: TextOverflow.ellipsis),
+                                            style: const TextStyle(fontSize: 14.0, overflow: TextOverflow.ellipsis),
                                           ),
                                     const SizedBox(
                                       height: 5,
@@ -162,15 +160,19 @@ class _EventTileState extends State<EventTile> {
                                               const Expanded(child: SizedBox()),
                                             ],
                                           )
-                                        : Text("\u20B9${widget.event!.price}"),
-                                    const SizedBox(
-                                      height: 5,
-                                    ),
+                                        : Text(
+                                            "\u20B9${widget.event!.price}",
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                    const SizedBox(height: 5),
                                     widget.isLoading
                                         ? _getLoadingContainer(height: 20.0)
                                         : Text(
                                             'date posted: ${widget.event!.eventTime}',
-                                            style: const TextStyle(overflow: TextOverflow.ellipsis),
+                                            style: const TextStyle(
+                                                overflow: TextOverflow.ellipsis, fontSize: 12.0, color: Colors.grey),
                                           ),
                                   ],
                                 ),
@@ -210,7 +212,10 @@ class MobileSearchEventTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: InkWell(
-        onTap: () => PageManager.of(context).navigateToProductEventPage(event.eventId),
+        onTap: () => PageManager.of(context).navigateToProductEventPage(
+          event.eventId,
+          event: event,
+        ),
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
@@ -246,12 +251,51 @@ class MobileSearchEventTile extends StatelessWidget {
   }
 }
 
-class _ProductTile extends StatelessWidget {
+class _MobileProductTile extends StatelessWidget {
+  const _MobileProductTile({
+    Key? key,
+    required this.productData,
+    required this.isTileSelected,
+    this.onClick,
+  }) : super(key: key);
+
+  final ProductData productData;
+  final bool isTileSelected;
+  final Function()? onClick;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => onClick?.call(),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            ProductData.circleAvatar(
+              context,
+              productData,
+              color: isTileSelected ? primaryColor : null,
+            ),
+            const SizedBox(height: 10.0),
+            Text(
+              productData.name,
+              style: TextStyle(
+                color: isTileSelected ? primaryColor : null,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DesktopProductTile extends StatelessWidget {
   final ProductData productData;
   final Function()? onClick;
   final bool isTileSelected;
 
-  const _ProductTile({
+  const _DesktopProductTile({
     Key? key,
     required this.productData,
     this.onClick,
@@ -276,16 +320,7 @@ class _ProductTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
             child: Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.grey.shade400,
-                  backgroundImage: productData.profilePhotoImageProvider,
-                  child: productData.profilePhotoImageProvider == null
-                      ? const Icon(
-                          Icons.person_sharp,
-                          color: Colors.white,
-                        )
-                      : null,
-                ),
+                ProductData.circleAvatar(context, productData),
                 const SizedBox(
                   width: 10.0,
                 ),

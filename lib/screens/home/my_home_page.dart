@@ -11,10 +11,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../firebase/firestore_manager.dart';
-import '../../general_settings.dart';
 import '../../product/product_event.dart';
 import '../../product/product_type.dart';
 import '../../routes/route_page_manager.dart';
+import '../../widgets/custom_horizontal_scroll_view.dart';
 
 part 'home_helper_widgets.dart';
 
@@ -103,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: listIconViewPadding),
-          child: _CustomHorizontalScroller(
+          child: CustomHorizontalScroller(
             itemLength: ProductType.values.length,
             itemBuilder: (index) => _ProductListIconTile(type: ProductType.values[index]),
             height: listIconTileHeight,
@@ -135,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     child: Text('No events Available'),
                   );
                 }
-                return _CustomHorizontalScroller(
+                return CustomHorizontalScroller(
                   itemLength: recentEventsToDataEntryList.length,
                   height: eventTileHeight,
                   scrollingArrowSize: 50.0,

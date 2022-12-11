@@ -24,27 +24,15 @@ class FavouriteScreen extends StatelessWidget {
               showSearchBar: false,
             ),
       body: isMobileView(context)
-          ? _MobileView(
-              events: favouriteEvents,
+          ? ListView.builder(
+              itemCount: favouriteEvents.length,
+              itemBuilder: (context, index) => _MobileEventTile(
+                event: favouriteEvents[index],
+              ),
             )
           : _DesktopView(
               events: favouriteEvents,
             ),
-    );
-  }
-}
-
-class _MobileView extends StatelessWidget {
-  const _MobileView({Key? key, required this.events}) : super(key: key);
-  final List<ProductEvent> events;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: events.length,
-      itemBuilder: (context, index) => _MobileEventTile(
-        event: events[index],
-      ),
     );
   }
 }
@@ -117,6 +105,7 @@ class _MobileEventTileState extends State<_MobileEventTile> {
     return InkWell(
       onTap: () => PageManager.of(context).navigateToProductEventPage(
         widget.event.eventId,
+        event: widget.event,
       ),
       splashColor: Colors.transparent,
       child: Container(
@@ -192,7 +181,10 @@ class _DesktopEventTileState extends State<_DesktopEventTile> {
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      onTap: () => PageManager.of(context).navigateToProductEventPage(widget.event.eventId),
+      onTap: () => PageManager.of(context).navigateToProductEventPage(
+        widget.event.eventId,
+        event: widget.event,
+      ),
       child: MouseRegion(
         onEnter: (_) => setState(() => isHovering = true),
         onExit: (_) => setState(() => isHovering = false),

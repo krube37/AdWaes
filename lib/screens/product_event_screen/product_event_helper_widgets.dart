@@ -87,12 +87,15 @@ class _EventImageWidgetState extends State<_EventImageWidget> {
                     borderRadius: BorderRadius.circular(5.0),
                     child: Container(
                       color: Theme.of(context).disabledColor,
-                      child: widget.event.photoImageProvider != null
-                          ? Image(
-                              image: widget.event.photoImageProvider!,
-                              fit: BoxFit.cover,
-                            )
-                          : const FlutterLogo(),
+                      child: Hero(
+                        tag: widget.event.eventId,
+                        child: widget.event.photoImageProvider != null
+                            ? Image(
+                                image: widget.event.photoImageProvider!,
+                                fit: BoxFit.cover,
+                              )
+                            : const FlutterLogo(),
+                      ),
                     ),
                   ),
                 ),
@@ -142,13 +145,15 @@ class _BookButtonState extends State<_BookButton> {
         child: Container(
           margin: const EdgeInsets.all(5.0),
           padding: isMobileView(context)
-              ? EdgeInsets.zero
+              ? const EdgeInsets.symmetric(vertical: 18.0)
               : const EdgeInsets.symmetric(
                   vertical: 20.0,
                   horizontal: 60.0,
                 ),
           decoration: BoxDecoration(
-              color: widget.event.isBooked ? Colors.red : Colors.orange, borderRadius: BorderRadius.circular(10.0)),
+            color: widget.event.isBooked ? Colors.red : Colors.orange,
+            borderRadius: BorderRadius.circular(10.0),
+          ),
           height: 55.0,
           width: isMobileView(context) ? 150.0 : 200.0,
           child: Center(
@@ -204,10 +209,13 @@ class _BookButtonState extends State<_BookButton> {
   }
 
   _cancelBooking() async {
-    PrimaryDialog cancelDialog = PrimaryDialog(context, 'Do you really want to cancel event?',
-        description: 'If you cancel this event, it will be available to all the users. Cancel now?',
-        yesButton: const PrimaryDialogButton('Proceed'),
-        noButton: const PrimaryDialogButton('Back'));
+    PrimaryDialog cancelDialog = PrimaryDialog(
+      context,
+      'Cancel event?',
+      description: 'If you cancel this event, it will be available to all the users. Cancel now?',
+      yesButton: const PrimaryDialogButton('Proceed'),
+      noButton: const PrimaryDialogButton('Back'),
+    );
 
     bool? shouldProceed = await cancelDialog.show();
 
@@ -223,7 +231,7 @@ class _BookButtonState extends State<_BookButton> {
         setState(() {
           isBookingBtnLoading = false;
         });
-        PageManager.of(context).navigateToBookedEventsPage();
+        PageManager.of(context).popRoute();
       }
     }
   }

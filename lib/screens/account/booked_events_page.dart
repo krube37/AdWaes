@@ -1,4 +1,3 @@
-
 import 'package:ad/product/product_type.dart';
 import 'package:flutter/material.dart';
 
@@ -18,49 +17,131 @@ class BookedEventsPage extends StatelessWidget {
     debugPrint("BookedEventsPage build: booked events ${bookedEvents.map((e) => e.eventId)}");
     return Scaffold(
       appBar: isMobileView(context) ? const MobileAppBar(text: "Booked Events") : const MyAppBar(showSearchBar: false),
-      body: Center(
-        child: Container(
-          constraints: const BoxConstraints(
-            maxWidth: maxScreenWidth,
-          ),
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: isMobileView(context)
+          ? ListView.builder(
+              itemCount: bookedEvents.length,
+              itemBuilder: (context, index) => _MobileEventTile(
+                event: bookedEvents[index],
+              ),
+            )
+          : _DesktopView(events: bookedEvents),
+    );
+  }
+}
+
+class _DesktopView extends StatelessWidget {
+  const _DesktopView({Key? key, required this.events}) : super(key: key);
+  final List<ProductEvent> events;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: maxScreenWidth,
+        ),
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Booked Events',
+              style: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            const SizedBox(
+              height: 20.0,
+            ),
+            Expanded(
+              child: StatefulBuilder(
+                builder: (context, setState) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: events.length,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: _DesktopEventTile(
+                        event: events[index],
+                        onRemove: () {
+                          setState(() => events.removeAt(index));
+                        },
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MobileEventTile extends StatefulWidget {
+  const _MobileEventTile({Key? key, required this.event}) : super(key: key);
+
+  final ProductEvent event;
+
+  @override
+  State<_MobileEventTile> createState() => _MobileEventTileState();
+}
+
+class _MobileEventTileState extends State<_MobileEventTile> {
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => PageManager.of(context).navigateToProductEventPage(
+        widget.event.eventId,
+        event: widget.event,
+      ),
+      splashColor: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+            color: Theme.of(context).disabledColor,
+            width: 1.0,
+          )),
+        ),
+        height: 150.0,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+          child: Row(
             children: [
-              if (!isMobileView(context))
-                const Text(
-                  'Booked Events',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: widget.event.getCachedImage(context),
                 ),
-              if (!isMobileView(context))
-                const SizedBox(
-                  height: 50,
-                ),
-              const SizedBox(
-                height: 20.0,
               ),
               Expanded(
-                child: StatefulBuilder(
-                  builder: (context, setState) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: bookedEvents.length,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: _BookedEventTile(
-                          event: bookedEvents[index],
-                          onRemove: () {
-                            setState(() => bookedEvents = DataManager().favouriteEvents);
-                          },
-                        ),
+                flex: 2,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Event on dd/MM/YYYY'),
+                      const SizedBox(
+                        height: 10.0,
                       ),
-                    );
-                  },
+                      Text(widget.event.eventName),
+                    ],
+                  ),
                 ),
               ),
+              const Icon(
+                Icons.arrow_forward_ios_outlined,
+                size: 15.0,
+              )
             ],
           ),
         ),
@@ -69,21 +150,21 @@ class BookedEventsPage extends StatelessWidget {
   }
 }
 
-class _BookedEventTile extends StatefulWidget {
+class _DesktopEventTile extends StatefulWidget {
   final ProductEvent event;
   final Function? onRemove;
 
-  const _BookedEventTile({
+  const _DesktopEventTile({
     Key? key,
     required this.event,
     this.onRemove,
   }) : super(key: key);
 
   @override
-  State<_BookedEventTile> createState() => _BookedEventTileState();
+  State<_DesktopEventTile> createState() => _DesktopEventTileState();
 }
 
-class _BookedEventTileState extends State<_BookedEventTile> {
+class _DesktopEventTileState extends State<_DesktopEventTile> {
   bool isHovering = false, isRemoving = false, isRemoveBtnHovering = false;
   Widget image = getRandomTestImage();
 
@@ -93,7 +174,10 @@ class _BookedEventTileState extends State<_BookedEventTile> {
       splashColor: Colors.transparent,
       hoverColor: Colors.transparent,
       highlightColor: Colors.transparent,
-      onTap: () => PageManager.of(context).navigateToProductEventPage(widget.event.eventId),
+      onTap: () => PageManager.of(context).navigateToProductEventPage(
+        widget.event.eventId,
+        event: widget.event,
+      ),
       child: MouseRegion(
         onEnter: (_) => setState(() => isHovering = true),
         onExit: (_) => setState(() => isHovering = false),

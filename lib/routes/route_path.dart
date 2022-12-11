@@ -1,3 +1,5 @@
+import 'package:ad/product/product_event.dart';
+
 import '../product/product_type.dart';
 
 enum RouteState {
@@ -18,6 +20,7 @@ class RoutePath {
   final RouteState state;
 
   String? eventId;
+  ProductEvent? event;
   ProductType? productType;
   String? companyUserName;
 
@@ -53,7 +56,7 @@ class RoutePath {
       : path = '/p/${productType!.name}',
         state = RouteState.product;
 
-  RoutePath.productEvent(this.eventId)
+  RoutePath.productEvent(this.eventId, {this.event})
       : path = '/p/event/$eventId',
         state = RouteState.productEvent;
 

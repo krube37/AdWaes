@@ -156,9 +156,10 @@ class _SignInCardState extends State<SignInCard> {
         if (isNewUser) {
           adWiseUser = AdWiseUser.newUser(userCreds.user!);
           await FirestoreManager().updateUserDetails(adWiseUser);
-          if (mounted) {
-            adWiseUser = await SignInManager().showNewUserFields(context, adWiseUser);
-          }
+          //todo : Handle new user
+          // if (mounted) {
+          //   adWiseUser = await SignInManager().showNewUserFields(context, adWiseUser);
+          // }
         } else {
           adWiseUser = await FirestoreManager().getCurrentUserDetails(userCreds.user!);
         }

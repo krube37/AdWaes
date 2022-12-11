@@ -22,26 +22,32 @@ part 'product_event_helper_widgets.dart';
 
 class ProductEventPage extends StatelessWidget {
   final String _eventId;
+  final ProductEvent? event;
 
-  const ProductEventPage({Key? key, required String eventId})
-      : _eventId = eventId,
+  const ProductEventPage({
+    Key? key,
+    required String eventId,
+    this.event,
+  })  : _eventId = eventId,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-
     Size screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
-      appBar: isMobileView(context) ? const MobileAppBar(text: 'Put some name',) : const MyAppBar(),
+      appBar: isMobileView(context)
+          ? const MobileAppBar(
+              text: 'Put some name',
+            )
+          : const MyAppBar(),
       body: Center(
         child: Container(
           constraints: const BoxConstraints(
             maxWidth: maxScreenWidth,
           ),
           child: FutureBuilder(
-            future: _getProductEvent(),
+            future: event == null ? _getProductEvent() : null,
+            initialData: event,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return const Center(
@@ -55,8 +61,10 @@ class ProductEventPage extends StatelessWidget {
                 return const CircularProgressIndicator();
               }
               ProductEvent event = snapshot.data!;
-              if(isMobileView(context)){
-                return _MobileView(event: event,);
+              if (isMobileView(context)) {
+                return _MobileView(
+                  event: event,
+                );
               }
               return CustomSliver(
                 leftSideWidget: _EventImageWidget(event: event),
@@ -73,7 +81,7 @@ class ProductEventPage extends StatelessWidget {
 
   Future<ProductEvent?> _getProductEvent() async {
     ProductEvent? event = await FirestoreManager().getEventById(_eventId);
-    if(event != null) return event;
+    if (event != null) return event;
 
     throw Exception('no Event Available');
   }

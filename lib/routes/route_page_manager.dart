@@ -1,3 +1,4 @@
+import 'package:ad/product/product_event.dart';
 import 'package:ad/routes/route_path.dart';
 import 'package:ad/screens/product_profile_page.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +71,10 @@ class PageManager extends ChangeNotifier {
         child: const GeneralSettingsPage(),
       ));
     } else if (configuration.isProductPage || configuration.isCompanyPage) {
+      if (configuration.isCompanyPage && _pageStack.last.name == RoutePath.product(configuration.productType).path) {
+        _pageStack.removeLast();
+      }
+
       _pageStack.add(MaterialPage(
         key: ValueKey(configuration.productType!.name),
         name: configuration.path,
@@ -85,7 +90,10 @@ class PageManager extends ChangeNotifier {
       _pageStack.add(MaterialPage(
         key: const ValueKey('ProductEventPage'),
         name: configuration.path,
-        child: ProductEventPage(eventId: configuration.eventId!),
+        child: ProductEventPage(
+          eventId: configuration.eventId!,
+          event: configuration.event,
+        ),
       ));
     } else if (configuration.isProductProfilePage) {
       _pageStack.add(MaterialPage(
@@ -172,7 +180,8 @@ class PageManager extends ChangeNotifier {
   }
 
   /// navigation helper methods
-  navigateToProductEventPage(String eventId) => setNewRoutePath(RoutePath.productEvent(eventId));
+  navigateToProductEventPage(String eventId, {ProductEvent? event}) =>
+      setNewRoutePath(RoutePath.productEvent(eventId, event: event));
 
   navigateToCompany(ProductType type, String companyUserName) {
     return setNewRoutePath(RoutePath.company(type, companyUserName));

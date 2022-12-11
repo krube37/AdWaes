@@ -5,6 +5,7 @@ import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/widgets/bottombar.dart';
+import 'package:ad/widgets/primary_dialog.dart';
 import 'package:flutter/material.dart';
 
 import '../../firebase/auth_manager.dart';
@@ -87,7 +88,7 @@ class _AccountPageState extends State<AccountPage> {
                                   header: "Booked Events",
                                   onTap: _navigateToBookedEventsPage,
                                   icon: const Icon(
-                                    Icons.account_circle_rounded,
+                                    Icons.playlist_add_check,
                                     color: Colors.grey,
                                     size: 50.0,
                                   ),
@@ -98,7 +99,7 @@ class _AccountPageState extends State<AccountPage> {
                                   description: "Set your theme mode, time zone, etc",
                                   onTap: _navigateToGeneralSettingsPage,
                                   icon: const Icon(
-                                    Icons.toggle_on,
+                                    Icons.settings,
                                     color: Colors.grey,
                                     size: 50.0,
                                   ),
@@ -134,7 +135,7 @@ class _AccountPageState extends State<AccountPage> {
                                   header: "Booked Events",
                                   onTap: _navigateToBookedEventsPage,
                                   icon: const Icon(
-                                    Icons.account_circle_rounded,
+                                    Icons.playlist_add_check,
                                     color: Colors.grey,
                                   ),
                                 ),
@@ -143,7 +144,7 @@ class _AccountPageState extends State<AccountPage> {
                                   header: "General Settings",
                                   onTap: _navigateToGeneralSettingsPage,
                                   icon: const Icon(
-                                    Icons.account_circle_rounded,
+                                    Icons.settings,
                                     color: Colors.grey,
                                   ),
                                 ),
@@ -185,10 +186,23 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   _logout() async {
-    ApiResponse response = await AuthManager().signOut(context);
-    if (response.status && mounted) {
-      PageManager.of(context).navigateToHome();
-    }
+    PrimaryDialog dialog = PrimaryDialog(
+      context,
+      'Logout',
+      description: 'Do you really want to Log out?',
+      yesButton: PrimaryDialogButton('Logout', onTap: () async {
+        Navigator.of(context).pop();
+        ApiResponse response = await AuthManager().signOut(context);
+        if (response.status && mounted) {
+          PageManager.of(context).navigateToHome();
+        }
+      }),
+      noButton: PrimaryDialogButton(
+        'Cancel',
+        onTap: () => Navigator.of(context).pop(),
+      ),
+    );
+    await dialog.show();
   }
 }
 

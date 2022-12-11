@@ -1,6 +1,6 @@
 import 'package:ad/product/product_type.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ProductData {
   final String _userName, _name, _description;
@@ -46,6 +46,25 @@ class ProductData {
   ProductType get type => _type;
 
   String? get profilePhotoUrl => _profilePhotoUrl;
+
+  static Widget circleAvatar(
+    BuildContext context,
+    ProductData? productData, {
+    double? radius,
+    Color? color,
+  }) =>
+      CircleAvatar(
+        radius: 20.0,
+        backgroundImage: productData?.profilePhotoImageProvider,
+        backgroundColor: Theme.of(context).disabledColor,
+        child: productData != null && productData.profilePhotoImageProvider == null
+            ? Icon(
+                Icons.person_sharp,
+                size: 30.0,
+                color: color ?? Colors.white,
+              )
+            : null,
+      );
 
   Map<String, dynamic> get map => {
         'userName': userName,

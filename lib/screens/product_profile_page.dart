@@ -51,18 +51,7 @@ class ProductProfilePage extends StatelessWidget {
                             children: [
                               if (isDesktopView(context)) const Expanded(child: SizedBox()),
                               Expanded(
-                                child: CircleAvatar(
-                                  radius: screenSize.width / 8,
-                                  backgroundImage: product.profilePhotoImageProvider,
-                                  backgroundColor: Colors.grey.shade400,
-                                  child: product.profilePhotoImageProvider == null
-                                      ? Icon(
-                                          Icons.person_sharp,
-                                          size: screenSize.width / 8,
-                                          color: Colors.white,
-                                        )
-                                      : null,
-                                ),
+                                child: ProductData.circleAvatar(context, product, radius: screenSize.width / 8),
                               ),
                               Expanded(
                                 child: Column(

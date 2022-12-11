@@ -79,7 +79,7 @@ class _HomeScaffoldState extends State<HomeScaffold> {
       selectedIndex = 1;
     } else if (currentPath == RoutePath.account()) {
       selectedIndex = 2;
-    } else{
+    } else {
       selectedIndex = -1;
     }
     return Scaffold(

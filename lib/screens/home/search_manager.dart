@@ -109,7 +109,10 @@ class _SearchBarState extends State<_SearchBar> {
     if (item is ProductData) {
       PageManager.of(context).navigateToProductProfilePage(item.userName);
     } else if (item is ProductEvent) {
-      PageManager.of(context).navigateToProductEventPage(item.eventId);
+      PageManager.of(context).navigateToProductEventPage(
+        item.eventId,
+        event: item,
+      );
     }
   }
 }

@@ -20,6 +20,7 @@ import '../../product/product_event.dart';
 import '../../product/product_type.dart';
 import '../../provider/product_data_provider.dart';
 import '../../routes/route_page_manager.dart';
+import '../../widgets/custom_horizontal_scroll_view.dart';
 
 part 'product_page_helper_widgets.dart';
 
@@ -91,7 +92,7 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const MyAppBar(),
+      appBar: isMobileView(context) ? const MobileAppBar(showBackButton: false) : const MyAppBar(),
       body: Consumer<ProductDataProvider>(
         builder: (context, productDataValue, _) {
           _fetchData();
@@ -121,6 +122,110 @@ class _ProductPageState extends State<ProductPage> {
                     ProductDataProvider.addProductData(data, events, widget.productType);
                   },
                   child: const Text("Add")),
+            );
+          }
+
+          if (isMobileView(context)) {
+            return Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Theme.of(context).disabledColor,
+                        width: 1.0,
+                      ),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CustomHorizontalScroller(
+                          itemLength: products.length,
+                          alignItemBuilder: Alignment.centerLeft,
+                          itemBuilder: (int index) {
+                            ProductData currentProductData = products.values.toList()[index];
+                            return _MobileProductTile(
+                              productData: currentProductData,
+                              isTileSelected: currentUserName == currentProductData.userName,
+                              onClick: () => _onProductTileClicked(currentProductData.userName),
+                            );
+                          },
+                          height: 100.0,
+                          scrollingArrowSize: 0.0,
+                        ),
+                      ),
+                      // InkWell(
+                      //   onTap: () async {
+                      //     await showDialog(
+                      //       context: context,
+                      //       builder: (context) => Container(
+                      //         child: ListView.builder(
+                      //           itemCount: products.length,
+                      //           itemBuilder: (context, index) {
+                      //             ProductData currentProductData = products.values.toList()[index];
+                      //             return _DesktopProductTile(
+                      //               productData: currentProductData,
+                      //               isTileSelected: currentUserName == currentProductData.userName,
+                      //               onClick: () => _onProductTileClicked(currentProductData.userName),
+                      //             );
+                      //           },
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      //   child: const SizedBox(
+                      //     height: 60.0,
+                      //     width: 60.0,
+                      //     child: Center(
+                      //       child: Text(
+                      //         'All',
+                      //         style: TextStyle(color: primaryColor),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: products.isEmpty || currentUserName.isEmpty
+                      ? const Center(child: Text("there are no Events available or selected "))
+                      : StreamBuilder<List<ProductEvent>>(
+                          stream: productDataProvider.listenToEvents(currentUserName),
+                          builder: (context, snapshot) {
+                            events.clear();
+                            debugPrint("_ProductPageState build: snapshot ${snapshot.data?.map((e) => e.eventId)}");
+                            if (!snapshot.hasData || widget.currentUserName == null) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            if (snapshot.data != null && snapshot.data!.isEmpty) {
+                              return const Center(
+                                child: Text('No event available!'),
+                              );
+                            }
+                            events = snapshot.data!;
+                            return GridView.builder(
+                              shrinkWrap: true,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: isDesktopView(context) ? 3 : 2,
+                                childAspectRatio: 3 / 4,
+                              ),
+                              itemCount: events.length,
+                              itemBuilder: (context, index) {
+                                return EventTile(
+                                  event: events[index],
+                                  showProductHeader: false,
+                                  productData: products[currentUserName],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                ),
+              ],
             );
           }
 
@@ -169,7 +274,16 @@ class _ProductPageState extends State<ProductPage> {
                     children: [
                       Expanded(
                         flex: 1,
-                        child: _productListView(),
+                        child: ListView.builder(
+                            itemCount: products.length,
+                            itemBuilder: (context, index) {
+                              ProductData currentProductData = products.values.toList()[index];
+                              return _DesktopProductTile(
+                                productData: currentProductData,
+                                isTileSelected: currentUserName == currentProductData.userName,
+                                onClick: () => _onProductTileClicked(currentProductData.userName),
+                              );
+                            }),
                       ),
                       const Divider(
                         color: Colors.black45,
@@ -197,7 +311,7 @@ class _ProductPageState extends State<ProductPage> {
                                   return GridView.builder(
                                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: isDesktopView(context) ? 3 : 2,
-                                        childAspectRatio: isDesktopView(context) ? 3 / 4 : 3 / 4,
+                                        childAspectRatio: 3 / 4,
                                       ),
                                       itemCount: events.length,
                                       itemBuilder: (context, index) {
@@ -222,21 +336,14 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  _productListView() => ListView.builder(
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        ProductData currentProductData = products.values.toList()[index];
-        return _ProductTile(
-            productData: currentProductData,
-            isTileSelected: currentUserName == currentProductData.userName,
-            onClick: () {
-              if (currentUserName == currentProductData.userName) return;
-              currentUserName = currentProductData.userName;
-              _isListeningToEvent = false;
-              debugPrint("_ProductPageState _productListView: success for new model ");
-              PageManager.of(context).navigateToCompany(widget.productType, currentUserName);
-            });
-      });
+  _onProductTileClicked(String userName) {
+    if (currentUserName == userName) return;
+    currentUserName = userName;
+    _isListeningToEvent = false;
+    PageManager.of(context)
+      ..popRoute(notify: false)
+      ..navigateToCompany(widget.productType, currentUserName);
+  }
 
   _testCode() => Expanded(
           child: Column(

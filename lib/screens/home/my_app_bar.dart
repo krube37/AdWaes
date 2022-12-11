@@ -171,19 +171,22 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      elevation: 10.0,
-      leading: InkWell(
-        onTap: () => PageManager.of(context).popRoute(),
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent,
-        child: const Icon(Icons.arrow_back),
-      ),
+      elevation: 5.0,
+      leading: showBackButton
+          ? InkWell(
+              onTap: () => PageManager.of(context).popRoute(),
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              child: const Icon(Icons.arrow_back),
+            )
+          : null,
       title: Text(
         text ?? "Adwise",
         style: const TextStyle(
           fontSize: 25.0,
           fontFamily: 'Ubuntu',
-          fontWeight: FontWeight.normal
+          fontWeight: FontWeight.normal,
         ),
       ),
     );
