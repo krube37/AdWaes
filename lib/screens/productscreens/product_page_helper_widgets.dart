@@ -56,132 +56,145 @@ class _EventTileState extends State<EventTile> {
                       ),
                 child: SizedBox(
                   width: widget.tileWidth,
-                  child: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return SizedBox(
-                        width: constraints.maxWidth,
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (widget.showProductHeader)
-                                Row(
-                                  children: [
-                                    ProductData.circleAvatar(
-                                      context,
-                                      widget.productData,
-                                      radius: 20.0,
+                  child: Stack(
+                    children: [
+                      LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) {
+                          return SizedBox(
+                            width: constraints.maxWidth,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (widget.showProductHeader)
+                                    Row(
+                                      children: [
+                                        ProductData.circleAvatar(
+                                          context,
+                                          widget.productData,
+                                          radius: 20.0,
+                                        ),
+                                        const SizedBox(width: 10.0),
+                                        Expanded(
+                                          child: widget.isLoading
+                                              ? _getLoadingContainer(height: 35.0)
+                                              : Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    UnderLinedTextClicker(
+                                                      text: widget.productData!.name,
+                                                      style: const TextStyle(
+                                                        //fontSize: 18.0,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                      onTap: () => PageManager.of(context)
+                                                          .navigateToProductProfilePage(widget.productData!.userName),
+                                                    ),
+                                                    const SizedBox(height: 5),
+                                                    UnderLinedTextClicker(
+                                                      text:
+                                                          ProductType.values[widget.event!.type.index].getDisplayName(),
+                                                      style: const TextStyle(
+                                                        fontSize: 12.0,
+                                                      ),
+                                                      onTap: () =>
+                                                          PageManager.of(context).navigateToProduct(widget.event!.type),
+                                                    ),
+                                                  ],
+                                                ),
+                                        ),
+                                        if (!widget.isLoading) FavouriteHeartIconWidget(event: widget.event!),
+                                      ],
                                     ),
-                                    const SizedBox(width: 10.0),
-                                    Expanded(
-                                      child: widget.isLoading
-                                          ? _getLoadingContainer(height: 35.0)
-                                          : Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                UnderLinedTextClicker(
-                                                  text: widget.productData!.name,
-                                                  style: const TextStyle(
-                                                    //fontSize: 18.0,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                  onTap: () => PageManager.of(context)
-                                                      .navigateToProductProfilePage(widget.productData!.userName),
-                                                ),
-                                                const SizedBox(height: 5),
-                                                UnderLinedTextClicker(
-                                                  text: ProductType.values[widget.event!.type.index].getDisplayName(),
-                                                  style: const TextStyle(
-                                                    fontSize: 12.0,
-                                                  ),
-                                                  onTap: () =>
-                                                      PageManager.of(context).navigateToProduct(widget.event!.type),
-                                                ),
-                                              ],
+                                  if (widget.showProductHeader)
+                                    const SizedBox(
+                                      height: 10.0,
+                                    ),
+                                  Expanded(
+                                    flex: 5,
+                                    child: Center(
+                                      child: AnimatedContainer(
+                                        padding: isHovering ? null : const EdgeInsets.all(2.0),
+                                        duration: const Duration(milliseconds: 100),
+                                        curve: Curves.easeOut,
+                                        child: AspectRatio(
+                                          aspectRatio: 1,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(5.0),
+                                            child: Container(
+                                              color: Theme.of(context).disabledColor,
+                                              child: !widget.isLoading
+                                                  ? Hero(
+                                                      tag: widget.event!.eventId,
+                                                      child: widget.event!.photoImageProvider != null
+                                                          ? Image(
+                                                              image: widget.event!.photoImageProvider!,
+                                                              fit: BoxFit.cover,
+                                                            )
+                                                          : const FlutterLogo(),
+                                                    )
+                                                  : null,
                                             ),
-                                    ),
-                                    if (!widget.isLoading) FavouriteHeartIconWidget(event: widget.event!),
-                                  ],
-                                ),
-                              if (widget.showProductHeader)
-                                const SizedBox(
-                                  height: 10.0,
-                                ),
-                              Expanded(
-                                flex: 5,
-                                child: Center(
-                                  child: AnimatedContainer(
-                                    padding: isHovering ? null : const EdgeInsets.all(2.0),
-                                    duration: const Duration(milliseconds: 100),
-                                    curve: Curves.easeOut,
-                                    child: AspectRatio(
-                                      aspectRatio: 1,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(5.0),
-                                        child: Container(
-                                          color: Theme.of(context).disabledColor,
-                                          child: !widget.isLoading
-                                              ? Hero(
-                                                  tag: widget.event!.eventId,
-                                                  child: widget.event!.photoImageProvider != null
-                                                      ? Image(
-                                                          image: widget.event!.photoImageProvider!,
-                                                          fit: BoxFit.cover,
-                                                        )
-                                                      : const FlutterLogo(),
-                                                )
-                                              : null,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(height: 5.0),
-                              Expanded(
-                                flex: 2,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    widget.isLoading
-                                        ? _getLoadingContainer(height: 20.0)
-                                        : Text(
-                                            widget.event!.eventName,
-                                            style: const TextStyle(fontSize: 14.0, overflow: TextOverflow.ellipsis),
-                                          ),
-                                    const SizedBox(
-                                      height: 5,
+                                  const SizedBox(height: 5.0),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        widget.isLoading
+                                            ? _getLoadingContainer(height: 20.0)
+                                            : Text(
+                                                widget.event!.eventName,
+                                                style: const TextStyle(fontSize: 14.0, overflow: TextOverflow.ellipsis),
+                                              ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        widget.isLoading
+                                            ? Row(
+                                                children: [
+                                                  Expanded(child: _getLoadingContainer(height: 20.0)),
+                                                  const Expanded(child: SizedBox()),
+                                                ],
+                                              )
+                                            : Text(
+                                                "\u20B9${widget.event!.price}",
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                        const SizedBox(height: 5),
+                                        widget.isLoading
+                                            ? _getLoadingContainer(height: 20.0)
+                                            : Text(
+                                                'date posted: ${widget.event!.eventTime}',
+                                                style: const TextStyle(
+                                                    overflow: TextOverflow.ellipsis,
+                                                    fontSize: 12.0,
+                                                    color: Colors.grey),
+                                              ),
+                                      ],
                                     ),
-                                    widget.isLoading
-                                        ? Row(
-                                            children: [
-                                              Expanded(child: _getLoadingContainer(height: 20.0)),
-                                              const Expanded(child: SizedBox()),
-                                            ],
-                                          )
-                                        : Text(
-                                            "\u20B9${widget.event!.price}",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                    const SizedBox(height: 5),
-                                    widget.isLoading
-                                        ? _getLoadingContainer(height: 20.0)
-                                        : Text(
-                                            'date posted: ${widget.event!.eventTime}',
-                                            style: const TextStyle(
-                                                overflow: TextOverflow.ellipsis, fontSize: 12.0, color: Colors.grey),
-                                          ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          );
+                        },
+                      ),
+                      if (!widget.isLoading && !widget.showProductHeader)
+                        Positioned(
+                          right: 10,
+                          top: 10,
+                          child: FavouriteHeartIconWidget(event: widget.event!),
                         ),
-                      );
-                    },
+                    ],
                   ),
                 )),
           ),
@@ -386,10 +399,20 @@ class _FavouriteHeartIconWidgetState extends State<FavouriteHeartIconWidget> {
                         color: Colors.grey,
                       ),
                     )
-                  : Icon(
-                      isFavourite ? CustomIcons.heart : CustomIcons.heart_svgrepo_com,
-                      color: isFavourite ? Colors.red : Colors.grey,
-                      size: iconSize,
+                  : DecoratedIcon(
+                      decoration: isFavourite
+                          ? null
+                          : const IconDecoration(
+                              border: IconBorder(
+                                color: Colors.grey,
+                                width: 3.0,
+                              ),
+                            ),
+                      icon: Icon(
+                        CustomIcons.heart,
+                        color: isFavourite ? Colors.red : Colors.white,
+                        size: iconSize,
+                      ),
                     ),
             ),
           ),

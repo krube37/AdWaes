@@ -15,6 +15,7 @@ import 'package:ad/widgets/underlined_text_clicker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:icon_decoration/icon_decoration.dart';
 
 import '../../product/product_event.dart';
 import '../../product/product_type.dart';

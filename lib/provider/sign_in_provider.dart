@@ -6,8 +6,8 @@ class SignInProvider extends ChangeNotifier {
   static TextEditingController? _phoneNumberTextController, _otpTextController;
 
   SignInProvider() {
-    _phoneNumberTextController ??= TextEditingController(text: '+91');
-    _otpTextController ??= TextEditingController();
+    _phoneNumberTextController = TextEditingController(text: '+91');
+    _otpTextController = TextEditingController();
     _mInstance = this;
   }
 
