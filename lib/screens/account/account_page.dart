@@ -5,6 +5,7 @@ import 'package:ad/utils/globals.dart';
 import 'package:ad/provider/data_manager.dart';
 import 'package:ad/screens/home/my_app_bar.dart';
 import 'package:ad/widgets/bottombar.dart';
+import 'package:ad/widgets/loading_button.dart';
 import 'package:ad/widgets/primary_dialog.dart';
 import 'package:flutter/material.dart';
 
@@ -23,153 +24,165 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (dataManager.user == null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        AdWiseUser? user = await SignInManager().showSignInDialog(context);
-        if (user != null) {
-          setState(() {});
-        } else {
-          if (mounted) {
-            PageManager.of(context).popRoute();
-          }
-        }
-      });
-      return const SizedBox();
-    }
-    AdWiseUser user = dataManager.user!;
+    AdWiseUser? user = dataManager.user;
     return Scaffold(
       appBar: isMobileView(context) ? const MobileAppBar(text: "Account") : const MyAppBar(showSearchBar: false),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50.0),
-              child: Center(
-                child: Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 1100.0,
+      body: user == null
+          ? Center(
+              child: Column(
+                children: [
+                  const SizedBox(height: 50.0),
+                  const Text(
+                    'Login to start booking the events',
+                    style: TextStyle(fontSize: 18.0),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 70.0),
-                      if (!isMobileView(context))
-                        Text("Account",
-                            style: Theme.of(context).textTheme.headline6?.copyWith(
-                                  fontSize: 30.0,
-                                )),
-                      const SizedBox(height: 20.0),
-                      Text("Hi ${user.displayName},",
-                          style: Theme.of(context).textTheme.headline6?.copyWith(
-                                fontSize: 20.0,
-                              )),
-                      const SizedBox(height: 20.0),
-                      !isMobileView(context)
-                          ? GridView(
-                              shrinkWrap: true,
-                              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 500,
-                                mainAxisExtent: 200,
-                              ),
-                              children: [
-                                _AccountDesktopTile(
-                                  user: user,
-                                  header: "Personal Information",
-                                  description: "Manage your personal Information",
-                                  onTap: _navigateToPersonalInfoPage,
-                                  icon: const Icon(
-                                    Icons.account_circle_rounded,
-                                    color: Colors.grey,
-                                    size: 50.0,
+                  const SizedBox(height: 20.0),
+                  SizedBox(
+                    width: 100.0,
+                    child: LoadingButton(
+                      name: 'Login',
+                      onTap: () async {
+                        AdWiseUser? user = await SignInManager().showSignInDialog(context);
+                        if (user != null) {
+                          setState(() {});
+                        }
+                      },
+                    ),
+                  )
+                ],
+              ),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                    child: Center(
+                      child: Container(
+                        constraints: const BoxConstraints(
+                          maxWidth: 1100.0,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 70.0),
+                            if (!isMobileView(context))
+                              Text("Account",
+                                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                                        fontSize: 30.0,
+                                      )),
+                            const SizedBox(height: 20.0),
+                            Text("Hi ${user.displayName},",
+                                style: Theme.of(context).textTheme.headline6?.copyWith(
+                                      fontSize: 20.0,
+                                    )),
+                            const SizedBox(height: 20.0),
+                            !isMobileView(context)
+                                ? GridView(
+                                    shrinkWrap: true,
+                                    gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 500,
+                                      mainAxisExtent: 200,
+                                    ),
+                                    children: [
+                                      _AccountDesktopTile(
+                                        user: user,
+                                        header: "Personal Information",
+                                        description: "Manage your personal Information",
+                                        onTap: _navigateToPersonalInfoPage,
+                                        icon: const Icon(
+                                          Icons.account_circle_rounded,
+                                          color: Colors.grey,
+                                          size: 50.0,
+                                        ),
+                                      ),
+                                      _AccountDesktopTile(
+                                        user: user,
+                                        header: "Booked Events",
+                                        onTap: _navigateToBookedEventsPage,
+                                        icon: const Icon(
+                                          Icons.playlist_add_check,
+                                          color: Colors.grey,
+                                          size: 50.0,
+                                        ),
+                                      ),
+                                      _AccountDesktopTile(
+                                        user: user,
+                                        header: "General Settings",
+                                        description: "Set your theme mode, time zone, etc",
+                                        onTap: _navigateToGeneralSettingsPage,
+                                        icon: const Icon(
+                                          Icons.settings,
+                                          color: Colors.grey,
+                                          size: 50.0,
+                                        ),
+                                      ),
+                                      _AccountDesktopTile(
+                                        user: user,
+                                        header: "Logout",
+                                        onTap: _logout,
+                                        headerColor: Colors.red,
+                                        icon: const Icon(
+                                          Icons.logout,
+                                          color: Colors.red,
+                                          size: 50.0,
+                                        ),
+                                      )
+                                    ],
+                                  )
+                                : ListView(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    children: [
+                                      _AccountMobileTile(
+                                        user: user,
+                                        header: "Personal Info",
+                                        onTap: _navigateToPersonalInfoPage,
+                                        icon: const Icon(
+                                          Icons.account_circle_rounded,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      _AccountMobileTile(
+                                        user: user,
+                                        header: "Booked Events",
+                                        onTap: _navigateToBookedEventsPage,
+                                        icon: const Icon(
+                                          Icons.playlist_add_check,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      _AccountMobileTile(
+                                        user: user,
+                                        header: "General Settings",
+                                        onTap: _navigateToGeneralSettingsPage,
+                                        icon: const Icon(
+                                          Icons.settings,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                      _AccountMobileTile(
+                                        user: user,
+                                        header: "Logout",
+                                        headerColor: Colors.red,
+                                        onTap: _logout,
+                                        icon: const Icon(
+                                          Icons.logout,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                _AccountDesktopTile(
-                                  user: user,
-                                  header: "Booked Events",
-                                  onTap: _navigateToBookedEventsPage,
-                                  icon: const Icon(
-                                    Icons.playlist_add_check,
-                                    color: Colors.grey,
-                                    size: 50.0,
-                                  ),
-                                ),
-                                _AccountDesktopTile(
-                                  user: user,
-                                  header: "General Settings",
-                                  description: "Set your theme mode, time zone, etc",
-                                  onTap: _navigateToGeneralSettingsPage,
-                                  icon: const Icon(
-                                    Icons.settings,
-                                    color: Colors.grey,
-                                    size: 50.0,
-                                  ),
-                                ),
-                                _AccountDesktopTile(
-                                  user: user,
-                                  header: "Logout",
-                                  onTap: _logout,
-                                  headerColor: Colors.red,
-                                  icon: const Icon(
-                                    Icons.logout,
-                                    color: Colors.red,
-                                    size: 50.0,
-                                  ),
-                                )
-                              ],
-                            )
-                          : ListView(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              children: [
-                                _AccountMobileTile(
-                                  user: user,
-                                  header: "Personal Info",
-                                  onTap: _navigateToPersonalInfoPage,
-                                  icon: const Icon(
-                                    Icons.account_circle_rounded,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                _AccountMobileTile(
-                                  user: user,
-                                  header: "Booked Events",
-                                  onTap: _navigateToBookedEventsPage,
-                                  icon: const Icon(
-                                    Icons.playlist_add_check,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                _AccountMobileTile(
-                                  user: user,
-                                  header: "General Settings",
-                                  onTap: _navigateToGeneralSettingsPage,
-                                  icon: const Icon(
-                                    Icons.settings,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                _AccountMobileTile(
-                                  user: user,
-                                  header: "Logout",
-                                  headerColor: Colors.red,
-                                  onTap: _logout,
-                                  icon: const Icon(
-                                    Icons.logout,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ],
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 100.0),
+                  const BottomBar()
+                ],
               ),
             ),
-            const SizedBox(height: 100.0),
-            const BottomBar()
-          ],
-        ),
-      ),
     );
   }
 

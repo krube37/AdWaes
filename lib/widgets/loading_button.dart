@@ -1,10 +1,9 @@
-
-
+import 'package:ad/utils/globals.dart';
 import 'package:flutter/material.dart';
 
 class LoadingButton extends StatelessWidget {
   final String name;
-  final Color color;
+  final Color buttonColor;
   final Color? textColor;
   final Function? onTap;
   final double? minWidth, height;
@@ -13,7 +12,7 @@ class LoadingButton extends StatelessWidget {
   const LoadingButton({
     Key? key,
     required this.name,
-    required this.color,
+    this.buttonColor = primaryColor,
     this.textColor,
     this.onTap,
     this.minWidth,
@@ -28,7 +27,7 @@ class LoadingButton extends StatelessWidget {
       child: Container(
         height: height,
         decoration: BoxDecoration(
-          color: color,
+          color: buttonColor,
           borderRadius: BorderRadius.circular(3.0),
         ),
         padding: EdgeInsets.symmetric(
@@ -37,21 +36,21 @@ class LoadingButton extends StatelessWidget {
         child: Center(
           child: isLoading
               ? const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2.5,
-              ),
-            ),
-          )
+                  padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.5,
+                    ),
+                  ),
+                )
               : Text(
-            name,
-            style: TextStyle(
-              color: textColor,
-            ),
-          ),
+                  name,
+                  style: TextStyle(
+                    color: textColor,
+                  ),
+                ),
         ),
       ),
     );

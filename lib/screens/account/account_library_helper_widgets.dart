@@ -68,7 +68,6 @@ class SettingsContentTile extends StatelessWidget {
                   if (!isEditMode && !alwaysShowContent)
                     LoadingButton(
                       name: value.isEmpty ? 'Add' : 'Edit',
-                      color: Colors.orange,
                       textColor: Colors.white,
                       minWidth: 60.0,
                       onTap: () => onEditMode?.call(true),
@@ -201,7 +200,7 @@ class _SettingsNameTileState extends State<SettingsNameTile> {
               padding: const EdgeInsets.all(8.0),
               child: LoadingButton(
                 name: 'Cancel',
-                color: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
+                buttonColor: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
                 onTap: () => widget.onEditMode?.call(false),
               ),
             ),
@@ -314,7 +313,7 @@ class _SettingsTileState extends State<SettingsTile> {
               padding: const EdgeInsets.all(8.0),
               child: LoadingButton(
                 name: 'Cancel',
-                color: Colors.grey.shade300,
+                buttonColor: Colors.grey.shade300,
                 onTap: () => widget.onEditMode?.call(false),
               ),
             ),
@@ -365,7 +364,6 @@ class _SaveButtonState extends State<_SaveButton> {
   Widget build(BuildContext context) {
     return LoadingButton(
       name: 'Save',
-      color: Colors.orange,
       textColor: Colors.white,
       onTap: _updateUserData,
       isLoading: isLoading,

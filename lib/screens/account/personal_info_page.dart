@@ -161,7 +161,6 @@ class _ProfilePicState extends State<_ProfilePic> {
                 padding: const EdgeInsets.all(10.0),
                 child: LoadingButton(
                   name: user.profilePhotoUrl != null ? 'Edit' : 'Add',
-                  color: Colors.orange,
                   textColor: Colors.white,
                   height: 40.0,
                   onTap: _pickProfilePic,
@@ -174,7 +173,7 @@ class _ProfilePicState extends State<_ProfilePic> {
                   padding: const EdgeInsets.all(10.0),
                   child: LoadingButton(
                     name: 'Remove',
-                    color: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
+                    buttonColor: GeneralSettingsProvider().isDarkTheme ? Colors.grey : Colors.grey.shade300,
                     height: 40.0,
                     onTap: _deleteProfilePic,
                   ),
