@@ -75,7 +75,7 @@ class _DesktopView extends StatelessWidget {
                       child: _DesktopEventTile(
                         event: events[index],
                         onRemove: () {
-                          setState(() => events.removeAt(index));
+                          setState(() {});
                         },
                       ),
                     ),

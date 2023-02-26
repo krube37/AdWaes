@@ -38,6 +38,8 @@ class _SearchBarState extends State<_SearchBar> {
     }
     List<SearchFieldListItem<dynamic>> list = [];
 
+    await Future.delayed(const Duration(milliseconds: 500)); // to restrict multiple request for every letter
+
     List<ProductData> results = await FirestoreManager().getProductDataSearchResults(value);
 
     list.addAll(results
